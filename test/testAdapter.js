@@ -3,6 +3,7 @@
 /*jshint expr: true*/
 var expect = require('chai').expect;
 var setup  = require(__dirname + '/lib/setup');
+var net = require('net');
 
 var objects = null;
 var states  = null;
