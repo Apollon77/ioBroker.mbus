@@ -76,6 +76,7 @@ function sendTo(target, command, message, callback) {
 }
 
 function setupTcpServer(callback) {
+    var port = 15000;
     var server = net.createServer(function(socket) {
         console.log(new Date().toString() + ': mbus-TCP-Device: Connected ' + port + '!');
 
