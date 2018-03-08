@@ -1,0 +1,64 @@
+<html>
+
+<!-- these 4 files always have to be included -->
+<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+
+<!-- these two file always have to be included -->
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+<script type="text/javascript" src="words.js"></script>
+
+<!-- you have to define 2 functions in the global scope: -->
+<script type="text/javascript">
+    function load(settings, onChange) {
+        $('#host_ip').val(settings['host_ip']);
+        $('#host_port').val(settings['host_port']);
+        $('#ups_name').val(settings['ups_name']);
+        $('#update_interval').val(settings['update_interval']);
+        $('#username').val(settings['username']);
+        $('#password').val(settings['password']);
+    }
+
+    function save(callback) {
+        callback({host_ip: $('#host_ip').val().trim(), host_port: $('#host_port').val().trim(), ups_name: $('#ups_name').val().trim(), update_interval: $('#update_interval').val().trim(), username: $('#username').val().trim(), password: $('#password').val().trim()});
+    }
+</script>
+
+<!-- you have to put your config page in a div with id adapter-container -->
+<div id="adapter-container">
+
+    <table><tr>
+        <td><img src="nut.png"/></td>
+        <td><h3 class="translate">page_title</h3></td>
+    </tr></table>
+    <p style="padding-left: 12px">
+        <label for="host_ip" class="translate">host_ip</label> <input class="value" type="text" id="host_ip" size="15"/><br/>
+        <label for="host_port" class="translate">host_port</label> <input class="value" type="text" id="host_port" size="6"/><br/>
+        <label for="ups_name" class="translate">ups_name</label> <input class="value" type="text" id="ups_name" size="20"/><br/>
+        <label for="update_interval" class="translate">update_interval</label> <input class="value" type="text" id="update_interval" size="20"/>s<br/>
+        <label for="username" class="translate">username</label> <input class="value" type="text" id="username" size="20"/><br/>
+        <label for="password" class="translate">password</label> <input class="value" type="password" id="password" size="20"/><br/>
+    </p>
+    <h3 class="translate">host_ip</h3>
+    <p class="translate">ip_info</p>
+
+    <h3 class="translate">host_port</h3>
+    <p class="translate">port_info</p>
+
+    <h3 class="translate">ups_name</h3>
+    <p class="translate">name_info</p>
+
+    <h3 class="translate">update_interval</h3>
+    <p class="translate">update_interval_info</p>
+
+    <h3>Troubleshooting</h3>
+    <p class="translate">trouble_info</p>
+
+</div>
+
+</html>

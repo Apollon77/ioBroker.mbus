@@ -1,0 +1,48 @@
+{
+    "common": {
+        "name":                     "mbus",
+        "version":                  "0.0.1",
+		"news": {
+            "0.0.1": {
+              "en": "initial version",
+              "de": "initial version",
+              "ru": "initial version"
+            }
+        },
+        "authors": [
+            "Apollon77 <ingo@fischer-ka.de>"
+        ],
+        "title":                    "MBus",
+        "desc":                     "Read data from mbus devices",
+        "platform":                 "Javascript/Node.js",
+        "mode":                     "daemon",
+        "messagebox":               true,
+        "subscribe":                "messagebox",
+        "stopBeforeUpdate":         true,
+        "icon":                     "mbus.png",
+        "extIcon":                  "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
+        "readme":                   "https://github.com/Apollon77/ioBroker.mbus",
+        "license":                  "MIT",
+        "npmLibs": [],
+        "type":                     "hardware",
+        "keywords":                 ["iobroker", "mbus"],
+        "loglevel":                 "info",
+        "enabled":                  false
+
+    },
+    "native": {
+        "host":         "127.0.0.1",
+        "port":       "",
+        "defaultUpdateInterval": 3600,
+        "serialPort":        "",
+        "serialBaudRate":    "",
+        "devices": [
+            {
+                "id": "1",
+                "updateInterval": 3600
+            }
+        ]
+    },
+    "objects": [],
+    "instanceObjects": []
+}

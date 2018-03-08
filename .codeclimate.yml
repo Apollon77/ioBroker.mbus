@@ -1,0 +1,28 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+    exclude_fingerprints:
+    - 43e0e1e6524762f837c44bbffd1e763c
+    - 96c5a1fe99411cfd260780387b4f2345
+  eslint:
+    enabled: true
+    checks:
+      complexity:
+        enabled: false
+    exclude_fingerprints:
+    - c4c98b5bf6e9d6534149e4038e291b1a
+    - 055faf39892c98b5e4b310702bd90ade
+    - 04f09dc503b35020ec99b1779c671a68
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+exclude_paths:
+- test/
+- lib/utils.js
+- Gruntfile.js
