@@ -13,6 +13,8 @@ var sendToID = 1;
 
 var adapterShortName = setup.adapterName.substring(setup.adapterName.indexOf('.')+1);
 
+var lastMessage;
+
 function checkConnectionOfAdapter(cb, counter) {
     counter = counter || 0;
     console.log('Try check #' + counter);
@@ -77,6 +79,15 @@ function sendTo(target, command, message, callback) {
 
 function setupTcpServer(callback) {
     var port = 15000;
+
+    function sendMessage(socket, message, callback) {
+        console.log(new Date().toString() + ':     mbus-TCP-Device: Send to Master: ' + message.toString('hex'));
+        socket.write(message, function(err) {
+            console.log(new Date().toString() + ':         mbus-TCP-Device: Send done');
+            callback && callback(err);
+        });
+    }
+
     var server = net.createServer(function(socket) {
         console.log(new Date().toString() + ': mbus-TCP-Device: Connected ' + port + '!');
 
