@@ -172,13 +172,14 @@ describe('Test ' + adapterShortName + ' adapter', function() {
 
             config.native.host   = '127.0.0.1';
             config.native.port   = 15000;
+            config.native.defaultUpdateInterval   = 20;
             config.native.devices = [
                 {
                     "id": "1",
-                    "updateInterval": 3600
+                    "updateInterval": 60
                 },
                 {
-                    "id": "2",
+                    "id": "2"
                 }
             ]
             setup.setAdapterConfig(config.common, config.native);
@@ -215,11 +216,11 @@ describe('Test ' + adapterShortName + ' adapter', function() {
     });
 
     it('Test ' + adapterShortName + ' adapter: delay', function (done) {
-        this.timeout(60000);
+        this.timeout(120000);
 
         setTimeout(function() {
             done();
-        }, 55000);
+        }, 110000);
     });
 
 /*

@@ -99,6 +99,7 @@ function updateDevices() {
 
     deviceCommunicationInProgress = true;
     var deviceId = deviceUpdateQueue.shift();
+    adapter.log.info('Process: ' + deviceId);
     if (mBusDevices[deviceId].updateTimeout) {
         clearTimeout(mBusDevices[deviceId].updateTimeout);
         mBusDevices[deviceId].updateTimeout = null;
@@ -111,7 +112,7 @@ function updateDevices() {
         mBusDevices[deviceId].updateTimeout = setTimeout(function() {
             mBusDevices[deviceId].updateTimeout = null;
             scheduleDeviceUpdate(deviceId);
-        }, mBusDevices[deviceId].updateInterval);
+        }, mBusDevices[deviceId].updateInterval * 1000);
         updateDevices();
     });
 }
@@ -129,7 +130,7 @@ function main() {
     else if (adapter.config.serialPort) {
         mbusOptions.serialPort = adapter.config.serialPort;
         mbusOptions.serialBaudRate = adapter.config.serialBaudRate;
-        adapter.log.info('Initialize mbus TCP to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
+        adapter.log.info('Initialize mbus Serial to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
     }
 
     mbusMaster = new MbusMaster(mbusOptions);
@@ -142,9 +143,9 @@ function main() {
     for (var i = 0; i < adapter.config.devices.length; i++) {
         var deviceId = adapter.config.devices[i].id;
         mBusDevices[deviceId] = {};
-        mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval ? adapter.config.devices[i].updateInterval : adapter.config.updateInterval;
+        mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval ? adapter.config.devices[i].updateInterval : adapter.config.defaultUpdateInterval;
 
-        adapter.log.info('Schedule initialization for MBus-ID ' + deviceId);
+        adapter.log.info('Schedule initialization for MBus-ID ' + deviceId + ' with update intervall ' + mBusDevices[deviceId].updateInterval);
         scheduleDeviceUpdate(deviceId);
     }
 }
