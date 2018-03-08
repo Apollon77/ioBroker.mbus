@@ -18,8 +18,6 @@ before_script:
 after_success:
   - sed -i "s|tmp/node_modules/iobroker.nut/||" ./coverage/lcov.info
   - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -r 6acc760d8174dccb48942e7360fba89583b002166fb79bdfb7b87576fd1619ba; fi'
-env:
-  - CXX=g++-4.8
 addons:
   apt:
     sources:

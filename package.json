@@ -1,5 +1,5 @@
 {
-  "name": "iobroker.nut",
+  "name": "iobroker.mbus",
   "version": "0.0.1",
   "description": "MBus Adapter",
   "author": "Ingo Fischer <ingo@fischer-ka.de>",
