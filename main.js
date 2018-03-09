@@ -106,15 +106,119 @@ function updateDevices() {
     }
 
     mbusMaster.getData(deviceId, function(err, data) {
-        adapter.log.error('mbus ID ' + deviceId + ' err: ' + err);
-        adapter.log.info('data: ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+        if (err) {
+            adapter.log.error('mbus ID ' + deviceId + ' err: ' + err);
+            updateDevices();
+            return;
+        }
 
-        mBusDevices[deviceId].updateTimeout = setTimeout(function() {
-            mBusDevices[deviceId].updateTimeout = null;
-            scheduleDeviceUpdate(deviceId);
-        }, mBusDevices[deviceId].updateInterval * 1000);
-        updateDevices();
+        adapter.log.info('mbus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+
+        initializeDeviceObjects(deviceId, data, function() {
+            updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
+                mBusDevices[deviceId].updateTimeout = setTimeout(function() {
+                    mBusDevices[deviceId].updateTimeout = null;
+                    scheduleDeviceUpdate(deviceId);
+                }, mBusDevices[deviceId].updateInterval * 1000);
+                updateDevices();
+            });
+        });
     });
+}
+
+function initializeDeviceObjects(deviceId, data, callback) {
+
+    var neededStates = [];
+    function createStates() {
+        if (!neededStates.length) {
+            callback();
+            return;
+        }
+        var state = neededStates.shift();
+        adapter.log.debug('Create State ' + deviceNamespace + state.id);
+        adapter.setObjectNotExists(deviceNamespace + state.id, {
+            type: 'state',
+            common: {
+                name: state.id,
+                role: 'value',
+                type: state.type,
+                read: true,
+                write: false,
+                unit: state.unit
+            },
+            native: {id: state.id}
+        }, function() {
+            createStates();
+        });
+    }
+
+    if (mBusDevices[deviceId].deviceNamespace) {
+        callback();
+        return;
+    }
+
+    var deviceNamespace = data.SlaveInformation.Manufacturer + '-' + data.SlaveInformation.Id;
+    mBusDevices[deviceId].deviceNamespace = deviceNamespace;
+
+    adapter.setObjectNotExists(deviceNamespace, {
+        type: 'channel',
+        common: {name: deviceNamespace},
+        native: {}
+    }, function() {
+        adapter.setObjectNotExists(deviceNamespace + '.info', {
+            type: 'channel',
+            common: {name: deviceNamespace + '.info'},
+            native: {}
+        }, function() {
+            adapter.setObjectNotExists(deviceNamespace + '.data', {
+                type: 'channel',
+                common: {name: deviceNamespace + '.data'},
+                native: {}
+            }, function() {
+                var currentState;
+                var currentType;
+                for (var id in data.SlaveInformation) {
+                    currentState = {};
+                    currentState.id = '.info.' + id;
+                    currentType = typeof data.SlaveInformation[id];
+                    if (currentType === 'Number') currentState.type = 'number';
+                        else currentState.type = 'string';
+                    currentState.unit = '';
+                    neededStates.push(currentState);
+                }
+                for (var i = 0; i < data.DataRecords.length; i++) {
+                    currentState = {};
+                    currentState.id = '.data.' + data.DataRecords[i].id + '-' + data.DataRecords[i].StorageNumber + '-' + data.DataRecords[i].Function;
+                    currentType = typeof data.DataRecords[i].Value;
+                    if (currentType === 'Number') currentState.type = 'number';
+                        else currentState.type = 'string';
+                    currentState.unit = data.DataRecords[i].Unit;
+                    neededStates.push(currentState);
+                }
+
+                createStates();
+            });
+        });
+    });
+
+}
+
+function updateDeviceStates(deviceNamespace, data, callback) {
+
+    for (var id in data.SlaveInformation) {
+        adapter.setState(deviceNamespace + '.info.' + id, {
+            ack: true,
+            val: data.SlaveInformation[id]
+        });
+    }
+    for (var i = 0; i < data.DataRecords.length; i++) {
+        adapter.setState(deviceNamespace + '.data.' + data.DataRecords[i].id + '-' + data.DataRecords[i].StorageNumber + '-' + data.DataRecords[i].Function, {
+            ack: true, 
+            val: data.DataRecords[i].Value,
+            ts: new Date(data.DataRecords[i].Timestamp).getTime()
+        });
+    }
+    callback();
 }
 
 function main() {
@@ -155,7 +259,14 @@ function processMessage(message) {
 
     adapter.log.info('Message received = ' + JSON.stringify(message));
 
-    if (message.command === 'scanSecorndary') {
+    if (message.command === 'scanSecondary') {
+        deviceCommunicationInProgress = true;
+        mbusMaster.scanSecondary(function(err, data) {
+            deviceCommunicationInProgress = false;
+            adapter.log.error('mbus scan err: ' + err);
+            adapter.log.info('mbus scan data: ' + JSON.stringify(data, null, 2));
+            adapter.sendTo(message.from, message.command, {error: err ? err.toString() : null, result: data}, message.callback);
+        });
     }
 }
 
