@@ -188,7 +188,28 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 }
                 for (var i = 0; i < data.DataRecords.length; i++) {
                     currentState = {};
-                    currentState.id = '.data.' + data.DataRecords[i].id + '-' + data.DataRecords[i].StorageNumber + '-' + data.DataRecords[i].Function;
+                    currentState.id = '.data.' + data.DataRecords[i].id;
+                    if (data.DataRecords[i].StorageNumber !== undefined) currentState.id += '-' + data.DataRecords[i].StorageNumber;
+                    switch (data.DataRecords[i].Function) {
+                        case 'Instantaneous value':
+                            currentState.id += '-Current';
+                            break;
+                        case 'Maximum value':
+                            currentState.id += '-Max';
+                            break;
+                        case 'Minimum value':
+                            currentState.id += '-Min';
+                            break;
+                        case 'Value during error state':
+                            currentState.id += '-Error';
+                            break;
+                        case 'Manufacturer specific':
+                            currentState.id += '';
+                            break;
+                        default:
+                            currentState.id += '-' + data.DataRecords[i].Function;
+                            break;
+                    }
                     currentType = typeof data.DataRecords[i].Value;
                     if (currentType === 'Number') currentState.type = 'number';
                         else currentState.type = 'string';
@@ -212,8 +233,30 @@ function updateDeviceStates(deviceNamespace, data, callback) {
         });
     }
     for (var i = 0; i < data.DataRecords.length; i++) {
-        adapter.setState(deviceNamespace + '.data.' + data.DataRecords[i].id + '-' + data.DataRecords[i].StorageNumber + '-' + data.DataRecords[i].Function, {
-            ack: true, 
+        var stateId = '.data.' + data.DataRecords[i].id;
+        if (data.DataRecords[i].StorageNumber !== undefined) stateId += '-' + data.DataRecords[i].StorageNumber;
+        switch (data.DataRecords[i].Function) {
+            case 'Instantaneous value':
+                stateId += '-Current';
+                break;
+            case 'Maximum value':
+                stateId += '-Max';
+                break;
+            case 'Minimum value':
+                stateId += '-Min';
+                break;
+            case 'Value during error state':
+                stateId += '-Error';
+                break;
+            case 'Manufacturer specific':
+                stateId += '';
+                break;
+            default:
+                stateId += '-' + data.DataRecords[i].Function;
+                break;
+        }
+        adapter.setState(deviceNamespace + stateId, {
+            ack: true,
             val: data.DataRecords[i].Value,
             ts: new Date(data.DataRecords[i].Timestamp).getTime()
         });
