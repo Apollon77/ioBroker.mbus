@@ -107,12 +107,12 @@ function updateDevices() {
 
     mbusMaster.getData(deviceId, function(err, data) {
         if (err) {
-            adapter.log.error('mbus ID ' + deviceId + ' err: ' + err);
+            adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
             updateDevices();
             return;
         }
 
-        adapter.log.info('mbus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+        adapter.log.info('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
         initializeDeviceObjects(deviceId, data, function() {
             updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
@@ -178,18 +178,21 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 var currentState;
                 var currentType;
                 for (var id in data.SlaveInformation) {
+                    if (!data.SlaveInformation.hasOwnProperty(id)) continue;
+
                     currentState = {};
                     currentState.id = '.info.' + id;
                     currentType = typeof data.SlaveInformation[id];
-                    if (currentType === 'Number') currentState.type = 'number';
-                        else currentState.type = 'string';
+                    currentState.type = currentType === 'Number' ? 'number' : 'string';
                     currentState.unit = '';
                     neededStates.push(currentState);
                 }
                 for (var i = 0; i < data.DataRecords.length; i++) {
                     currentState = {};
                     currentState.id = '.data.' + data.DataRecords[i].id;
-                    if (data.DataRecords[i].StorageNumber !== undefined) currentState.id += '-' + data.DataRecords[i].StorageNumber;
+                    if (data.DataRecords[i].StorageNumber !== undefined) {
+                        currentState.id += '-' + data.DataRecords[i].StorageNumber;
+                    }
                     switch (data.DataRecords[i].Function) {
                         case 'Instantaneous value':
                             currentState.id += '-Current';
@@ -234,9 +237,12 @@ function updateDeviceStates(deviceNamespace, data, callback) {
             });
         }
     }
+
     for (var i = 0; i < data.DataRecords.length; i++) {
         var stateId = '.data.' + data.DataRecords[i].id;
-        if (data.DataRecords[i].StorageNumber !== undefined) stateId += '-' + data.DataRecords[i].StorageNumber;
+        if (data.DataRecords[i].StorageNumber !== undefined) {
+            stateId += '-' + data.DataRecords[i].StorageNumber;
+        }
         switch (data.DataRecords[i].Function) {
             case 'Instantaneous value':
                 stateId += '-Current';
@@ -268,7 +274,7 @@ function updateDeviceStates(deviceNamespace, data, callback) {
 
 function main() {
     var mbusOptions = {
-        autoConenct: true
+        autoConnect: true
     };
     if (!adapter.config.type) {
         if (adapter.config.host && adapter.config.port) {
@@ -282,9 +288,9 @@ function main() {
         if (adapter.config.host && adapter.config.port) {
             mbusOptions.host = adapter.config.host;
             mbusOptions.port = adapter.config.port;
-            adapter.log.info('Initialize mbus TCP to ' + adapter.config.host + ':' + adapter.config.port);
+            adapter.log.info('Initialize M-Bus TCP to ' + adapter.config.host + ':' + adapter.config.port);
         } else {
-            adapter.log.error('Please specify IP of mbus device/gateway');
+            adapter.log.error('Please specify IP of M-Bus device/gateway');
             return;
         }
     }
@@ -292,9 +298,9 @@ function main() {
         if (adapter.config.serialPort) {
             mbusOptions.serialPort = adapter.config.serialPort;
             mbusOptions.serialBaudRate = adapter.config.serialBaudRate;
-            adapter.log.info('Initialize mbus Serial to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
+            adapter.log.info('Initialize M-Bus Serial to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
         } else {
-            adapter.log.error('Please specify serial port of MBUS gateway');
+            adapter.log.error('Please specify serial port of M-Bus gateway');
             return;
         }
     }
@@ -302,7 +308,7 @@ function main() {
     mbusMaster = new MbusMaster(mbusOptions);
 
     if (!mbusMaster.connect()) {
-        adapter.log.error('MBus Connection failed. Please check configuration.');
+        adapter.log.error('M-Bus Connection failed. Please check configuration.');
         process.exit();
     }
 
@@ -311,7 +317,7 @@ function main() {
         mBusDevices[deviceId] = {};
         mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval ? adapter.config.devices[i].updateInterval : adapter.config.defaultUpdateInterval;
 
-        adapter.log.info('Schedule initialization for MBus-ID ' + deviceId + ' with update intervall ' + mBusDevices[deviceId].updateInterval);
+        adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
         scheduleDeviceUpdate(deviceId);
     }
 }
@@ -338,11 +344,11 @@ function processMessage(obj) {
 
             case 'scanSecondary':
                 deviceCommunicationInProgress = true;
-                mbusMaster && mbusMaster.scanSecondary(function(err, data) {
+                mbusMaster && mbusMaster.scanSecondary(function (err, data) {
                     deviceCommunicationInProgress = false;
-                    adapter.log.error('mbus scan err: ' + err);
-                    adapter.log.info('mbus scan data: ' + JSON.stringify(data, null, 2));
-                    adapter.sendTo(message.from, message.command, {error: err ? err.toString() : null, result: data}, message.callback);
+                    adapter.log.error('M-Bus scan err: ' + err);
+                    adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
+                    adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
                 });
 
                 break;
