@@ -2,33 +2,37 @@
  *
  * NUT adapter
  *
- * Adapter loading NUT data from an UPS
+ * Adapter loading data from an M-Bus devices
  *
  */
- /* jshint -W097 */
- // jshint strict:true
- /*jslint node: true */
- /*jslint esversion: 6 */
+/* jshint -W097 */
+/* jshint strict:true */
+/* jslint node: true */
+/* jslint esversion: 6 */
+
 'use strict';
 
-var path = require('path');
-var utils = require(path.join(__dirname,'lib','utils')); // Get common adapter utils
+var path       = require('path');
+var utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
 var MbusMaster = require('node-mbus');
+var serialport;
 
-var adapter = utils.Adapter('mbus');
+try {
+    serialport = require('serialport');
+} catch (err) {
+    console.warn('Cannot load serialport module');
+}
+
+var adapter = new utils.Adapter('mbus');
 
 var deviceUpdateQueue = [];
 var mBusDevices = {};
 var deviceCommunicationInProgress = false;
 var mbusMaster;
 
-adapter.on('ready', function (obj) {
-    main();
-});
+adapter.on('ready', main);
 
-adapter.on('message', function (msg) {
-    processMessage(msg);
-});
+adapter.on('message', processMessage);
 
 adapter.on('stateChange', function (id, state) {
     adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
@@ -45,37 +49,33 @@ adapter.on('stateChange', function (id, state) {
     }
 });
 
-adapter.on('unload', function (callback) {
-    mbusMaster.close();
+function onClose(callback) {
     for (var device in mBusDevices) {
         if (mBusDevices[device].updateTimeout) {
             clearTimeout(mBusDevices[device].updateTimeout);
             mBusDevices[device].updateTimeout = null;
         }
     }
+
+    try {
+        mbusMaster && mbusMaster.close(callback);
+    } catch (e) {
+        callback && callback();
+    }
+}
+adapter.on('unload', function (callback) {
+    onClose(callback);
 });
 
 process.on('SIGINT', function () {
-    mbusMaster.close();
-    for (var device in mBusDevices) {
-        if (mBusDevices[device].updateTimeout) {
-            clearTimeout(mBusDevices[device].updateTimeout);
-            mBusDevices[device].updateTimeout = null;
-        }
-    }
+    onClose();
 });
 
 process.on('uncaughtException', function (err) {
     if (adapter && adapter.log) {
         adapter.log.warn('Exception: ' + err);
     }
-    mbusMaster.close();
-    for (var device in mBusDevices) {
-        if (mBusDevices[device].updateTimeout) {
-            clearTimeout(mBusDevices[device].updateTimeout);
-            mBusDevices[device].updateTimeout = null;
-        }
-    }
+    onClose();
 });
 
 function scheduleDeviceUpdate(deviceId) {
@@ -121,16 +121,33 @@ function main() {
     var mbusOptions = {
         autoConenct: true
     };
-
-    if (adapter.config.host && adapter.config.port) {
-        mbusOptions.host = adapter.config.host;
-        mbusOptions.port = adapter.config.port;
-        adapter.log.info('Initialize mbus TCP to ' + adapter.config.host + ':' + adapter.config.port);
+    if (!adapter.config.type) {
+        if (adapter.config.host && adapter.config.port) {
+            adapter.config.type = 'tcp';
+        } else {
+            adapter.config.type = 'serial';
+        }
     }
-    else if (adapter.config.serialPort) {
-        mbusOptions.serialPort = adapter.config.serialPort;
-        mbusOptions.serialBaudRate = adapter.config.serialBaudRate;
-        adapter.log.info('Initialize mbus Serial to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
+
+    if (adapter.config.type === 'tcp' && adapter.config.host && adapter.config.port) {
+        if (adapter.config.host && adapter.config.port) {
+            mbusOptions.host = adapter.config.host;
+            mbusOptions.port = adapter.config.port;
+            adapter.log.info('Initialize mbus TCP to ' + adapter.config.host + ':' + adapter.config.port);
+        } else {
+            adapter.log.error('Please specify IP of mbus device/gateway');
+            return;
+        }
+    }
+    else if (adapter.config.type === 'serial'){
+        if (adapter.config.serialPort) {
+            mbusOptions.serialPort = adapter.config.serialPort;
+            mbusOptions.serialBaudRate = adapter.config.serialBaudRate;
+            adapter.log.info('Initialize mbus Serial to ' + adapter.config.serialPort + ' with ' + adapter.config.serialBaudRate + 'baud');
+        } else {
+            adapter.log.error('Please specify serial port of MBUS gateway');
+            return;
+        }
     }
 
     mbusMaster = new MbusMaster(mbusOptions);
@@ -150,12 +167,33 @@ function main() {
     }
 }
 
-function processMessage(message) {
-    if (!message) return;
+function processMessage(obj) {
+    if (!obj) return;
 
-    adapter.log.info('Message received = ' + JSON.stringify(message));
+    if (obj) {
+        switch (obj.command) {
+            case 'listUart':
+                if (obj.callback) {
+                    if (serialport) {
+                        // read all found serial ports
+                        serialport.list(function (err, ports) {
+                            adapter.log.info('List of port: ' + JSON.stringify(ports));
+                            adapter.sendTo(obj.from, obj.command, ports, obj.callback);
+                        });
+                    } else {
+                        adapter.log.warn('Module serialport is not available');
+                        adapter.sendTo(obj.from, obj.command, [{comName: 'Not available'}], obj.callback);
+                    }
+                }
 
-    if (message.command === 'scanSecorndary') {
+                break;
+
+            case 'scanSecorndary':
+                adapter.log.info('Message received = ' + JSON.stringify(obj));
+
+                adapter.log.warn('not implemented');
+                break;
+        }
     }
 }
 

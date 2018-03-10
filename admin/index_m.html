@@ -1,18 +1,18 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
-<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
-<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+    <meta charset="UTF-8">
+    <!-- Materialze style -->
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
-<!-- these two file always have to be included -->
-<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
-<script type="text/javascript" src="../../js/translate.js"></script>
-<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-<script type="text/javascript" src="words.js"></script>
-
-<!-- you have to define 2 functions in the global scope: -->
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+    <script type="text/javascript" src="words.js"></script>
+    
 <script type="text/javascript">
     function showHideSettings() {
         var type = $('#type').val();
@@ -53,15 +53,18 @@
                     text += '<option value="' + list[j].comName + '" ' + ((actualValue === list[j].comName) ? 'selected' : '') + '>' + list[j].comName + '</option>';
                 }
             }
-            $port.html(text);
+            $port.html(text).select();
         });
     }
+    
     function load(settings, onChange) {
+        if (!settings.type) settings.type = 'tcp';
+
         $('.value').each(function () {
             var key = $(this).attr('id');
             var $key = $('#' + key + '.value');
             if ($key.attr('type') === 'checkbox') {
-                $key.prop('checked', settings[key]).change(function() {
+                $key.prop('checked', settings[key]).on('change', function() {
                     onChange();
                 });
             } else {
@@ -75,11 +78,14 @@
                 });
             }
         });
+
         getIsAdapterAlive(function (isAlive) {
             if (isAlive || common.enabled) {
                 getComPorts(settings.serialPort);
             } else {
-                $('#serialPort').replaceWith($('<input type="text" id="serialPort" value="' + settings.serialPort + '"/>'));
+                $('#serialPort')
+                    .select('destroy')
+                    .replaceWith($('<input type="text" id="serialPort" value="' + settings.serialPort + '"/>'));
             }
         });
         showHideSettings();
@@ -101,43 +107,56 @@
         callback(obj);
     }
 </script>
+    <style>
+        .m .select-wrapper+label {
+            top: 100%;
+        }
+        .table-button-add {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
-<div id="adapter-container">
-    <div id="tabs" style="width: 100%; height: 100%; overflow: hidden; display: none;">
-        <ul>
-            <li><a href="#tabs-1" class="translate">Options</a></li>
-            <li><a href="#tabs-2" class="translate">Devices</a></li>
-        </ul>
-        <div id="tabs-1">
-            <table><tr>
-                <td><img src="mbus.png"/></td>
-                <td><h3 class="translate">M-Bus adapter settings</h3></td>
-            </tr></table>
-            <table>
-                <tbody>
-                <tr>
-                    <td><label class="translate" for="type">host</label></td>
-                    <td><select class="value" id="type">
+<div class="m adapter-container">
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s2"><a href="#tab-main"      class="translate active">Options</a></li>
+                <li class="tab col s2"><a href="#tab-devices" class="translate">Devices</a></li>
+            </ul>
+        </div>
+        <div id="tab-main"      class="col s12 page">
+            <div class="row">
+                <div class="col s12 m4 l2">
+                    <img src="mbus.png" class="logo">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m4">
+                    <label class="translate" for="type">host</label>
+                    <select class="value" id="type">
                             <option value="tcp">TCP/IP</option>
                             <option value="serial">serial</option>
-                    </select></td>
-                </tr>
-                <tr class="tcp">
-                    <td><label class="translate" for="host">host</label></td>
-                    <td><input class="value" id="host" type="text"/></td>
-                </tr>
-                <tr class="tcp">
-                    <td><label class="translate" for="port">port</label></td>
-                    <td><input class="value" id="port" type="number" min="1" max="65565"/></td>
-                </tr>
-                <tr class="serial">
-                    <td><label for="serialPort" class="translate">serialPort</label></td>
-                    <td><select class="value" id="serialPort"></select></td><td></td>
-                </tr>
-                <tr class="serial">
-                    <td><label for="serialBaudRate" class="translate">serialBaudRate</label></td>
-                    <td><select class="value" id="serialBaudRate">
+                    </select>
+                </div>
+            </div>
+            <div class="row tcp">
+                <div class="col s8 m4">
+                    <input class="value" id="host" type="text"/>
+                    <label class="translate" for="host">host</label>
+                </div>
+                <div class="col s4 m2">
+                    <input class="value" id="port" type="number" min="1" max="65565"/>
+                    <label class="translate" for="port">port</label>
+                </div>
+            </div>
+            <div class="row serial">
+                <div class="col s8 m4">
+                    <select class="value" id="serialPort"></select>
+                    <label for="serialPort" class="translate">serialPort</label>
+                </div>
+                <div class="col s8 m4">
+                    <select class="value" id="serialBaudRate">
                         <option value="110">110</option>
                         <option value="150">150</option>
                         <option value="300">300</option>
@@ -151,29 +170,29 @@
                         <option value="56000">56000</option>
                         <option value="57600">57600</option>
                         <option value="115200">115200</option>
-                    </select></td>
-                </tr>
-                <tr>
-                    <td>
-                        <label class="translate" for="defaultUpdateInterval">defaultUpdateInterval</label>
+                    </select>
+                    <label for="serialBaudRate" class="translate">serialBaudRate</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s8 m4">
                         <input class="value" id="defaultUpdateInterval" type="number" min="500" max="180000"/>
-                    </td>
-                </tr>
-            </table>
+                    <label class="translate" for="defaultUpdateInterval">defaultUpdateInterval</label>
+                </div>
+            </div>
         </div>
-        <div id="tabs-2" style="width: 100%; height: calc(100% - 40px); overflow-x: hidden; overflow-y: auto; padding: 0">
-            <div id="values" style="width: 100%; height: calc(100% - 245px)">
-                <button class="table-button-add" style="margin-left: 10px; width: 1.5em; height: 1.5em"></button>
-                <div style="width: 100%; height: calc(100% - 30px); overflow: auto;">
-                    <table class="table-values" style="width: 100%;">
+        <div id="tab-devices" class="col s12 page">
+            <div class="col s12" id="devices">
+                <a class="btn-floating waves-effect waves-light blue table-button-add"><i class="material-icons">add</i></a>
+                <div class="table-values-div">
+                    <table class="table-values">
                         <thead>
                         <tr>
                             <th data-name="id"             data-type="number" class="translate">ID</th>
                             <th data-name="updateInterval" data-type="number" class="translate">Update interval (ms)</th>
-                            <th data-buttons="delete up down" style="width: 70px"></th>
+                            <th data-buttons="delete up down"></th>
                         </tr>
                         </thead>
-                        <tbody></tbody>
                     </table>
                 </div>
             </div>

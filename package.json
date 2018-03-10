@@ -14,10 +14,14 @@
     "type": "git",
     "url": "https://github.com/Apollon77/ioBroker.mbus"
   },
+  "optionalDependencies": {
+    "serialport": "^6.0.4"
+  },
   "dependencies": {
     "node-mbus": "^0.1.4"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
     "mocha": "^5.0.0",
     "chai": "^4.1.2",
     "nyc": "*"
@@ -30,9 +34,11 @@
     "test": "nyc --reporter=lcov node_modules/mocha/bin/mocha test/testAdapter.js --exit  && node node_modules/mocha/bin/mocha test/testPackageFiles.js"
   },
   "nyc": {
-    "exclude": ["!**/node_modules/"],
+    "exclude": [
+      "!**/node_modules/"
+    ],
     "include": [
-        "**/tmp/node_modules/iobroker.mbus/*.js"
+      "**/tmp/node_modules/iobroker.mbus/*.js"
     ],
     "produce-source-map": true
   }

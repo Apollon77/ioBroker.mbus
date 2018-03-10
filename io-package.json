@@ -13,11 +13,22 @@
             "Apollon77 <ingo@fischer-ka.de>"
         ],
         "title":                    "MBus",
-        "desc":                     "Read data from mbus devices",
+        "desc":                     {
+            "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
+            "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
+            "ru": "Чтение данных с устройств Meter-Bus (M-Bus), таких как счетчики газа или электроэнергии",
+            "pt": "Leia os dados dos dispositivos Meter-Bus (M-Bus) como medidores de gás ou eletricidade",
+            "nl": "Lees gegevens van Meter-Bus (M-Bus) apparaten zoals gas- of elektriciteitsmeters",
+            "fr": "Lire les données des appareils Meter-Bus (M-Bus) comme les compteurs de gaz ou d'électricité",
+            "it": "Leggi i dati dai dispositivi Meter-Bus (M-Bus) come contatori di gas o elettricità",
+            "es": "Leer datos de dispositivos Meter-Bus (M-Bus) como medidores de gas o electricidad",
+            "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu"
+        },
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
         "messagebox":               true,
         "subscribe":                "messagebox",
+        "materialize":              true,
         "stopBeforeUpdate":         true,
         "icon":                     "mbus.png",
         "extIcon":                  "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
@@ -27,15 +38,15 @@
         "type":                     "hardware",
         "keywords":                 ["iobroker", "mbus"],
         "loglevel":                 "info",
-        "enabled":                  false
-
+        "enabled":                  true
     },
     "native": {
-        "host":         "127.0.0.1",
-        "port":       "",
-        "defaultUpdateInterval": 3600,
-        "serialPort":        "",
-        "serialBaudRate":    "",
+        "type":                     "tcp",
+        "host":                     "127.0.0.1",
+        "port":                     "",
+        "defaultUpdateInterval":    3600,
+        "serialPort":               "",
+        "serialBaudRate":           115200,
         "devices": [
             {
                 "id": "1",
