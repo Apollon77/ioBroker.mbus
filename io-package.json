@@ -4,15 +4,21 @@
         "version":                  "0.0.1",
 		"news": {
             "0.0.1": {
-              "en": "initial version",
-              "de": "initial version",
-              "ru": "initial version"
+                "en": "initial version",
+                "de": "erste Version",
+                "ru": "Первоначальная версия",
+                "pt": "versão inicial",
+                "nl": "eerste versie",
+                "fr": "version initiale",
+                "it": "versione iniziale",
+                "es": "versión inicial",
+                "pl": "początkowa wersja"
             }
         },
         "authors": [
             "Apollon77 <ingo@fischer-ka.de>"
         ],
-        "title":                    "MBus",
+        "title":                    "M-Bus",
         "desc":                     {
             "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
             "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
@@ -36,7 +42,7 @@
         "license":                  "MIT",
         "npmLibs": [],
         "type":                     "hardware",
-        "keywords":                 ["iobroker", "mbus"],
+        "keywords":                 ["iobroker", "mbus", "measure"],
         "loglevel":                 "info",
         "enabled":                  true
     },
