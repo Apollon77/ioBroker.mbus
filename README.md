@@ -14,87 +14,28 @@ Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/Apollon
 
 [![NPM](https://nodei.co/npm/iobroker.mbus.png?downloads=true)](https://nodei.co/npm/iobroker.mbus/)
 
-This adapter for ioBroker connects to a defined mbus server to provide the status and details of a connected UPS/USV as ioBroker states, so that it can be used there.
+This adapter for ioBroker connects to a M-Bus Master via TCP or serial to provide the status and details of connected M-Bus devices.
 
 ## Description of parameters
-### Gateway IP
-IP address of the mbus server. mbus needs to run in server mode and needs to be accessible by the computer the
-iobroker mbus adapter runs on. So check firewall settings if you have problems and allow the access. If the UPS
-is connected locally you can also use 127.0.0.1 or localhost.
+### Gateway IP / TCP Port
+IP address and port of the M-Bus Master/Gateway when using TCP.
 
-### Gateway TCP Port
-Port of M-Bus Gateway. The default port is <b>3493</b>
+### Serial port / baud rate
+Serial Port and Baud rate of M-Bus Master/Gateway.
 
-### update_interval
-Interval in Seconds to update the data. Default is 300s
+### Update Interval
+Interval in Seconds to update the data. Default is 3600s (1h). Consider how the devices on the M-Bus bus are powered to prevent draining batteries.
 
-## UPS-Monitor Notifies
-Included is a small linux shell-script at scripts/mbus-notify.sh which can be configured in upsmon.
+## Device IDs
+You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
-The script needs execute rights (chmod +x mbus-notify.sh).
-
-It should be added to /etc/mbus/upsmon.conf like:
-
-```
-NOTIFYCMD "cd /opt/iobroker/;./mbus-notify.sh"
-```
-
-Additionally configure all relevant notify messages like:
-
-```
-NOTIFYFLAG ONLINE       SYSLOG+WALL+EXEC
-NOTIFYFLAG ONBATT       SYSLOG+WALL+EXEC
-NOTIFYFLAG LOWBATT      SYSLOG+WALL+EXEC
-NOTIFYFLAG FSD          SYSLOG+WALL+EXEC
-NOTIFYFLAG COMMOK       SYSLOG+WALL+EXEC
-NOTIFYFLAG COMMBAD      SYSLOG+WALL+EXEC
-NOTIFYFLAG SHUTDOWN     SYSLOG+WALL+EXEC
-NOTIFYFLAG REPLBATT     SYSLOG+WALL+EXEC
-NOTIFYFLAG NOCOMM       SYSLOG+WALL+EXEC
-NOTIFYFLAG NOPARENT     SYSLOG+WALL+EXEC
-```
-Important is the added "EXEC" flag.
-
-One simple example for a mbus-notify.sh script is:
-```
-#! /bin/sh
-# mbus adapter notify script.
-
-logger -t mbus-notify "Notify iobroker $UPSNAME -> $NOTIFYTYPE"
-/opt/iobroker/iobroker message mbus notify "{\"upsname\":\"$UPSNAME\",\"notifytype\":\"$NOTIFYTYPE\"}"
-
-```
-
-
-## Troubleshooting
-If you have problems and the adapter do not deliver the data you can use the two scripts in directory "test"
-of the adapter installation (so normally in node_modules/iobroker.mbus/test relative to your iobroker installation
-directory) to try it out on the commandline. Call the scripts using "node filename.js" to see the awaited parameters.</p>
-* **test_upslist.js**: Connects to the mbus server and returns a list of available UPS names
-* **test_upsvars.js**: Connects to the mbus server for a defined UPS and returns a list of available UPS variables
 
 ## Todo
-* docs for webpage
+* encrypted payload handling (if needed by anyone)
 
 # changelog
-## 1.1.1
-* Enhance error handling
 
-## 1.1.0
-* Add possibility to call commands on the UPS
-
-## 1.0.0
-* change mode from schedule to deamon
-* implement message support to receive messages from upsmon
-* add status.severity to get one status about the USV with values idle, operating, operating_critical, action_needed, unknown
-
-## 0.3.0
-* add better usable status states under "status" channel
-
-## 0.2.1
-* finalizied initial version
-
-## 0.1.0
+## 0.0.1
 * initial release for testing
 
 # License
