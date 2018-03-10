@@ -106,15 +106,164 @@ function updateDevices() {
     }
 
     mbusMaster.getData(deviceId, function(err, data) {
-        adapter.log.error('mbus ID ' + deviceId + ' err: ' + err);
-        adapter.log.info('data: ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+        if (err) {
+            adapter.log.error('mbus ID ' + deviceId + ' err: ' + err);
+            updateDevices();
+            return;
+        }
 
-        mBusDevices[deviceId].updateTimeout = setTimeout(function() {
-            mBusDevices[deviceId].updateTimeout = null;
-            scheduleDeviceUpdate(deviceId);
-        }, mBusDevices[deviceId].updateInterval * 1000);
-        updateDevices();
+        adapter.log.info('mbus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+
+        initializeDeviceObjects(deviceId, data, function() {
+            updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
+                mBusDevices[deviceId].updateTimeout = setTimeout(function() {
+                    mBusDevices[deviceId].updateTimeout = null;
+                    scheduleDeviceUpdate(deviceId);
+                }, mBusDevices[deviceId].updateInterval * 1000);
+                updateDevices();
+            });
+        });
     });
+}
+
+function initializeDeviceObjects(deviceId, data, callback) {
+
+    var neededStates = [];
+    function createStates() {
+        if (!neededStates.length) {
+            callback();
+            return;
+        }
+        var state = neededStates.shift();
+        adapter.log.debug('Create State ' + deviceNamespace + state.id);
+        adapter.setObjectNotExists(deviceNamespace + state.id, {
+            type: 'state',
+            common: {
+                name: state.id,
+                role: 'value',
+                type: state.type,
+                read: true,
+                write: false,
+                unit: state.unit
+            },
+            native: {id: state.id}
+        }, function() {
+            createStates();
+        });
+    }
+
+    if (mBusDevices[deviceId].deviceNamespace) {
+        callback();
+        return;
+    }
+
+    var deviceNamespace = data.SlaveInformation.Manufacturer + '-' + data.SlaveInformation.Id;
+    mBusDevices[deviceId].deviceNamespace = deviceNamespace;
+
+    adapter.setObjectNotExists(deviceNamespace, {
+        type: 'channel',
+        common: {name: deviceNamespace},
+        native: {}
+    }, function() {
+        adapter.setObjectNotExists(deviceNamespace + '.info', {
+            type: 'channel',
+            common: {name: deviceNamespace + '.info'},
+            native: {}
+        }, function() {
+            adapter.setObjectNotExists(deviceNamespace + '.data', {
+                type: 'channel',
+                common: {name: deviceNamespace + '.data'},
+                native: {}
+            }, function() {
+                var currentState;
+                var currentType;
+                for (var id in data.SlaveInformation) {
+                    currentState = {};
+                    currentState.id = '.info.' + id;
+                    currentType = typeof data.SlaveInformation[id];
+                    if (currentType === 'Number') currentState.type = 'number';
+                        else currentState.type = 'string';
+                    currentState.unit = '';
+                    neededStates.push(currentState);
+                }
+                for (var i = 0; i < data.DataRecords.length; i++) {
+                    currentState = {};
+                    currentState.id = '.data.' + data.DataRecords[i].id;
+                    if (data.DataRecords[i].StorageNumber !== undefined) currentState.id += '-' + data.DataRecords[i].StorageNumber;
+                    switch (data.DataRecords[i].Function) {
+                        case 'Instantaneous value':
+                            currentState.id += '-Current';
+                            break;
+                        case 'Maximum value':
+                            currentState.id += '-Max';
+                            break;
+                        case 'Minimum value':
+                            currentState.id += '-Min';
+                            break;
+                        case 'Value during error state':
+                            currentState.id += '-Error';
+                            break;
+                        case 'Manufacturer specific':
+                            currentState.id += '';
+                            break;
+                        default:
+                            currentState.id += '-' + data.DataRecords[i].Function;
+                            break;
+                    }
+                    currentType = typeof data.DataRecords[i].Value;
+                    if (currentType === 'Number') currentState.type = 'number';
+                        else currentState.type = 'string';
+                    currentState.unit = data.DataRecords[i].Unit;
+                    neededStates.push(currentState);
+                }
+
+                createStates();
+            });
+        });
+    });
+
+}
+
+function updateDeviceStates(deviceNamespace, data, callback) {
+
+    for (var id in data.SlaveInformation) {
+        if (data.SlaveInformation.hasOwnProperty(id)) {
+            adapter.setState(deviceNamespace + '.info.' + id, {
+                ack: true,
+                val: data.SlaveInformation[id]
+            });
+        }
+    }
+    for (var i = 0; i < data.DataRecords.length; i++) {
+        var stateId = '.data.' + data.DataRecords[i].id;
+        if (data.DataRecords[i].StorageNumber !== undefined) stateId += '-' + data.DataRecords[i].StorageNumber;
+        switch (data.DataRecords[i].Function) {
+            case 'Instantaneous value':
+                stateId += '-Current';
+                break;
+            case 'Maximum value':
+                stateId += '-Max';
+                break;
+            case 'Minimum value':
+                stateId += '-Min';
+                break;
+            case 'Value during error state':
+                stateId += '-Error';
+                break;
+            case 'Manufacturer specific':
+                stateId += '';
+                break;
+            default:
+                stateId += '-' + data.DataRecords[i].Function;
+                break;
+        }
+        adapter.setState(deviceNamespace + stateId, {
+            ack: true,
+            val: data.DataRecords[i].Value,
+            ts: new Date(data.DataRecords[i].Timestamp).getTime()
+        });
+    }
+    callback();
 }
 
 function main() {
@@ -185,18 +334,21 @@ function processMessage(obj) {
                         adapter.sendTo(obj.from, obj.command, [{comName: 'Not available'}], obj.callback);
                     }
                 }
-
                 break;
 
-            case 'scanSecorndary':
-                adapter.log.info('Message received = ' + JSON.stringify(obj));
+            case 'scanSecondary':
+                deviceCommunicationInProgress = true;
+                mbusMaster && mbusMaster.scanSecondary(function(err, data) {
+                    deviceCommunicationInProgress = false;
+                    adapter.log.error('mbus scan err: ' + err);
+                    adapter.log.info('mbus scan data: ' + JSON.stringify(data, null, 2));
+                    adapter.sendTo(message.from, message.command, {error: err ? err.toString() : null, result: data}, message.callback);
+                });
 
-                adapter.log.warn('not implemented');
                 break;
         }
     }
 }
-
 
 /*
 function initNutCommands(cmdlist) {

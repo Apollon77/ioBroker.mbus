@@ -181,7 +181,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
                 {
                     "id": "2"
                 }
-            ]
+            ];
             setup.setAdapterConfig(config.common, config.native);
 
             setupTcpServer(function() {
