@@ -38,7 +38,7 @@ You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 ## 0.0.1
 * initial release for testing
 
-# License
+## License
 
 The MIT License (MIT)
 

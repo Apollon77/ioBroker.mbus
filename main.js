@@ -164,12 +164,12 @@ function initializeDeviceObjects(deviceId, data, callback) {
         type: 'channel',
         common: {name: deviceNamespace},
         native: {}
-    }, function() {
+    }, function () {
         adapter.setObjectNotExists(deviceNamespace + '.info', {
             type: 'channel',
             common: {name: deviceNamespace + '.info'},
             native: {}
-        }, function() {
+        }, function () {
             adapter.setObjectNotExists(deviceNamespace + '.data', {
                 type: 'channel',
                 common: {name: deviceNamespace + '.data'},
@@ -224,7 +224,6 @@ function initializeDeviceObjects(deviceId, data, callback) {
             });
         });
     });
-
 }
 
 function updateDeviceStates(deviceNamespace, data, callback) {
@@ -272,10 +271,21 @@ function updateDeviceStates(deviceNamespace, data, callback) {
     callback();
 }
 
+function onConnect(err) {
+    if (err) {
+        adapter.log.error(err);
+        adapter.setState('info.connection', false, true);
+    } else {
+        adapter.setState('info.connection', true, true);
+    }
+}
+
 function main() {
     var mbusOptions = {
         autoConnect: true
     };
+    adapter.setState('info.connection', false, true);
+
     if (!adapter.config.type) {
         if (adapter.config.host && adapter.config.port) {
             adapter.config.type = 'tcp';
@@ -295,8 +305,7 @@ function main() {
             adapter.log.error('Please specify IP of M-Bus device/gateway');
             return;
         }
-    }
-    else if (adapter.config.type === 'serial'){
+    } else if (adapter.config.type === 'serial'){
         if (adapter.config.serialPort) {
             mbusOptions.serialPort = adapter.config.serialPort;
             mbusOptions.serialBaudRate = adapter.config.serialBaudRate;
@@ -309,9 +318,9 @@ function main() {
 
     mbusMaster = new MbusMaster(mbusOptions);
 
-    if (!mbusMaster.connect()) {
+    if (!mbusMaster.connect(onConnect)) {
         adapter.log.error('M-Bus Connection failed. Please check configuration.');
-        process.exit();
+        return; // to allow the user to select other COM port
     }
 
     for (var i = 0; i < adapter.config.devices.length; i++) {
