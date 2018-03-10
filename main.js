@@ -105,7 +105,7 @@ function updateDevices() {
         mBusDevices[deviceId].updateTimeout = null;
     }
 
-    mbusMaster.getData(deviceId, function(err, data) {
+    mbusMaster.getData(deviceId, function (err, data) {
         if (err) {
             adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
             updateDevices();
@@ -114,9 +114,9 @@ function updateDevices() {
 
         adapter.log.info('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
-        initializeDeviceObjects(deviceId, data, function() {
+        initializeDeviceObjects(deviceId, data, function () {
             updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
-                mBusDevices[deviceId].updateTimeout = setTimeout(function() {
+                mBusDevices[deviceId].updateTimeout = setTimeout(function () {
                     mBusDevices[deviceId].updateTimeout = null;
                     scheduleDeviceUpdate(deviceId);
                 }, mBusDevices[deviceId].updateInterval * 1000);
@@ -284,10 +284,12 @@ function main() {
         }
     }
 
+    adapter.config.defaultUpdateInterval = parseInt(adapter.config.defaultUpdateInterval, 10) || 3600;
+
     if (adapter.config.type === 'tcp' && adapter.config.host && adapter.config.port) {
         if (adapter.config.host && adapter.config.port) {
             mbusOptions.host = adapter.config.host;
-            mbusOptions.port = adapter.config.port;
+            mbusOptions.port = parseInt(adapter.config.port, 10);
             adapter.log.info('Initialize M-Bus TCP to ' + adapter.config.host + ':' + adapter.config.port);
         } else {
             adapter.log.error('Please specify IP of M-Bus device/gateway');
@@ -315,7 +317,8 @@ function main() {
     for (var i = 0; i < adapter.config.devices.length; i++) {
         var deviceId = adapter.config.devices[i].id;
         mBusDevices[deviceId] = {};
-        mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval ? adapter.config.devices[i].updateInterval : adapter.config.defaultUpdateInterval;
+        mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval || adapter.config.defaultUpdateInterval;
+        mBusDevices[deviceId].updateInterval = parseInt(mBusDevices[deviceId].updateInterval, 10) || adapter.config.defaultUpdateInterval;
 
         adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
         scheduleDeviceUpdate(deviceId);

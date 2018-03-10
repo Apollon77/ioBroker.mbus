@@ -66,26 +66,26 @@ systemDictionary = {
         "pl": "Szeregowa prędkość transmisji"
     },
     "defaultUpdateInterval": {
-        "en": "Default update interval (ms)",
-        "de": "Standardaktualisierungsintervall (ms)",
-        "ru": "Интервал обновления по умолчанию (мс)",
-        "pt": "Intervalo de atualização padrão (ms)",
-        "nl": "Standaard update-interval (ms)",
-        "fr": "Intervalle de mise à jour par défaut (ms)",
-        "it": "Intervallo di aggiornamento predefinito (ms)",
-        "es": "Intervalo de actualización predeterminado (ms)",
-        "pl": "Domyślny interwał aktualizacji (ms)"
+        "en": "Default update interval (sec)",
+        "de": "Standardaktualisierungsintervall (Sek)",
+        "ru": "Интервал обновления по умолчанию (сек)",
+        "pt": "Intervalo de atualização padrão (s)",
+        "nl": "Standaard update-interval (s)",
+        "fr": "Intervalle de mise à jour par défaut (s)",
+        "it": "Intervallo di aggiornamento predefinito (s)",
+        "es": "Intervalo de actualización predeterminado (s)",
+        "pl": "Domyślny interwał aktualizacji (s)"
     },
     "ID": {"en": "ID", "de": "ID", "ru": "ID", "pt": "ID", "nl": "ID", "fr": "ID"},
-    "Update interval (ms)": {
-        "en": "Update interval (ms)",
-        "de": "Aktualisierungsintervall (ms)",
-        "ru": "Интервал обновления (мс)",
-        "pt": "Intervalo de atualização (ms)",
-        "nl": "Update-interval (ms)",
-        "fr": "Intervalle de mise à jour (ms)",
-        "it": "Intervallo di aggiornamento (ms)",
-        "es": "Intervalo de actualización (ms)",
-        "pl": "Interwał aktualizacji (ms)"
+    "Update interval (sec)": {
+        "en": "Update interval (sec)",
+        "de": "Aktualisierungsintervall (Sek)",
+        "ru": "Интервал обновления (сек)",
+        "pt": "Intervalo de atualização (s)",
+        "nl": "Update-interval (s)",
+        "fr": "Intervalle de mise à jour (s)",
+        "it": "Intervallo di aggiornamento (s)",
+        "es": "Intervalo de actualización (s)",
+        "pl": "Interwał aktualizacji (s)"
     }
 };

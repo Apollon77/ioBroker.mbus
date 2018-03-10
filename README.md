@@ -1,5 +1,6 @@
 ![Logo](admin/mbus.png)
 # ioBroker.mbus
+======================
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/Apollon77/ioBroker.mbus.svg)](https://greenkeeper.io/)
 
@@ -16,17 +17,13 @@ Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/Apollon
 This adapter for ioBroker connects to a defined mbus server to provide the status and details of a connected UPS/USV as ioBroker states, so that it can be used there.
 
 ## Description of parameters
-### host_ip
+### Gateway IP
 IP address of the mbus server. mbus needs to run in server mode and needs to be accessible by the computer the
 iobroker mbus adapter runs on. So check firewall settings if you have problems and allow the access. If the UPS
 is connected locally you can also use 127.0.0.1 or localhost.
 
-### host_port
-Port of mbus. The default port is <b>3493</b>
-
-### ups_name
-Name of the UPS as defined in the mbus configuration of the mbus server.</p>
-Hint: If you want to connect to an UPS connected to a Synology diskstation the name is simply "ups".
+### Gateway TCP Port
+Port of M-Bus Gateway. The default port is <b>3493</b>
 
 ### update_interval
 Interval in Seconds to update the data. Default is 300s
