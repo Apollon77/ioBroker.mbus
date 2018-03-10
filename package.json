@@ -19,7 +19,7 @@
     "serialport": "^6.0.4"
   },
   "dependencies": {
-    "node-mbus": "^0.1.4"
+    "node-mbus": "^0.1.5"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
