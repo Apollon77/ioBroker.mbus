@@ -130,6 +130,7 @@ function updateDevices() {
         if (err) {
             adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
             errorDevices[deviceId] = true;
+            adapter.log.error('M-Bus Devices ' + errorDevices.length + ' errored from ' + Object.keys(mBusDevices).length);
             if (errorDevices.length === Object.keys(mBusDevices).length) {
                 adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
                 setConnected(false);
