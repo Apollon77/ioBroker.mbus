@@ -23,6 +23,48 @@
     var timeout;
     var counter  = 0;
 
+    function readDevices(onChange) {
+        $('.table-button-scan').addClass('disabled');
+        sendTo(null, 'scanSecondary', null, function (list) {
+            $('.table-button-scan').removeClass('disabled');
+
+            if (list.error) {
+                showError(_(list.error));
+            }
+
+            var devices = table2values('devices');
+            var added = 0;
+            if (list.result) {
+                for (var j = 0; j < list.result.length; j++) {
+                    var found = false;
+                    for (var d = 0; d < devices; d++) {
+                        if (devices[d].id === list.result[j].id) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        added++;
+                        devices.push({id: list.result[j].id, updateInterval: ''});
+                    }
+                }
+            }
+
+            if (added) {
+                values2table('devices', devices, onChange);
+                showToast(null, _('Found %s devices. Added %d new devices.', list.length, added));
+            } else {
+                if (list && list.length) {
+                    showToast(null, _('Found %s devices. Nothing new.',  list.length));
+                } else {
+                    showToast(null, _('No devices found'));
+                }
+
+            }
+        });
+    }
+
     function getComPorts(actualValue) {
         counter++;
         if (counter > 20) return;
@@ -79,8 +121,14 @@
             }
         });
 
+        $('.table-button-scan').addClass('disabled');
+
         getIsAdapterAlive(function (isAlive) {
             if (isAlive || common.enabled) {
+                $('.table-button-scan').removeClass('disabled').on('click', function () {
+                    readDevices(onChange);
+                });
+
                 getComPorts(settings.serialPort);
             } else {
                 $('#serialPort')
@@ -184,6 +232,7 @@
         <div id="tab-devices" class="col s12 page">
             <div class="col s12" id="devices">
                 <a class="btn-floating waves-effect waves-light blue table-button-add"><i class="material-icons">add</i></a>
+                <a class="btn-floating waves-effect waves-light blue table-button-scan translateT" title="Scan devices"><i class="material-icons">search</i></a>
                 <div class="table-values-div">
                     <table class="table-values">
                         <thead>

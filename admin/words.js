@@ -87,5 +87,60 @@ systemDictionary = {
         "it": "Intervallo di aggiornamento (s)",
         "es": "Intervalo de actualización (s)",
         "pl": "Interwał aktualizacji (s)"
+    },
+    "Scan devices": {
+        "en": "Scan devices",
+        "de": "Geräte scannen",
+        "ru": "Сканировать устройства",
+        "pt": "Dispositivos de digitalização",
+        "nl": "Apparaten scannen",
+        "fr": "Appareils de numérisation",
+        "it": "Scansione dei dispositivi",
+        "es": "Escanear dispositivos",
+        "pl": "Skanuj urządzenia"
+    },
+    "Found %s devices. Added %d new devices.": {
+        "en": "Found %s devices. Added %d new devices.",
+        "de": "Gefunden %s Geräte. % D neue Geräte hinzugefügt.",
+        "ru": "Найдено %s устройств. Добавлено% d новых устройств.",
+        "pt": "Encontrados %s dispositivos. Adicionado% d novos dispositivos.",
+        "nl": "% S apparaten gevonden. % D nieuwe apparaten toegevoegd.",
+        "fr": "Trouvé %s appareils. Ajout de% d nouveaux périphériques.",
+        "it": "Trovato dispositivi di %s. Aggiunti% d nuovi dispositivi.",
+        "es": "Encontrado %s dispositivos. Se agregaron% d nuevos dispositivos.",
+        "pl": "Znaleziono urządzenia %s. Dodano% d nowych urządzeń."
+    },
+    "Found %s devices. Nothing new.": {
+        "en": "Found %s devices. Nothing new.",
+        "de": "Gefunden %s Geräte. Nichts Neues.",
+        "ru": "Найдено %s устройств. Ничего нового.",
+        "pt": "Encontrados %s dispositivos. Nada de novo.",
+        "nl": "% S apparaten gevonden. Niets nieuws.",
+        "fr": "Trouvé %s appareils. Rien de nouveau.",
+        "it": "Trovato dispositivi di %s. Niente di nuovo.",
+        "es": "Encontrado %s dispositivos. Nada nuevo.",
+        "pl": "Znaleziono urządzenia %s. Nic nowego."
+    },
+    "No devices found": {
+        "en": "No devices found",
+        "de": "Keine Geräte gefunden",
+        "ru": "Не найдено ни одного устройства",
+        "pt": "Nenhum dispositivo encontrado",
+        "nl": "Geen apparaten gevonden",
+        "fr": "Aucun périphérique trouvé",
+        "it": "Nessun dispositivo trovato",
+        "es": "No se encontraron dispositivos",
+        "pl": "Nie znaleziono urządzeń"
+    },
+    "Master is inactive": {
+        "en": "Master is inactive",
+        "de": "Der Meister ist inaktiv",
+        "ru": "Мастер неактивен",
+        "pt": "O mestre está inativo",
+        "nl": "Meester is inactief",
+        "fr": "Le maître est inactif",
+        "it": "Il maestro è inattivo",
+        "es": "El maestro está inactivo",
+        "pl": "Mistrz jest nieaktywny"
     }
 };

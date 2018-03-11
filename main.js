@@ -392,6 +392,8 @@ function processMessage(obj) {
                         adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
                         adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
                     });
+                } else {
+                    adapter.sendTo(obj.from, obj.command, {error: 'Master is inactive'}, obj.callback);
                 }
                 break;
         }

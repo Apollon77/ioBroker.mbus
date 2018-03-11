@@ -20,6 +20,40 @@
         $('.serial').hide();
         $('.' + type).show();
     }
+    function readDevices(onChange) {
+        $('.table-button-scan').button('disable');
+        sendTo(null, 'scanSecondary', null, function (list) {
+            $('.table-button-scan').button('enable');
+
+            if (list.error) {
+                showError(_(list.error));
+            }
+
+            var devices = table2values('devices');
+            var added = 0;
+            if (list.result) {
+                for (var j = 0; j < list.result.length; j++) {
+                    var found = false;
+                    for (var d = 0; d < devices; d++) {
+                        if (devices[d].id === list.result[j].id) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        added++;
+                        devices.push({id: list.result[j].id, updateInterval: ''});
+                    }
+                }
+            }
+
+            if (added) {
+                values2table('devices', devices, onChange);
+            }
+        });
+    }
+
     var timeout;
     var counter  = 0;
 
@@ -75,8 +109,14 @@
                 });
             }
         });
+        $('.table-button-scan').button({
+            label: _('Scan devices')
+        }).button('disable');
         getIsAdapterAlive(function (isAlive) {
             if (isAlive || common.enabled) {
+                $('.table-button-scan').button('enable').on('click', function () {
+                    readDevices(onChange);
+                });
                 getComPorts(settings.serialPort);
             } else {
                 $('#serialPort').replaceWith($('<input type="text" id="serialPort" value="' + settings.serialPort + '"/>'));
@@ -164,6 +204,7 @@
         <div id="tabs-2" style="width: 100%; height: calc(100% - 40px); overflow-x: hidden; overflow-y: auto; padding: 0">
             <div id="values" style="width: 100%; height: calc(100% - 245px)">
                 <button class="table-button-add" style="margin-left: 10px; width: 1.5em; height: 1.5em"></button>
+                <button class="table-button-scan" style="margin-left: 10px; height: 1.5em"></button>
                 <div style="width: 100%; height: calc(100% - 30px); overflow: auto;">
                     <table class="table-values" style="width: 100%;">
                         <thead>
