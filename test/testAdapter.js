@@ -156,7 +156,7 @@ function setupTcpServer(callback) {
         setTimeout(function() {
             testSocket.destroy();
             server.close();
-        }, 65000);
+        }, 59000);
     });
 
     server.on('listening', function() {

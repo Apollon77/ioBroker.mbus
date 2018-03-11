@@ -31,7 +31,7 @@ var deviceCommunicationInProgress = false;
 var mbusMaster;
 
 var connected = null;
-var errorDevices = [];
+var errorDevices = {};
 
 function setConnected(isConnected) {
     if (connected !== isConnected) {
@@ -130,8 +130,8 @@ function updateDevices() {
         if (err) {
             adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
             errorDevices[deviceId] = true;
-            adapter.log.error('M-Bus Devices ' + errorDevices.length + ' errored from ' + Object.keys(mBusDevices).length);
-            if (errorDevices.length === Object.keys(mBusDevices).length) {
+            adapter.log.error('M-Bus Devices ' + Object.keys(errorDevices).length + ' errored from ' + Object.keys(mBusDevices).length);
+            if (Object.keys(errorDevices).length === Object.keys(mBusDevices).length) {
                 adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
                 setConnected(false);
                 onClose(main);
