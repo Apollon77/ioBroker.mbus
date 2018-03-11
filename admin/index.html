@@ -35,7 +35,7 @@
                 for (var j = 0; j < list.result.length; j++) {
                     var found = false;
                     for (var d = 0; d < devices; d++) {
-                        if (devices[d].id === list.result[j].id) {
+                        if (devices[d].id == list.result[j]) {
                             found = true;
                             break;
                         }
@@ -43,7 +43,7 @@
 
                     if (!found) {
                         added++;
-                        devices.push({id: list.result[j].id, updateInterval: ''});
+                        devices.push({id: parseInt(list.result[j], 10), updateInterval: ''});
                     }
                 }
             }
