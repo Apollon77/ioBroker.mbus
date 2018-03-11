@@ -88,6 +88,17 @@ systemDictionary = {
         "es": "Intervalo de actualización (s)",
         "pl": "Interwał aktualizacji (s)"
     },
+    "The scan can last over one minute or even longer. Be patient...": {
+        "en": "The scan can last over one minute or even longer. Be patient...",
+        "de": "Der Scan kann länger als eine Minute dauern. Sei geduldig...",
+        "ru": "Сканирование может длиться более одной минуты или даже дольше. Потерпи...",
+        "pt": "A varredura pode durar mais de um minuto ou até mais. Seja paciente...",
+        "nl": "De scan kan meer dan een minuut of zelfs langer duren. Wees geduldig...",
+        "fr": "L'analyse peut durer plus d'une minute ou même plus longtemps. Sois patient...",
+        "it": "La scansione può durare più di un minuto o anche più. Essere pazientare...",
+        "es": "El escaneo puede durar más de un minuto o incluso más. Se paciente...",
+        "pl": "Skanowanie może trwać ponad minutę lub nawet dłużej. Bądź cierpliwy..."
+    },
     "Scan devices": {
         "en": "Scan devices",
         "de": "Geräte scannen",
