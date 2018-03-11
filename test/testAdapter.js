@@ -88,9 +88,11 @@ function setupTcpServer(callback) {
         });
     }
 
+    var testSocket;
     var server = net.createServer(function(socket) {
         console.log(new Date().toString() + ': mbus-TCP-Device: Connected ' + port + '!');
 
+        testSocket = socket;
         socket.setNoDelay();
 
         socket.on('data', function (data) {
@@ -152,6 +154,7 @@ function setupTcpServer(callback) {
         });
 
         setTimeout(function() {
+            testSocket.destroy();
             server.close();
         }, 65000);
     });
