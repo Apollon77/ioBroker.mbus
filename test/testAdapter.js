@@ -150,6 +150,10 @@ function setupTcpServer(callback) {
         socket.on('end', function () {
             console.error(new Date().toString() + ': mbus-TCP-Device: End');
         });
+
+        setTimeout(function() {
+            server.close();
+        }, 65000);
     });
 
     server.on('listening', function() {
