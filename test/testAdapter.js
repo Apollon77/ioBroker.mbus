@@ -99,6 +99,10 @@ function setupTcpServer(callback) {
             var sendBuf;
             var counterFD;
 
+            if (!testSocket) {
+                console.log(new Date().toString() + ': mbus-TCP-Device: Connection was already closed');
+                return;
+            }
             if (!data) {
                 console.log(new Date().toString() + ': mbus-TCP-Device: Received empty string!');
                 return;
@@ -155,6 +159,7 @@ function setupTcpServer(callback) {
 
         setTimeout(function() {
             testSocket.destroy();
+            testSocket = null;
             server.close();
             console.error('Destroy TCP-Socket!!');
         }, 60000);
