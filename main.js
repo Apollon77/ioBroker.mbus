@@ -165,6 +165,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         }
         var state = neededStates.shift();
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
+        var stateName = state.id.substring(state.id.indexOf('.', 1));
         adapter.setObjectNotExists(deviceNamespace + state.id, {
             type: 'state',
             common: {
@@ -216,13 +217,13 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     currentState.unit = '';
                     neededStates.push(currentState);
                 }
-                for (var i = 0; i < data.DataRecords.length; i++) {
+                for (var i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
-                    currentState.id = '.data.' + data.DataRecords[i].id;
-                    if (data.DataRecords[i].StorageNumber !== undefined) {
-                        currentState.id += '-' + data.DataRecords[i].StorageNumber;
+                    currentState.id = '.data.' + data.DataRecord[i].id;
+                    if (data.DataRecord[i].StorageNumber !== undefined) {
+                        currentState.id += '-' + data.DataRecord[i].StorageNumber;
                     }
-                    switch (data.DataRecords[i].Function) {
+                    switch (data.DataRecord[i].Function) {
                         case 'Instantaneous value':
                             currentState.id += '-Current';
                             break;
@@ -239,13 +240,13 @@ function initializeDeviceObjects(deviceId, data, callback) {
                             currentState.id += '';
                             break;
                         default:
-                            currentState.id += '-' + data.DataRecords[i].Function;
+                            currentState.id += '-' + data.DataRecord[i].Function;
                             break;
                     }
-                    currentType = typeof data.DataRecords[i].Value;
+                    currentType = typeof data.DataRecord[i].Value;
                     if (currentType === 'Number') currentState.type = 'number';
                         else currentState.type = 'string';
-                    currentState.unit = data.DataRecords[i].Unit;
+                    currentState.unit = data.DataRecord[i].Unit;
                     neededStates.push(currentState);
                 }
 
@@ -266,12 +267,12 @@ function updateDeviceStates(deviceNamespace, data, callback) {
         }
     }
 
-    for (var i = 0; i < data.DataRecords.length; i++) {
-        var stateId = '.data.' + data.DataRecords[i].id;
-        if (data.DataRecords[i].StorageNumber !== undefined) {
-            stateId += '-' + data.DataRecords[i].StorageNumber;
+    for (var i = 0; i < data.DataRecord.length; i++) {
+        var stateId = '.data.' + data.DataRecord[i].id;
+        if (data.DataRecord[i].StorageNumber !== undefined) {
+            stateId += '-' + data.DataRecord[i].StorageNumber;
         }
-        switch (data.DataRecords[i].Function) {
+        switch (data.DataRecord[i].Function) {
             case 'Instantaneous value':
                 stateId += '-Current';
                 break;
@@ -288,13 +289,13 @@ function updateDeviceStates(deviceNamespace, data, callback) {
                 stateId += '';
                 break;
             default:
-                stateId += '-' + data.DataRecords[i].Function;
+                stateId += '-' + data.DataRecord[i].Function;
                 break;
         }
         adapter.setState(deviceNamespace + stateId, {
             ack: true,
-            val: data.DataRecords[i].Value,
-            ts: new Date(data.DataRecords[i].Timestamp).getTime()
+            val: data.DataRecord[i].Value,
+            ts: new Date(data.DataRecord[i].Timestamp).getTime()
         });
     }
     callback();
