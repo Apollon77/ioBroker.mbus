@@ -34,7 +34,7 @@
             if (list.result) {
                 for (var j = 0; j < list.result.length; j++) {
                     var found = false;
-                    for (var d = 0; d < devices; d++) {
+                    for (var d = 0; d < devices.length; d++) {
                         if (devices[d].id == list.result[j]) {
                             found = true;
                             break;
