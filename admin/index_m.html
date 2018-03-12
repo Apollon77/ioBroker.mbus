@@ -12,7 +12,7 @@
     <script type="text/javascript" src="../../lib/js/materialize.js"></script>
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
     <script type="text/javascript" src="words.js"></script>
-    
+
 <script type="text/javascript">
     function showHideSettings() {
         var type = $('#type').val();
@@ -49,7 +49,7 @@
 
                     if (!found) {
                         added++;
-                        devices.push({id: parseInt(list.result[j], 10), updateInterval: ''});
+                        devices.push({id: list.result[j], updateInterval: ''});
                     }
                 }
             }
@@ -101,7 +101,7 @@
             $port.html(text).select();
         });
     }
-    
+
     function load(settings, onChange) {
         $('.progress-bar').hide();
         if (!settings.type) settings.type = 'tcp';
