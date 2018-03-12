@@ -33,6 +33,8 @@ var mbusMaster;
 var connected = null;
 var errorDevices = {};
 
+var stateValues = {};
+
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
@@ -141,7 +143,7 @@ function updateDevices() {
             return;
         }
 
-        adapter.log.info('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+        adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
         initializeDeviceObjects(deviceId, data, function () {
             updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
@@ -260,10 +262,12 @@ function updateDeviceStates(deviceNamespace, data, callback) {
 
     for (var id in data.SlaveInformation) {
         if (data.SlaveInformation.hasOwnProperty(id)) {
-            adapter.setState(deviceNamespace + '.info.' + id, {
-                ack: true,
-                val: data.SlaveInformation[id]
-            });
+            if (!stateValues[deviceNamespace + '.info.' + id] || stateValues[deviceNamespace + '.info.' + id] !== data.SlaveInformation[id]) {
+                adapter.setState(deviceNamespace + '.info.' + id, {
+                    ack: true,
+                    val: data.SlaveInformation[id]
+                });
+            }
         }
     }
 
@@ -292,11 +296,13 @@ function updateDeviceStates(deviceNamespace, data, callback) {
                 stateId += '-' + data.DataRecord[i].Function;
                 break;
         }
-        adapter.setState(deviceNamespace + stateId, {
-            ack: true,
-            val: data.DataRecord[i].Value,
-            ts: new Date(data.DataRecord[i].Timestamp).getTime()
-        });
+        if (!stateValues[deviceNamespace + stateId] || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
+            adapter.setState(deviceNamespace + stateId, {
+                ack: true,
+                val: data.DataRecord[i].Value,
+                ts: new Date(data.DataRecord[i].Timestamp).getTime()
+            });
+        }
     }
     callback();
 }
@@ -389,7 +395,10 @@ function processMessage(obj) {
                     deviceCommunicationInProgress = true;
                     mbusMaster.scanSecondary(function (err, data) {
                         deviceCommunicationInProgress = false;
-                        adapter.log.error('M-Bus scan err: ' + err);
+                        if (err) {
+                            adapter.log.error('M-Bus scan err: ' + err);
+                            data = [];
+                        }
                         adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
                         adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
                         updateDevices();
