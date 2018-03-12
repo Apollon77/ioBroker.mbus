@@ -263,11 +263,10 @@ function updateDeviceStates(deviceNamespace, data, callback) {
     for (var id in data.SlaveInformation) {
         if (data.SlaveInformation.hasOwnProperty(id)) {
             if (stateValues[deviceNamespace + '.info.' + id] === undefined || stateValues[deviceNamespace + '.info.' + id] !== data.SlaveInformation[id]) {
+                stateValues[deviceNamespace + '.info.' + id] = data.SlaveInformation[id];
                 adapter.setState(deviceNamespace + '.info.' + id, {
                     ack: true,
                     val: data.SlaveInformation[id]
-                }, function() {
-                    stateValues[deviceNamespace + '.info.' + id] = data.SlaveInformation[id];
                 });
             }
         }
@@ -299,12 +298,11 @@ function updateDeviceStates(deviceNamespace, data, callback) {
                 break;
         }
         if (stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
+            stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
             adapter.setState(deviceNamespace + stateId, {
                 ack: true,
                 val: data.DataRecord[i].Value,
                 ts: new Date(data.DataRecord[i].Timestamp).getTime()
-            }, function() {
-                stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
             });
         }
     }
