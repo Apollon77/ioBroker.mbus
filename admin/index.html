@@ -24,7 +24,7 @@
         $('.table-button-scan').button('disable');
         sendTo(null, 'scanSecondary', null, function (list) {
             $('.table-button-scan').button('enable');
-
+            $('.progress-bar').hide();
             if (list.error) {
                 showError(_(list.error));
             }
@@ -35,7 +35,7 @@
                 for (var j = 0; j < list.result.length; j++) {
                     var found = false;
                     for (var d = 0; d < devices; d++) {
-                        if (devices[d].id === list.result[j].id) {
+                        if (devices[d].id == list.result[j]) {
                             found = true;
                             break;
                         }
@@ -43,7 +43,7 @@
 
                     if (!found) {
                         added++;
-                        devices.push({id: list.result[j].id, updateInterval: ''});
+                        devices.push({id: parseInt(list.result[j], 10), updateInterval: ''});
                     }
                 }
             }
@@ -91,6 +91,7 @@
         });
     }
     function load(settings, onChange) {
+        $('.progress-bar').hide();
         $('.value').each(function () {
             var key = $(this).attr('id');
             var $key = $('#' + key + '.value');
@@ -141,6 +142,11 @@
         callback(obj);
     }
 </script>
+    <style>
+        .progress-bar {
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
 <div id="adapter-container">
@@ -205,6 +211,9 @@
             <div id="values" style="width: 100%; height: calc(100% - 245px)">
                 <button class="table-button-add" style="margin-left: 10px; width: 1.5em; height: 1.5em"></button>
                 <button class="table-button-scan" style="margin-left: 10px; height: 1.5em"></button>
+                <div class="progress progress-bar">
+                    <div class="indeterminate"></div>
+                </div>
                 <div style="width: 100%; height: calc(100% - 30px); overflow: auto;">
                     <table class="table-values" style="width: 100%;">
                         <thead>

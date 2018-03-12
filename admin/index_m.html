@@ -25,8 +25,11 @@
 
     function readDevices(onChange) {
         $('.table-button-scan').addClass('disabled');
+        showToast(null, _('The scan can last over one minute or even longer. Be patient...'));
+        $('.progress-bar').show();
         sendTo(null, 'scanSecondary', null, function (list) {
             $('.table-button-scan').removeClass('disabled');
+            $('.progress-bar').hide();
 
             if (list.error) {
                 showError(_(list.error));
@@ -38,7 +41,7 @@
                 for (var j = 0; j < list.result.length; j++) {
                     var found = false;
                     for (var d = 0; d < devices; d++) {
-                        if (devices[d].id === list.result[j].id) {
+                        if (devices[d].id == list.result[j]) {
                             found = true;
                             break;
                         }
@@ -46,7 +49,7 @@
 
                     if (!found) {
                         added++;
-                        devices.push({id: list.result[j].id, updateInterval: ''});
+                        devices.push({id: parseInt(list.result[j], 10), updateInterval: ''});
                     }
                 }
             }
@@ -100,6 +103,7 @@
     }
     
     function load(settings, onChange) {
+        $('.progress-bar').hide();
         if (!settings.type) settings.type = 'tcp';
 
         $('.value').each(function () {
@@ -233,6 +237,9 @@
             <div class="col s12" id="devices">
                 <a class="btn-floating waves-effect waves-light blue table-button-add"><i class="material-icons">add</i></a>
                 <a class="btn-floating waves-effect waves-light blue table-button-scan translateT" title="Scan devices"><i class="material-icons">search</i></a>
+                <div class="progress progress-bar">
+                    <div class="indeterminate"></div>
+                </div>
                 <div class="table-values-div">
                     <table class="table-values">
                         <thead>
