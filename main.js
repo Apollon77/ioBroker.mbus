@@ -385,13 +385,14 @@ function processMessage(obj) {
                 break;
 
             case 'scanSecondary':
-                deviceCommunicationInProgress = true;
                 if (mbusMaster) {
+                    deviceCommunicationInProgress = true;
                     mbusMaster.scanSecondary(function (err, data) {
                         deviceCommunicationInProgress = false;
                         adapter.log.error('M-Bus scan err: ' + err);
                         adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
                         adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
+                        updateDevices();
                     });
                 } else {
                     adapter.sendTo(obj.from, obj.command, {error: 'Master is inactive'}, obj.callback);
