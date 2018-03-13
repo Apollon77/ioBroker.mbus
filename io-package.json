@@ -1,9 +1,20 @@
 {
     "common": {
         "name":                     "mbus",
-        "version":                  "0.0.2",
+        "version":                  "0.1.0",
 		"news": {
-            "0.0.1": {
+            "0.1.0": {
+                "en": "Beta",
+                "de": "Beta",
+                "ru": "Beta",
+                "pt": "Beta",
+                "nl": "Beta",
+                "fr": "Beta",
+                "it": "Beta",
+                "es": "Beta",
+                "pl": "Beta"
+            },
+            "0.0.2": {
                 "en": "initial version",
                 "de": "erste Version",
                 "ru": "Первоначальная версия",
