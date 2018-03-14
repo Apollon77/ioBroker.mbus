@@ -153,5 +153,39 @@ systemDictionary = {
         "it": "Il maestro è inattivo",
         "es": "El maestro está inactivo",
         "pl": "Mistrz jest nieaktywny"
+    },
+    "Select port": {
+        "en": "Select port",
+        "de": "Wählen Sie den Port aus",
+        "ru": "Выбрать порт",
+        "pt": "Selecione a porta",
+        "nl": "Selecteer poort",
+        "fr": "Sélectionnez un port",
+        "it": "Seleziona porta",
+        "es": "Seleccionar puerto",
+        "pl": "Wybierz port"
+    },
+    "Not available": {
+        "en": "Not available",
+        "de": "Nicht verfügbar",
+        "ru": "Недоступен",
+        "pt": "Não disponível",
+        "nl": "Niet beschikbaar",
+        "fr": "Indisponible",
+        "it": "Non disponibile",
+        "es": "No disponible",
+        "pl": "Niedostępne"
+    },
+    "M-Bus adapter settings": {
+        "en": "M-Bus adapter settings",
+        "de": "M-Bus-Adaptereinstellungen",
+        "ru": "Настройки адаптера M-Bus",
+        "pt": "Configurações do adaptador M-Bus",
+        "nl": "M-Bus adapterinstellingen",
+        "fr": "Paramètres de l'adaptateur M-Bus",
+        "it": "Impostazioni dell'adattatore M-Bus",
+        "es": "Configuración del adaptador M-Bus",
+        "pl": "Ustawienia adaptera M-Bus"
     }
+
 };
