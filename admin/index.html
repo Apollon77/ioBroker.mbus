@@ -111,9 +111,11 @@
                 });
             }
         });
+
         $('.table-button-scan').button({
             label: _('Scan devices')
         }).button('disable');
+
         getIsAdapterAlive(function (isAlive) {
             if (isAlive || common.enabled) {
                 $('.table-button-scan').button('enable').on('click', function () {
@@ -124,6 +126,7 @@
                 $('#serialPort').replaceWith($('<input type="text" id="serialPort" value="' + settings.serialPort + '"/>'));
             }
         });
+        $('#tabs').tabs().show();
         showHideSettings();
         onChange(false);
         values2table('devices', settings.devices, onChange);
@@ -158,7 +161,7 @@
         </ul>
         <div id="tabs-1">
             <table><tr>
-                <td><img src="mbus.png"/></td>
+                <td><img src="mbus.png" width="64"/></td>
                 <td><h3 class="translate">M-Bus adapter settings</h3></td>
             </tr></table>
             <table>
@@ -201,15 +204,13 @@
                     </select></td>
                 </tr>
                 <tr>
-                    <td>
-                        <label class="translate" for="defaultUpdateInterval">defaultUpdateInterval</label>
-                        <input class="value" id="defaultUpdateInterval" type="number" min="500" max="180000"/>
-                    </td>
+                    <td><label class="translate" for="defaultUpdateInterval">defaultUpdateInterval</label></td>
+                    <td><input class="value" id="defaultUpdateInterval" type="number" min="500" max="180000"/></td>
                 </tr>
             </table>
         </div>
         <div id="tabs-2" style="width: 100%; height: calc(100% - 40px); overflow-x: hidden; overflow-y: auto; padding: 0">
-            <div id="values" style="width: 100%; height: calc(100% - 245px)">
+            <div id="devices" style="width: 100%; height: calc(100% - 245px)">
                 <button class="table-button-add" style="margin-left: 10px; width: 1.5em; height: 1.5em"></button>
                 <button class="table-button-scan" style="margin-left: 10px; height: 1.5em"></button>
                 <div class="progress progress-bar">
