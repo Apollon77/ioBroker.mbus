@@ -35,6 +35,9 @@ You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
 # changelog
 
+## 0.1.2
+* official released version
+
 ## 0.0.1
 * initial release for testing
 
