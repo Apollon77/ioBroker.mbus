@@ -55,7 +55,7 @@ adapter.on('stateChange', function (id, state) {
     if (!state || state.ack || !state.val) return;
     var idSplit = id.split('.');
     if (idSplit[idSplit.length - 1] !== 'updateNow') return;
-    var deviceNamespace = idSplit[idSplit.length - 3] + '.' + idSplit[idSplit.length - 2];
+    var deviceNamespace = idSplit[idSplit.length - 2];
 
     for (var deviceId in mBusDevices) {
         if (mBusDevices[deviceId].deviceNamespace === deviceNamespace) {
