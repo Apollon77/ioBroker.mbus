@@ -197,6 +197,11 @@ function initializeDeviceObjects(deviceId, data, callback) {
         common: {name: deviceNamespace},
         native: {}
     }, function () {
+        adapter.setObjectNotExists(deviceNamespace + '.updateNow', {
+            type: 'state',
+            common: {name: deviceNamespace + '.updateNow', role: 'button', type: 'boolean', def: false},
+            native: {}
+        });
         adapter.setObjectNotExists(deviceNamespace + '.info', {
             type: 'channel',
             common: {name: deviceNamespace + '.info'},
