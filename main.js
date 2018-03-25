@@ -201,6 +201,8 @@ function initializeDeviceObjects(deviceId, data, callback) {
             type: 'state',
             common: {name: deviceNamespace + '.updateNow', role: 'button', type: 'boolean', def: false},
             native: {}
+        }, function() {
+            adapter.subscribeStates(deviceNamespace + '.updateNow');
         });
         adapter.setObjectNotExists(deviceNamespace + '.info', {
             type: 'channel',
