@@ -71,6 +71,7 @@
     "native": {
         "type":                     "tcp",
         "host":                     "127.0.0.1",
+        "tcpTimeout":               0,
         "port":                     3493,
         "defaultUpdateInterval":    3600,
         "serialPort":               "",

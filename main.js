@@ -345,7 +345,9 @@ function main() {
         if (adapter.config.host && adapter.config.port) {
             mbusOptions.host = adapter.config.host;
             mbusOptions.port = parseInt(adapter.config.port, 10);
-            adapter.log.info('Initialize M-Bus TCP to ' + adapter.config.host + ':' + adapter.config.port);
+            if (adapter.config.tcpTimeout) mbusOptions.timeout = parseInt(adapter.config.tcpTimeout, 10);
+                else mbusOptions.timeout = 0;
+            adapter.log.info('Initialize M-Bus TCP to ' + mbusOptions.host + ':' + mbusOptions.port + ' with timeout ' + mbusOptions.timeout);
         } else {
             adapter.log.error('Please specify IP of M-Bus device/gateway');
             return;

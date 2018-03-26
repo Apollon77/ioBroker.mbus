@@ -32,6 +32,17 @@ systemDictionary = {
         "es": "IP de acceso",
         "pl": "Adres IP bramy"
     },
+    "tcpTimeout": {
+        "en": "Timeout",
+        "de": "Timeout",
+        "ru": "Тайм-аут",
+        "pt": "Tempo esgotado",
+        "nl": "Time-out",
+        "fr": "Temps libre",
+        "it": "Tempo scaduto",
+        "es": "Se acabó el tiempo",
+        "pl": "Koniec czasu"
+    },
     "port": {
         "en": "TCP Port",
         "de": "TCP-Anschluss",
