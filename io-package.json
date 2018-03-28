@@ -1,8 +1,19 @@
 {
     "common": {
         "name":                     "mbus",
-        "version":                  "0.1.4",
+        "version":                  "0.1.5",
 		"news": {
+            "0.1.5": {
+                "en": "Update mbus library",
+                "de": "Aktualisieren Sie die Mbus-Bibliothek",
+                "ru": "Обновить библиотеку mbus",
+                "pt": "Atualizar a biblioteca mbus",
+                "nl": "Update mbus-bibliotheek",
+                "fr": "Mettre à jour la bibliothèque mbus",
+                "it": "Aggiorna la libreria mbus",
+                "es": "Actualizar la biblioteca de mbus",
+                "pl": "Zaktualizuj bibliotekę mbus"
+            },
             "0.1.4": {
                 "en": "Update mbus library and add updateNow function to all devices",
                 "de": "Aktualisieren Sie die mbus-Bibliothek und fügen Sie allen Geräten die updateNow-Funktion hinzu",
