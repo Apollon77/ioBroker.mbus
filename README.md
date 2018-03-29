@@ -35,6 +35,12 @@ You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
 # changelog
 
+## 0.1.6 (2018-03-26)
+* disconnect/reconnect for each query
+
+## 0.1.5 (2018-03-26)
+* update to node-mbus 0.5 with shorter timeouts
+
 ## 0.1.4 (2018-03-26)
 * add "updateNow" states to all devices to trigger manual update
 * update to node-mbus 0.4.1 with shorter timeouts

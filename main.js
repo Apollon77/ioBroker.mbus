@@ -119,6 +119,18 @@ function scheduleDeviceUpdate(deviceId) {
     return true;
 }
 
+function handeDeviceError(deviceId, callback) {
+    errorDevices[deviceId] = true;
+    adapter.log.error('M-Bus Devices errored: ' + Object.keys(errorDevices).length + ' from ' + Object.keys(mBusDevices).length);
+    if (Object.keys(errorDevices).length === Object.keys(mBusDevices).length) {
+        adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
+        setConnected(false);
+        onClose(main);
+        return false;
+    }
+    if (callback) callback();
+}
+
 function updateDevices() {
     if (!deviceUpdateQueue.length) {
         deviceCommunicationInProgress = false;
@@ -133,30 +145,36 @@ function updateDevices() {
         mBusDevices[deviceId].updateTimeout = null;
     }
 
-    mbusMaster.getData(deviceId, function (err, data) {
+    mbusMaster.connect(function(err) {
         if (err) {
-            adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
-            errorDevices[deviceId] = true;
-            adapter.log.error('M-Bus Devices errored: ' + Object.keys(errorDevices).length + ' from ' + Object.keys(mBusDevices).length);
-            if (Object.keys(errorDevices).length === Object.keys(mBusDevices).length) {
-                adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
-                setConnected(false);
-                onClose(main);
-                return;
-            }
-            updateDevices();
+            adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
+            handeDeviceError(deviceId, updateDevices);
             return;
         }
+        mbusMaster.getData(deviceId, function (err, data) {
+            if (err) {
+                adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
+                handeDeviceError(deviceId, updateDevices);
+                return;
+            }
 
-        adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
+            adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
-        initializeDeviceObjects(deviceId, data, function () {
-            updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
-                mBusDevices[deviceId].updateTimeout = setTimeout(function () {
-                    mBusDevices[deviceId].updateTimeout = null;
-                    scheduleDeviceUpdate(deviceId);
-                }, mBusDevices[deviceId].updateInterval * 1000);
-                updateDevices();
+            initializeDeviceObjects(deviceId, data, function () {
+                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
+                    mbusMaster.close(function(err) {
+                        mBusDevices[deviceId].updateTimeout = setTimeout(function () {
+                            mBusDevices[deviceId].updateTimeout = null;
+                            scheduleDeviceUpdate(deviceId);
+                        }, mBusDevices[deviceId].updateInterval * 1000);
+                        if (err) {
+                            adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
+                            handeDeviceError(deviceId, updateDevices);
+                            return;
+                        }
+                        updateDevices();
+                    })
+                });
             });
         });
     });
@@ -375,15 +393,21 @@ function main() {
         return; // to allow the user to select other COM port
     }
 
-    for (var i = 0; i < adapter.config.devices.length; i++) {
-        var deviceId = adapter.config.devices[i].id;
-        mBusDevices[deviceId] = {};
-        mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval || adapter.config.defaultUpdateInterval;
-        mBusDevices[deviceId].updateInterval = parseInt(mBusDevices[deviceId].updateInterval, 10) || adapter.config.defaultUpdateInterval;
+    mbusMaster.close(function(err) {
+        if (err) {
+            adapter.log.error('M-Bus Connection failed. Please check configuration.');
+            return; // to allow the user to select other COM port
+        }
+        for (var i = 0; i < adapter.config.devices.length; i++) {
+            var deviceId = adapter.config.devices[i].id;
+            mBusDevices[deviceId] = {};
+            mBusDevices[deviceId].updateInterval = adapter.config.devices[i].updateInterval || adapter.config.defaultUpdateInterval;
+            mBusDevices[deviceId].updateInterval = parseInt(mBusDevices[deviceId].updateInterval, 10) || adapter.config.defaultUpdateInterval;
 
-        adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
-        scheduleDeviceUpdate(deviceId);
-    }
+            adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
+            scheduleDeviceUpdate(deviceId);
+        }
+    });
 }
 
 function processMessage(obj) {
