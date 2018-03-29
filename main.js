@@ -66,26 +66,31 @@ adapter.on('stateChange', function (id, state) {
 });
 
 function onClose(callback) {
-    for (var device in mBusDevices) {
-        if (mBusDevices[device].updateTimeout) {
-            clearTimeout(mBusDevices[device].updateTimeout);
-            mBusDevices[device].updateTimeout = null;
-        }
-    }
-    deviceUpdateQueue = [];
-    mBusDevices = {};
-
     try {
         if (mbusMaster) {
-            mbusMaster.close(callback);
-            setConnected(false);
+            mbusMaster.close(function() {
+                setConnected(false);
+                for (var device in mBusDevices) {
+                    if (mBusDevices[device].updateTimeout) {
+                        clearTimeout(mBusDevices[device].updateTimeout);
+                        mBusDevices[device].updateTimeout = null;
+                    }
+                }
+                deviceUpdateQueue = [];
+                mBusDevices = {};
+                if (callback) {
+                    callback();
+                }
+            });
+            return;
         }
     } catch (e) {
-        if (callback) {
-            callback();
-        }
+    }
+    if (callback) {
+        callback();
     }
 }
+
 adapter.on('unload', function (callback) {
     onClose(callback);
 });
@@ -132,7 +137,7 @@ function updateDevices() {
         if (err) {
             adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
             errorDevices[deviceId] = true;
-            adapter.log.error('M-Bus Devices ' + Object.keys(errorDevices).length + ' errored from ' + Object.keys(mBusDevices).length);
+            adapter.log.error('M-Bus Devices errored: ' + Object.keys(errorDevices).length + ' from ' + Object.keys(mBusDevices).length);
             if (Object.keys(errorDevices).length === Object.keys(mBusDevices).length) {
                 adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
                 setConnected(false);
