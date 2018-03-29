@@ -128,7 +128,7 @@ function handeDeviceError(deviceId, callback) {
         onClose(main);
         return false;
     }
-    if (callback) callback();
+    if (callback) setTimeout(callback, 500);
 }
 
 function updateDevices() {
@@ -172,8 +172,8 @@ function updateDevices() {
                             handeDeviceError(deviceId, updateDevices);
                             return;
                         }
-                        updateDevices();
-                    })
+                        setTimeout(updateDevices, 500);
+                    });
                 });
             });
         });
