@@ -70,6 +70,7 @@ function onClose(callback) {
         if (mbusMaster) {
             mbusMaster.close(function() {
                 setConnected(false);
+                deviceCommunicationInProgress  = false;
                 for (var device in mBusDevices) {
                     if (mBusDevices[device].updateTimeout) {
                         clearTimeout(mBusDevices[device].updateTimeout);
