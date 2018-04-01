@@ -35,6 +35,9 @@ You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
 # changelog
 
+## 0.1.7 (2018-04-02)
+* allow to set "0" as update interval that will cause in no automatic updates, so only manually using updateNow is possible.
+
 ## 0.1.6 (2018-03-26)
 * disconnect/reconnect for each query
 
