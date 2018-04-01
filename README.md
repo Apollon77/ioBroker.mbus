@@ -24,11 +24,13 @@ IP address and port of the M-Bus Master/Gateway when using TCP.
 Serial Port and Baud rate of M-Bus Master/Gateway.
 
 ### Update Interval
-Interval in Seconds to update the data. Default is 3600s (1h). Consider how the devices on the M-Bus bus are powered to prevent draining batteries.
+Interval in Seconds to update the data. Default (if empty) is 3600s (1h). Consider how the devices on the M-Bus bus are powered to prevent draining batteries. If you set the interval to 0 then the device is read only once on adapter start, but then no longer automatically.
 
 ## Device IDs
 You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
+## How to read the Device on request?
+In the created states for each device one state exists called "updateNow". When you set this to true (as control action with ack=false) the device is updated immediately. If an interval is configured the interval restarts after the data are received. 
 
 ## Todo
 * encrypted payload handling (if needed by anyone)
