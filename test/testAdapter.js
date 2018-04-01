@@ -135,6 +135,11 @@ function setupTcpServer(callback) {
                 sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
                 sendMessage(socket, sendBuf);
             }
+            else if (hexData.substring(0,6) === '105b03') {
+                console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 3');
+                sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
+                sendMessage(socket, sendBuf);
+            }
             else if (hexData.substring(0, 23) === '680b0b6873fd52ffffff1ff') {
                 console.log(new Date().toString() + ':     mbus-Serial-Device: Secondary Scan found');
                 sendBuf = Buffer.from('E5', 'hex');
@@ -193,6 +198,10 @@ describe('Test ' + adapterShortName + ' adapter', function() {
                 },
                 {
                     "id": "2"
+                },
+                {
+                    "id": "3",
+                    "updateInterval": 0
                 }
             ];
             setup.setAdapterConfig(config.common, config.native);
