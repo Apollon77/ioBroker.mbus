@@ -1,8 +1,19 @@
 {
     "common": {
         "name":                     "mbus",
-        "version":                  "0.1.7",
+        "version":                  "0.1.8",
 		"news": {
+            "0.1.8": {
+                "en": "Updates and optimizations",
+                "de": "Updates und Optimierungen",
+                "ru": "Обновления и оптимизации",
+                "pt": "Atualizações e otimizações",
+                "nl": "Updates en optimalisaties",
+                "fr": "Mises à jour et optimisations",
+                "it": "Aggiornamenti e ottimizzazioni",
+                "es": "Actualizaciones y optimizaciones",
+                "pl": "Aktualizacje i optymalizacje"
+            },
             "0.1.5": {
                 "en": "Update mbus library",
                 "de": "Aktualisieren Sie die Mbus-Bibliothek",
