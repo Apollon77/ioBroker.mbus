@@ -56,7 +56,7 @@
 
             if (added) {
                 values2table('devices', devices, onChange);
-                showToast(null, _('Found %s devices. Added %d new devices.', list.length, added));
+                showToast(null, _('Found %s devices. Added %s new devices.', list.length, added));
                 onChange(true);
             } else {
                 if (list && list.length) {
