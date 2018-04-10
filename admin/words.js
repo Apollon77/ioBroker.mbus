@@ -121,23 +121,23 @@ systemDictionary = {
         "es": "Escanear dispositivos",
         "pl": "Skanuj urządzenia"
     },
-    "Found %s devices. Added %d new devices.": {
-        "en": "Found %s devices. Added %d new devices.",
-        "de": "Gefunden %s Geräte. % D neue Geräte hinzugefügt.",
-        "ru": "Найдено %s устройств. Добавлено% d новых устройств.",
-        "pt": "Encontrados %s dispositivos. Adicionado% d novos dispositivos.",
-        "nl": "% S apparaten gevonden. % D nieuwe apparaten toegevoegd.",
-        "fr": "Trouvé %s appareils. Ajout de% d nouveaux périphériques.",
-        "it": "Trovato dispositivi di %s. Aggiunti% d nuovi dispositivi.",
-        "es": "Encontrado %s dispositivos. Se agregaron% d nuevos dispositivos.",
-        "pl": "Znaleziono urządzenia %s. Dodano% d nowych urządzeń."
+    "Found %s devices. Added %s new devices.": {
+        "en": "Found %s devices. Added %s new devices.",
+        "de": "Gefunden %s Geräte. %s neue Geräte hinzugefügt.",
+        "ru": "Найдено %s устройств. Добавлено %s новых устройств.",
+        "pt": "Encontrados %s dispositivos. Adicionado %s novos dispositivos.",
+        "nl": "%s apparaten gevonden. %s nieuwe apparaten toegevoegd.",
+        "fr": "Trouvé %s appareils. Ajout de %s nouveaux périphériques.",
+        "it": "Trovato dispositivi di %s. Aggiunti %s nuovi dispositivi.",
+        "es": "Encontrado %s dispositivos. Se agregaron %s nuevos dispositivos.",
+        "pl": "Znaleziono urządzenia %s. Dodano %s nowych urządzeń."
     },
     "Found %s devices. Nothing new.": {
         "en": "Found %s devices. Nothing new.",
         "de": "Gefunden %s Geräte. Nichts Neues.",
         "ru": "Найдено %s устройств. Ничего нового.",
         "pt": "Encontrados %s dispositivos. Nada de novo.",
-        "nl": "% S apparaten gevonden. Niets nieuws.",
+        "nl": "%s apparaten gevonden. Niets nieuws.",
         "fr": "Trouvé %s appareils. Rien de nouveau.",
         "it": "Trovato dispositivi di %s. Niente di nuovo.",
         "es": "Encontrado %s dispositivos. Nada nuevo.",
