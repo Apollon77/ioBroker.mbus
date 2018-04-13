@@ -1,8 +1,19 @@
 {
     "common": {
         "name":                     "mbus",
-        "version":                  "0.1.8",
+        "version":                  "1.0.0",
 		"news": {
+            "1.0.0": {
+                "en": "Fix Admin",
+                "de": "Fixe Admin",
+                "ru": "Fix Admin",
+                "pt": "Corrigir Admin",
+                "nl": "Admin oplossen",
+                "fr": "Fix Admin",
+                "it": "Correggi Admin",
+                "es": "Fix Admin",
+                "pl": "Napraw administratora"
+            },
             "0.1.8": {
                 "en": "Updates and optimizations",
                 "de": "Updates und Optimierungen",
@@ -82,7 +93,7 @@
         "stopBeforeUpdate":         true,
         "icon":                     "mbus.png",
         "extIcon":                  "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
-        "readme":                   "https://github.com/Apollon77/ioBroker.mbus",
+        "readme":                   "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
         "license":                  "MIT",
         "npmLibs": [],
         "type":                     "energy",

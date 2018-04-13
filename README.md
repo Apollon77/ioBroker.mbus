@@ -35,7 +35,10 @@ In the created states for each device one state exists called "updateNow". When 
 ## Todo
 * encrypted payload handling (if needed by anyone)
 
-# changelog
+# Changelog
+
+## 1.0.0 (2018-04-13)
+* Fix Admin
 
 ## 0.1.8 (2018-04-03)
 * fix config dialog
