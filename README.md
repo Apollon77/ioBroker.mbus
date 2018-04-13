@@ -26,7 +26,7 @@ Serial Port and Baud rate of M-Bus Master/Gateway.
 ### Update Interval
 Interval in Seconds to update the data. Default (if empty) is 3600s (1h). Consider how the devices on the M-Bus bus are powered to prevent draining batteries. If you set the interval to 0 then the device is read only once on adapter start, but then no longer automatically.
 
-## Device IDs
+### Device IDs
 You can use primary (1-250) and secondary (16 characters long) M-Bus IDs
 
 ## How to read the Device on request?
@@ -35,31 +35,31 @@ In the created states for each device one state exists called "updateNow". When 
 ## Todo
 * encrypted payload handling (if needed by anyone)
 
-# Changelog
+## Changelog
 
-## 1.0.0 (2018-04-13)
+### 1.0.0 (2018-04-13)
 * Fix Admin
 
-## 0.1.8 (2018-04-03)
+### 0.1.8 (2018-04-03)
 * fix config dialog
 
-## 0.1.7 (2018-04-02)
+### 0.1.7 (2018-04-02)
 * allow to set "0" as update interval that will cause in no automatic updates, so only manually using updateNow is possible.
 
-## 0.1.6 (2018-03-26)
+### 0.1.6 (2018-03-26)
 * disconnect/reconnect for each query
 
-## 0.1.5 (2018-03-26)
+### 0.1.5 (2018-03-26)
 * update to node-mbus 0.5 with shorter timeouts
 
-## 0.1.4 (2018-03-26)
+### 0.1.4 (2018-03-26)
 * add "updateNow" states to all devices to trigger manual update
 * update to node-mbus 0.4.1 with shorter timeouts
 
-## 0.1.2
+### 0.1.2
 * official released version
 
-## 0.0.1
+### 0.0.1
 * initial release for testing
 
 ## License
