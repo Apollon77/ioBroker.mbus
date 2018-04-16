@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mbus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MBus Adapter",
   "author": "Ingo Fischer <ingo@fischer-ka.de>",
   "contributors": [],
@@ -19,7 +19,7 @@
     "serialport": "^6.1.1"
   },
   "dependencies": {
-    "node-mbus": "^0.5.0"
+    "node-mbus": "^0.5.1"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
