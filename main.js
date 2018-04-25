@@ -205,7 +205,10 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 unit: state.unit
             },
             native: {id: state.id}
-        }, function() {
+        }, function(err, obj) {
+            if (err) {
+                adapter.log.error('Error creating State: ' + err);
+            }
             createStates();
         });
     }
@@ -222,24 +225,36 @@ function initializeDeviceObjects(deviceId, data, callback) {
         type: 'channel',
         common: {name: deviceNamespace},
         native: {}
-    }, function () {
+    }, function(err, obj) {
+        if (err) {
+            adapter.log.error('Error creating State: ' + err);
+        }
         adapter.setObjectNotExists(deviceNamespace + '.updateNow', {
             type: 'state',
             common: {name: deviceNamespace + '.updateNow', role: 'button', type: 'boolean', def: false},
             native: {}
-        }, function() {
+        }, function(err, obj) {
+            if (err) {
+                adapter.log.error('Error creating State: ' + err);
+            }
             adapter.subscribeStates(deviceNamespace + '.updateNow');
         });
         adapter.setObjectNotExists(deviceNamespace + '.info', {
             type: 'channel',
             common: {name: deviceNamespace + '.info'},
             native: {}
-        }, function () {
+        }, function(err, obj) {
+            if (err) {
+                adapter.log.error('Error creating State: ' + err);
+            }
             adapter.setObjectNotExists(deviceNamespace + '.data', {
                 type: 'channel',
                 common: {name: deviceNamespace + '.data'},
                 native: {}
-            }, function() {
+            }, function(err, obj) {
+                if (err) {
+                    adapter.log.error('Error creating State: ' + err);
+                }
                 var currentState;
                 var currentType;
                 for (var id in data.SlaveInformation) {
