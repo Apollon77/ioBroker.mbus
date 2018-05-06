@@ -162,7 +162,7 @@ function updateDevices() {
             adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
             initializeDeviceObjects(deviceId, data, function () {
-                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
+                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, function() {
                     mbusMaster.close(function(err) {
                         if (mBusDevices[deviceId].updateInterval > 0) {
                             mBusDevices[deviceId].updateTimeout = setTimeout(function () {
@@ -267,6 +267,13 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     currentState.unit = '';
                     neededStates.push(currentState);
                 }
+                
+                // add deviceId
+                neededStates.push({
+                    id: '.info.address',
+                    type: 'string',                    
+                });
+                
                 for (var i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
                     currentState.id = '.data.' + data.DataRecord[i].id;
@@ -306,7 +313,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
     });
 }
 
-function updateDeviceStates(deviceNamespace, data, callback) {
+function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
 
     for (var id in data.SlaveInformation) {
         if (data.SlaveInformation.hasOwnProperty(id)) {
@@ -319,7 +326,16 @@ function updateDeviceStates(deviceNamespace, data, callback) {
             }
         }
     }
-
+    
+    // update deviceId
+    if (stateValues[deviceNamespace + '.info.address'] === undefined || stateValues[deviceNamespace + '.info.address'] !== deviceId) {
+            stateValues[deviceNamespace + '.info.address'] = deviceId;
+            adapter.setState(deviceNamespace + '.info.address', {
+                ack: true,
+                val: deviceId
+            });
+        }
+    
     for (var i = 0; i < data.DataRecord.length; i++) {
         var stateId = '.data.' + data.DataRecord[i].id;
         if (data.DataRecord[i].StorageNumber !== undefined) {
