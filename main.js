@@ -12,10 +12,10 @@
 
 'use strict';
 
-var path       = require('path');
-var utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
-var MbusMaster = require('node-mbus');
-var serialport;
+const path       = require('path');
+const utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
+const MbusMaster = require('node-mbus');
+let   serialport;
 
 try {
     serialport = require('serialport');
@@ -23,22 +23,22 @@ try {
     console.warn('Cannot load serialport module');
 }
 
-var adapter = new utils.Adapter('mbus');
+const adapter = new utils.Adapter('mbus');
 
-var deviceUpdateQueue = [];
-var mBusDevices = {};
-var deviceCommunicationInProgress = false;
-var mbusMaster;
+let deviceUpdateQueue = [];
+let mBusDevices = {};
+let deviceCommunicationInProgress = false;
+let mbusMaster;
 
-var connected = null;
-var errorDevices = {};
+let connected = null;
+let errorDevices = {};
 
-var stateValues = {};
+let stateValues = {};
 
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
-        adapter.setState('info.connection', connected, true, function (err) {
+        adapter.setState('info.connection', connected, true, err => {
             // analyse if the state could be set (because of permissions)
             if (err) adapter.log.error('Can not update connected state: ' + err);
               else adapter.log.debug('connected set to ' + connected);
@@ -50,15 +50,15 @@ adapter.on('ready', main);
 
 adapter.on('message', processMessage);
 
-adapter.on('stateChange', function (id, state) {
+adapter.on('stateChange', (id, state) => {
     adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
     if (!state || state.ack || !state.val) return;
-    var idSplit = id.split('.');
+    const idSplit = id.split('.');
     if (idSplit[idSplit.length - 1] !== 'updateNow') return;
-    var deviceNamespace = idSplit[idSplit.length - 2];
+    const deviceNamespace = idSplit[idSplit.length - 2];
 
-    for (var deviceId in mBusDevices) {
-        if (mBusDevices[deviceId].deviceNamespace === deviceNamespace) {
+    for (let deviceId in mBusDevices) {
+        if (mBusDevices.hasOwnProperty(deviceId) && mBusDevices[deviceId].deviceNamespace === deviceNamespace) {
             scheduleDeviceUpdate(deviceId);
             break;
         }
@@ -68,13 +68,13 @@ adapter.on('stateChange', function (id, state) {
 function onClose(callback) {
     try {
         if (mbusMaster) {
-            mbusMaster.close(function() {
+            mbusMaster.close(() => {
                 setConnected(false);
                 deviceCommunicationInProgress  = false;
-                for (var device in mBusDevices) {
-                    if (mBusDevices[device].updateTimeout) {
-                        clearTimeout(mBusDevices[device].updateTimeout);
-                        mBusDevices[device].updateTimeout = null;
+                for (let deviceId in mBusDevices) {
+                    if (mBusDevices.hasOwnProperty(deviceId) && mBusDevices[deviceId].updateTimeout) {
+                        clearTimeout(mBusDevices[deviceId].updateTimeout);
+                        mBusDevices[deviceId].updateTimeout = null;
                     }
                 }
                 deviceUpdateQueue = [];
@@ -92,15 +92,15 @@ function onClose(callback) {
     }
 }
 
-adapter.on('unload', function (callback) {
+adapter.on('unload', callback => {
     onClose(callback);
 });
 
-process.on('SIGINT', function () {
+process.on('SIGINT', () => {
     onClose();
 });
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', err => {
     if (adapter && adapter.log) {
         adapter.log.warn('Exception: ' + err);
     }
@@ -120,16 +120,33 @@ function scheduleDeviceUpdate(deviceId) {
     return true;
 }
 
-function handeDeviceError(deviceId, callback) {
+function handleDeviceError(deviceId, callback) {
     errorDevices[deviceId] = true;
-    adapter.log.error('M-Bus Devices errored: ' + Object.keys(errorDevices).length + ' from ' + Object.keys(mBusDevices).length);
+    adapter.log.warn('M-Bus Devices with errors: ' + Object.keys(errorDevices).length + ' from ' + Object.keys(mBusDevices).length);
     if (Object.keys(errorDevices).length === Object.keys(mBusDevices).length) {
         adapter.log.error('All M-Bus devices could not be read, reinitialize and start over');
         setConnected(false);
         onClose(main);
         return false;
     }
-    if (callback) setTimeout(callback, 500);
+    callback && setTimeout(callback, 500);
+}
+
+function finishDevice(deviceId, callback) {
+    try {
+        mbusMaster.close(err => {
+            if (mBusDevices[deviceId].updateInterval > 0) {
+                mBusDevices[deviceId].updateTimeout = setTimeout(() => {
+                    mBusDevices[deviceId].updateTimeout = null;
+                    scheduleDeviceUpdate(deviceId);
+                }, mBusDevices[deviceId].updateInterval * 1000);
+            }
+            callback && callback(err);
+        });
+    } catch (e) {
+        adapter.log.error('Error by closing: ' + e);
+        callback && callback(err);
+    }
 }
 
 function updateDevices() {
@@ -139,43 +156,51 @@ function updateDevices() {
     }
 
     deviceCommunicationInProgress = true;
-    var deviceId = deviceUpdateQueue.shift();
+    const deviceId = deviceUpdateQueue.shift();
+
     adapter.log.debug('Process: ' + deviceId);
+
     if (mBusDevices[deviceId].updateTimeout) {
         clearTimeout(mBusDevices[deviceId].updateTimeout);
         mBusDevices[deviceId].updateTimeout = null;
     }
 
-    mbusMaster.connect(function(err) {
+    mbusMaster.connect(err => {
         if (err) {
+            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
-            handeDeviceError(deviceId, updateDevices);
+            handleDeviceError(deviceId, updateDevices);
             return;
         }
-        mbusMaster.getData(deviceId, function (err, data) {
+        mbusMaster.getData(deviceId, (err, data) => {
             if (err) {
-                adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
-                handeDeviceError(deviceId, updateDevices);
-                return;
+                adapter.log.warn('M-Bus ID ' + deviceId + ' err: ' + err);
+                adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
+                return handleDeviceError(deviceId, () =>
+                    finishDevice(deviceId, err => {
+                        if (err) {
+                            adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
+                            handleDeviceError(deviceId, updateDevices);
+                        } else {
+                            setTimeout(updateDevices, 500);
+                        }
+                    })
+                );
             }
 
             adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
-            initializeDeviceObjects(deviceId, data, function () {
-                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, data, function() {
-                    mbusMaster.close(function(err) {
-                        if (mBusDevices[deviceId].updateInterval > 0) {
-                            mBusDevices[deviceId].updateTimeout = setTimeout(function () {
-                                mBusDevices[deviceId].updateTimeout = null;
-                                scheduleDeviceUpdate(deviceId);
-                            }, mBusDevices[deviceId].updateInterval * 1000);
-                        }
+            initializeDeviceObjects(deviceId, data, () => {
+                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, () => {
+                    finishDevice(deviceId, err => {
                         if (err) {
+                            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
                             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
-                            handeDeviceError(deviceId, updateDevices);
-                            return;
+                            handleDeviceError(deviceId, updateDevices);
+                        } else {
+                            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', 'ok', true);
+                            setTimeout(updateDevices, 500);
                         }
-                        setTimeout(updateDevices, 500);
                     });
                 });
             });
@@ -184,16 +209,15 @@ function updateDevices() {
 }
 
 function initializeDeviceObjects(deviceId, data, callback) {
-
-    var neededStates = [];
+    let neededStates = [];
     function createStates() {
         if (!neededStates.length) {
             callback();
             return;
         }
-        var state = neededStates.shift();
+        const state = neededStates.shift();
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
-        var stateName = state.id.substring(state.id.indexOf('.', 1));
+        // var stateName = state.id.substring(state.id.indexOf('.', 1));
         adapter.setObjectNotExists(deviceNamespace + state.id, {
             type: 'state',
             common: {
@@ -205,7 +229,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 unit: state.unit
             },
             native: {id: state.id}
-        }, function(err, obj) {
+        }, (err, obj) => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -218,14 +242,14 @@ function initializeDeviceObjects(deviceId, data, callback) {
         return;
     }
 
-    var deviceNamespace = data.SlaveInformation.Manufacturer + '-' + data.SlaveInformation.Id;
+    const deviceNamespace = data.SlaveInformation.Manufacturer + '-' + data.SlaveInformation.Id;
     mBusDevices[deviceId].deviceNamespace = deviceNamespace;
 
     adapter.setObjectNotExists(deviceNamespace, {
         type: 'channel',
         common: {name: deviceNamespace},
         native: {}
-    }, function(err, obj) {
+    }, (err, obj) => {
         if (err) {
             adapter.log.error('Error creating State: ' + err);
         }
@@ -233,7 +257,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             type: 'state',
             common: {name: deviceNamespace + '.updateNow', role: 'button', type: 'boolean', def: false},
             native: {}
-        }, function(err, obj) {
+        }, err => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -243,7 +267,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             type: 'channel',
             common: {name: deviceNamespace + '.info'},
             native: {}
-        }, function(err, obj) {
+        }, err => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -251,13 +275,13 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 type: 'channel',
                 common: {name: deviceNamespace + '.data'},
                 native: {}
-            }, function(err, obj) {
+            }, err => {
                 if (err) {
                     adapter.log.error('Error creating State: ' + err);
                 }
-                var currentState;
-                var currentType;
-                for (var id in data.SlaveInformation) {
+                let currentState;
+                let currentType;
+                for (let id in data.SlaveInformation) {
                     if (!data.SlaveInformation.hasOwnProperty(id)) continue;
 
                     currentState = {};
@@ -267,7 +291,14 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     currentState.unit = '';
                     neededStates.push(currentState);
                 }
-                for (var i = 0; i < data.DataRecord.length; i++) {
+
+                // add deviceId
+                neededStates.push({
+                    id: '.info.address',
+                    type: 'string',
+                });
+
+                for (let i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
                     currentState.id = '.data.' + data.DataRecord[i].id;
                     if (data.DataRecord[i].StorageNumber !== undefined) {
@@ -299,6 +330,11 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     currentState.unit = data.DataRecord[i].Unit;
                     neededStates.push(currentState);
                 }
+                neededStates.push({
+                    id: '.data.lastStatus',
+                    type: 'string',
+                    role: 'state'
+                });
 
                 createStates();
             });
@@ -306,9 +342,8 @@ function initializeDeviceObjects(deviceId, data, callback) {
     });
 }
 
-function updateDeviceStates(deviceNamespace, data, callback) {
-
-    for (var id in data.SlaveInformation) {
+function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
+    for (let id in data.SlaveInformation) {
         if (data.SlaveInformation.hasOwnProperty(id)) {
             if (stateValues[deviceNamespace + '.info.' + id] === undefined || stateValues[deviceNamespace + '.info.' + id] !== data.SlaveInformation[id]) {
                 stateValues[deviceNamespace + '.info.' + id] = data.SlaveInformation[id];
@@ -320,8 +355,17 @@ function updateDeviceStates(deviceNamespace, data, callback) {
         }
     }
 
-    for (var i = 0; i < data.DataRecord.length; i++) {
-        var stateId = '.data.' + data.DataRecord[i].id;
+    // update deviceId
+    if (stateValues[deviceNamespace + '.info.address'] === undefined || stateValues[deviceNamespace + '.info.address'] !== deviceId) {
+            stateValues[deviceNamespace + '.info.address'] = deviceId;
+            adapter.setState(deviceNamespace + '.info.address', {
+                ack: true,
+                val: deviceId
+            });
+        }
+
+    for (let i = 0; i < data.DataRecord.length; i++) {
+        let stateId = '.data.' + data.DataRecord[i].id;
         if (data.DataRecord[i].StorageNumber !== undefined) {
             stateId += '-' + data.DataRecord[i].StorageNumber;
         }
@@ -367,7 +411,7 @@ function onConnect(err) {
 }
 
 function main() {
-    var mbusOptions = {
+    let mbusOptions = {
         autoConnect: true
     };
     setConnected(false);
@@ -380,14 +424,13 @@ function main() {
         }
     }
 
-    if (adapter.config.defaultUpdateInterval === undefined || (adapter.config.defaultUpdateInterval !== '0' && adapter.config.defaultUpdateInterval !== 0)) {
+    if (adapter.config.defaultUpdateInterval && adapter.config.defaultUpdateInterval !== '0' && adapter.config.defaultUpdateInterval !== 0) {
         adapter.config.defaultUpdateInterval = parseInt(adapter.config.defaultUpdateInterval, 10) || 3600;
-    }
-    else {
+    } else {
         adapter.config.defaultUpdateInterval = 0;
     }
-    adapter.log.info('Default Update Interval: ' + adapter.config.defaultUpdateInterval);
 
+    adapter.log.info('Default Update Interval: ' + adapter.config.defaultUpdateInterval);
 
     if (adapter.config.type === 'tcp' && adapter.config.host && adapter.config.port) {
         if (adapter.config.host && adapter.config.port) {
@@ -418,18 +461,21 @@ function main() {
         return; // to allow the user to select other COM port
     }
 
-    mbusMaster.close(function(err) {
+    mbusMaster.close(err => {
         if (err) {
             adapter.log.error('M-Bus Connection failed. Please check configuration.');
             return; // to allow the user to select other COM port
         }
-        for (var i = 0; i < adapter.config.devices.length; i++) {
-            var deviceId = adapter.config.devices[i].id;
+        for (let i = 0; i < adapter.config.devices.length; i++) {
+            const deviceId = adapter.config.devices[i].id;
             mBusDevices[deviceId] = {};
-            if (adapter.config.devices[i].updateInterval === undefined || (adapter.config.devices[i].updateInterval !== '0' && adapter.config.devices[i].updateInterval !== 0)) {
+
+            if (adapter.config.devices[i].updateInterval === '' || adapter.config.devices[i].updateInterval === undefined) {
+                mBusDevices[deviceId].updateInterval = adapter.config.defaultUpdateInterval;
+            } else
+            if (adapter.config.devices[i].updateInterval && adapter.config.devices[i].updateInterval !== '0' && adapter.config.devices[i].updateInterval !== 0) {
                 mBusDevices[deviceId].updateInterval = parseInt(adapter.config.devices[i].updateInterval, 10) || adapter.config.defaultUpdateInterval;
-            }
-            else {
+            } else {
                 mBusDevices[deviceId].updateInterval = 0;
             }
 

@@ -37,30 +37,33 @@ In the created states for each device one state exists called "updateNow". When 
 
 ## Changelog
 
+### 1.1.0 (2018-05-06)
+* (bluefox) Error tolerance
+
 ### 1.0.0 (2018-04-13)
-* Fix Admin
+* (apollon77) Fix Admin
 
 ### 0.1.8 (2018-04-03)
-* fix config dialog
+* (apollon77) fix config dialog
 
 ### 0.1.7 (2018-04-02)
-* allow to set "0" as update interval that will cause in no automatic updates, so only manually using updateNow is possible.
+* (apollon77) allow to set "0" as update interval that will cause in no automatic updates, so only manually using updateNow is possible.
 
 ### 0.1.6 (2018-03-26)
-* disconnect/reconnect for each query
+* (apollon77) disconnect/reconnect for each query
 
 ### 0.1.5 (2018-03-26)
-* update to node-mbus 0.5 with shorter timeouts
+* (apollon77) update to node-mbus 0.5 with shorter timeouts
 
 ### 0.1.4 (2018-03-26)
-* add "updateNow" states to all devices to trigger manual update
-* update to node-mbus 0.4.1 with shorter timeouts
+* (apollon77) add "updateNow" states to all devices to trigger manual update
+* (apollon77) update to node-mbus 0.4.1 with shorter timeouts
 
 ### 0.1.2
-* official released version
+* (apollon77) official released version
 
 ### 0.0.1
-* initial release for testing
+* (apollon77) initial release for testing
 
 ## License
 
