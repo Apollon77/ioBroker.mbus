@@ -142,7 +142,9 @@ function updateDevices() {
 
     deviceCommunicationInProgress = true;
     const deviceId = deviceUpdateQueue.shift();
-    adapter.log.info('Process: ' + deviceId);
+
+    adapter.log.debug('Process: ' + deviceId);
+
     if (mBusDevices[deviceId].updateTimeout) {
         clearTimeout(mBusDevices[deviceId].updateTimeout);
         mBusDevices[deviceId].updateTimeout = null;
@@ -150,14 +152,15 @@ function updateDevices() {
 
     mbusMaster.connect(err => {
         if (err) {
+            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
             handleDeviceError(deviceId, updateDevices);
             return;
         }
         mbusMaster.getData(deviceId, (err, data) => {
             if (err) {
-                adapter.log.error('M-Bus ID ' + deviceId + ' err: ' + err);
-
+                adapter.log.warn('M-Bus ID ' + deviceId + ' err: ' + err);
+                adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
                 return handleDeviceError(deviceId, () => {
                     // give the chance to be asked next time once more
                     mbusMaster.close(err => {
@@ -179,20 +182,22 @@ function updateDevices() {
 
             adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
-            initializeDeviceObjects(deviceId, data, function () {
-                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, function() {
+            initializeDeviceObjects(deviceId, data, () => {
+                updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, () => {
                     mbusMaster.close(err => {
                         if (mBusDevices[deviceId].updateInterval > 0) {
-                            mBusDevices[deviceId].updateTimeout = setTimeout(function () {
+                            mBusDevices[deviceId].updateTimeout = setTimeout(() => {
                                 mBusDevices[deviceId].updateTimeout = null;
                                 scheduleDeviceUpdate(deviceId);
                             }, mBusDevices[deviceId].updateInterval * 1000);
                         }
 
                         if (err) {
+                            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
                             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
                             handleDeviceError(deviceId, updateDevices);
                         } else {
+                            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', 'ok', true);
                             setTimeout(updateDevices, 500);
                         }
                     });
@@ -223,7 +228,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 unit: state.unit
             },
             native: {id: state.id}
-        }, function(err, obj) {
+        }, (err, obj) => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -243,7 +248,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         type: 'channel',
         common: {name: deviceNamespace},
         native: {}
-    }, function(err, obj) {
+    }, (err, obj) => {
         if (err) {
             adapter.log.error('Error creating State: ' + err);
         }
@@ -251,7 +256,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             type: 'state',
             common: {name: deviceNamespace + '.updateNow', role: 'button', type: 'boolean', def: false},
             native: {}
-        }, function(err, obj) {
+        }, err => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -261,7 +266,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             type: 'channel',
             common: {name: deviceNamespace + '.info'},
             native: {}
-        }, function(err, obj) {
+        }, err => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -269,7 +274,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 type: 'channel',
                 common: {name: deviceNamespace + '.data'},
                 native: {}
-            }, function(err, obj) {
+            }, err => {
                 if (err) {
                     adapter.log.error('Error creating State: ' + err);
                 }
@@ -324,6 +329,11 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     currentState.unit = data.DataRecord[i].Unit;
                     neededStates.push(currentState);
                 }
+                neededStates.push({
+                    id: '.data.lastStatus',
+                    type: 'string',
+                    role: 'state'
+                });
 
                 createStates();
             });
