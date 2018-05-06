@@ -39,8 +39,6 @@ In the created states for each device one state exists called "updateNow". When 
 
 ### 1.1.0 (2018-05-06)
 * (bluefox) Error tolerance
-
-### 1.0.0 (2018-04-13)
 * (apollon77) Fix Admin
 
 ### 0.1.8 (2018-04-03)
