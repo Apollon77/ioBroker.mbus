@@ -38,7 +38,7 @@ let stateValues = {};
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
-        adapter.setState('info.connection', connected, true, function (err) {
+        adapter.setState('info.connection', connected, true, err => {
             // analyse if the state could be set (because of permissions)
             if (err) adapter.log.error('Can not update connected state: ' + err);
               else adapter.log.debug('connected set to ' + connected);
@@ -50,7 +50,7 @@ adapter.on('ready', main);
 
 adapter.on('message', processMessage);
 
-adapter.on('stateChange', function (id, state) {
+adapter.on('stateChange', (id, state) => {
     adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
     if (!state || state.ack || !state.val) return;
     const idSplit = id.split('.');
@@ -92,15 +92,15 @@ function onClose(callback) {
     }
 }
 
-adapter.on('unload', function (callback) {
+adapter.on('unload', callback => {
     onClose(callback);
 });
 
-process.on('SIGINT', function () {
+process.on('SIGINT', () => {
     onClose();
 });
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', err => {
     if (adapter && adapter.log) {
         adapter.log.warn('Exception: ' + err);
     }
@@ -129,8 +129,23 @@ function handleDeviceError(deviceId, callback) {
         onClose(main);
         return false;
     }
-    if (callback) {
-        setTimeout(callback, 500);
+    callback && setTimeout(callback, 500);
+}
+
+function finishDevice(deviceId, callback) {
+    try {
+        mbusMaster.close(err => {
+            if (mBusDevices[deviceId].updateInterval > 0) {
+                mBusDevices[deviceId].updateTimeout = setTimeout(() => {
+                    mBusDevices[deviceId].updateTimeout = null;
+                    scheduleDeviceUpdate(deviceId);
+                }, mBusDevices[deviceId].updateInterval * 1000);
+            }
+            callback && callback(err);
+        });
+    } catch (e) {
+        adapter.log.error('Error by closing: ' + e);
+        callback && callback(err);
     }
 }
 
@@ -161,37 +176,23 @@ function updateDevices() {
             if (err) {
                 adapter.log.warn('M-Bus ID ' + deviceId + ' err: ' + err);
                 adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
-                return handleDeviceError(deviceId, () => {
-                    // give the chance to be asked next time once more
-                    mbusMaster.close(err => {
-                        if (mBusDevices[deviceId].updateInterval > 0) {
-                            mBusDevices[deviceId].updateTimeout = setTimeout(function () {
-                                mBusDevices[deviceId].updateTimeout = null;
-                                scheduleDeviceUpdate(deviceId);
-                            }, mBusDevices[deviceId].updateInterval * 1000);
-                        }
+                return handleDeviceError(deviceId, () =>
+                    finishDevice(deviceId, err => {
                         if (err) {
                             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
                             handleDeviceError(deviceId, updateDevices);
-                            return;
+                        } else {
+                            setTimeout(updateDevices, 500);
                         }
-                        setTimeout(updateDevices, 500);
-                    });
-                });
+                    })
+                );
             }
 
             adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
             initializeDeviceObjects(deviceId, data, () => {
                 updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, () => {
-                    mbusMaster.close(err => {
-                        if (mBusDevices[deviceId].updateInterval > 0) {
-                            mBusDevices[deviceId].updateTimeout = setTimeout(() => {
-                                mBusDevices[deviceId].updateTimeout = null;
-                                scheduleDeviceUpdate(deviceId);
-                            }, mBusDevices[deviceId].updateInterval * 1000);
-                        }
-
+                    finishDevice(deviceId, err => {
                         if (err) {
                             adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
                             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
