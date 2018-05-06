@@ -140,7 +140,7 @@ function updateDevices() {
 
     deviceCommunicationInProgress = true;
     var deviceId = deviceUpdateQueue.shift();
-    adapter.log.info('Process: ' + deviceId);
+    adapter.log.debug('Process: ' + deviceId);
     if (mBusDevices[deviceId].updateTimeout) {
         clearTimeout(mBusDevices[deviceId].updateTimeout);
         mBusDevices[deviceId].updateTimeout = null;
