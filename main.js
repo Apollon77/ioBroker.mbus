@@ -16,6 +16,7 @@ const path       = require('path');
 const utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
 const MbusMaster = require('node-mbus');
 let   serialport;
+let   waitForScan;
 
 try {
     serialport = require('serialport');
@@ -150,6 +151,12 @@ function finishDevice(deviceId, callback) {
 }
 
 function updateDevices() {
+    if (waitForScan) {
+        deviceCommunicationInProgress = false;
+        makeScan(waitForScan);
+        return;
+    }
+
     if (!deviceUpdateQueue.length) {
         deviceCommunicationInProgress = false;
         return;
@@ -507,21 +514,30 @@ function processMessage(obj) {
 
             case 'scanSecondary':
                 if (mbusMaster) {
-                    deviceCommunicationInProgress = true;
-                    mbusMaster.scanSecondary(function (err, data) {
-                        deviceCommunicationInProgress = false;
-                        if (err) {
-                            adapter.log.error('M-Bus scan err: ' + err);
-                            data = [];
-                        }
-                        adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
-                        adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
-                        updateDevices();
-                    });
+                    if (deviceCommunicationInProgress) {
+                        waitForScan = obj;
+                    } else {
+                        makeScan(obj);
+                    }
                 } else {
                     adapter.sendTo(obj.from, obj.command, {error: 'Master is inactive'}, obj.callback);
                 }
                 break;
         }
     }
+}
+
+function makeScan(msgObj) {
+    waitForScan = null;
+    deviceCommunicationInProgress = true;
+    mbusMaster.scanSecondary((err, data) => {
+        deviceCommunicationInProgress = false;        
+        if (err) {
+            adapter.log.error('M-Bus scan err: ' + err);
+            data = [];
+        }
+        adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
+        adapter.sendTo(msgObj.from, msgObj.command, {error: err ? err.toString() : null, result: data}, msgObj.callback);
+        updateDevices();
+    });
 }
