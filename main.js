@@ -1,6 +1,8 @@
 /**
  *
- * NUT adapter
+ * ioBroker MBUS adapter
+ * Copyright 2018 apollon77 
+ * MIT LIcense
  *
  * Adapter loading data from an M-Bus devices
  *
