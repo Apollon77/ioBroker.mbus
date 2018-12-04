@@ -237,7 +237,13 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 write: false,
                 unit: state.unit
             },
-            native: {id: state.id}
+            native: {
+                id: state.id,
+                Function: data.Function,
+                StorageNumber: data.StorageNumber,
+                Tariff: data.Tariff,
+                Device: data.Device,
+            }
         }, (err, obj) => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
