@@ -259,7 +259,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             state.unit = m[2].trim();
             name = state.id + ' ' + m[1].trim();
         } else {
-            name = state.id + ' ' + state.unit;
+            name = state.id + (state.unit ? ' ' + state.unit : '');
             state.unit = undefined;
         }
         
@@ -280,6 +280,11 @@ function initializeDeviceObjects(deviceId, data, callback) {
             state.unit = undefined;
             role = 'date';
         }
+
+        // remove '.data.25-2-' at start
+        name = name.replace(/\.data\.\d+-\d+-?/, '');
+        /// remove '.info.' from start
+        name = name.replace(/\.info\./, '');
 
         // var stateName = state.id.substring(state.id.indexOf('.', 1));
         adapter.setObjectNotExists(deviceNamespace + state.id, {
