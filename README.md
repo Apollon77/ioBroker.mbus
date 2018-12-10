@@ -36,6 +36,9 @@ In the created states for each device one state exists called "updateNow". When 
 
 ## Changelog
 
+### 1.1.1 (2018-12-10)
+* (Apollon77) make sure adapter is not communicating too fast at the beginning
+
 ### 1.1.0 (2018-05-06)
 * (bluefox) Error tolerance
 * (apollon77) Fix Admin

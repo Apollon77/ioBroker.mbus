@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mbus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MBus Adapter",
   "author": "Ingo Fischer <ingo@fischer-ka.de>",
   "contributors": [],

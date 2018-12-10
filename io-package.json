@@ -1,8 +1,19 @@
 {
     "common": {
         "name":                     "mbus",
-        "version":                  "1.1.0",
+        "version":                  "1.1.1",
 		"news": {
+            "1.1.1": {
+                "en": "Error tolerance",
+                "de": "Fehlertoleranz",
+                "ru": "Допуск ошибок",
+                "pt": "Tolerância ao erro",
+                "nl": "Fouttolerantie",
+                "fr": "Tolérance d'erreur",
+                "it": "Tolleranza di errore",
+                "es": "Tolerancia a los errores",
+                "pl": "Tolerancja błędu"
+            },
             "1.1.0": {
                 "en": "Error tolerance",
                 "de": "Fehlertoleranz",
