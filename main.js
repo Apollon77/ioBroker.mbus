@@ -271,6 +271,8 @@ function initializeDeviceObjects(deviceId, data, callback) {
             state.unit = state.unit.replace(m2[1], '').trim();
         }
         factors[deviceNamespace + state.id] = factor;
+        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
+
         state.unit = UNITS2UNITS[state.unit] || state.unit;
         let role = UNITS2ROLES[state.unit] || 'value';
         if (state.unit === 'time & date') {
@@ -471,7 +473,7 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             if (factors[deviceNamespace + stateId] && typeof val === 'number') {
                 val *= factors[deviceNamespace + stateId];
             }
-
+            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factors[deviceNamespace + stateId]);
             adapter.setState(deviceNamespace + stateId, {
                 ack: true,
                 val,
