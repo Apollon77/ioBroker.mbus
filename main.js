@@ -260,7 +260,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             name = state.id + ' ' + m[1].trim();
         } else {
             name = state.id + (state.unit ? ' ' + state.unit : '');
-            state.unit = undefined;
+            //state.unit = undefined;
         }
         
         name += state.Tariff !== undefined ? (' (Tarif ' + state.Tariff + ')') : '';
@@ -269,6 +269,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         if (m2) {
             factor = parseFloat(m2[1]);
             state.unit = state.unit.replace(m2[1], '').trim();
+            name = name.replace(m2[1], '').trim();
         }
         factors[deviceNamespace + state.id] = factor;
         adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
