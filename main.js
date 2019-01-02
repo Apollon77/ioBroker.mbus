@@ -488,6 +488,7 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             let val = data.DataRecord[i].Value;
             if (factors[deviceNamespace + stateId] && typeof val === 'number') {
                 val *= factors[deviceNamespace + stateId];
+                val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
             }
             adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factors[deviceNamespace + stateId]);
             adapter.setState(deviceNamespace + stateId, {
