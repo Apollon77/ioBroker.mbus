@@ -217,7 +217,7 @@ function updateDevices() {
         });
     });
 }
-
+// https://www.m-bus.de/vif.html
 const UNITS2ROLES = {
     'W': 'value.power',
     'kWh': 'value.power.consumption',
@@ -226,6 +226,8 @@ const UNITS2ROLES = {
     '°F': 'value.temperature',
     '°K': 'value.temperature',
     'm3/h': 'value.flow',
+    'm3/min': 'value.flow',
+    'm3/s': 'value.flow',
     'm3': 'value.volume',
     'sec': 'value.duration',
     'hours': 'value.duration',
@@ -238,6 +240,8 @@ const UNITS2UNITS = {
     'deg F': '°F',
     'seconds': 'sec',
     'm m^3/h': 'm3/h',
+    'm m^3/min': 'm3/min',
+    'm m^3/s': 'm3/s',
     'm^3': 'm3',
     'm m^3': 'm3'
 };
@@ -252,7 +256,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         const state = neededStates.shift();
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
         // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
-        const m = (state.unit || '').match(/^([^(]+)\s?\(([^\)]+)\)$/);
+        const m = (state.unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
         let name = state.id;
         
         if (m) {
@@ -271,8 +275,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
             state.unit = state.unit.replace(m2[1], '').trim();
             name = name.replace(m2[1], '').trim();
         }
-        factors[deviceNamespace + state.id] = factor;
-        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
+
 
         state.unit = UNITS2UNITS[state.unit] || state.unit;
         let role = UNITS2ROLES[state.unit] || 'value';
@@ -283,6 +286,18 @@ function initializeDeviceObjects(deviceId, data, callback) {
             state.unit = undefined;
             role = 'date';
         }
+        if (role === 'value.flow' || role === 'value.volume') {
+            if (state.unit === 'm3/min') {
+                factor = 0.0001;
+            } else if (state.unit === 'm3/s') {
+                factor = 0.000001;
+            } else {
+                factor = 0.001;
+            }
+        }
+
+        factors[deviceNamespace + state.id] = factor;
+        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
 
         // remove '.data.25-2-' at start
         name = name.replace(/\.data\.\d+-\d+-?/, '');
@@ -564,9 +579,7 @@ function main() {
             }
 
             adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
-            setTimeout(() => {
-                scheduleDeviceUpdate(deviceId);
-            }, 500);
+            setTimeout(() => scheduleDeviceUpdate(deviceId), 500);
         }
     });
 }
