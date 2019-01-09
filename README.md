@@ -6,7 +6,6 @@
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.mbus.svg)](https://www.npmjs.com/package/iobroker.mbus)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mbus.svg)](https://www.npmjs.com/package/iobroker.mbus)
-[![Dependency Status](https://gemnasium.com/badges/github.com/Apollon77/ioBroker.mbus.svg)](https://gemnasium.com/github.com/Apollon77/ioBroker.mbus)
 [![Code Climate](https://codeclimate.com/github/Apollon77/ioBroker.mbus/badges/gpa.svg)](https://codeclimate.com/github/Apollon77/ioBroker.mbus)
 
 **Tests:** Linux/Mac: [![Travis-CI](http://img.shields.io/travis/Apollon77/ioBroker.mbus/master.svg)](https://travis-ci.org/Apollon77/ioBroker.mbus)
@@ -36,6 +35,9 @@ In the created states for each device one state exists called "updateNow". When 
 * encrypted payload handling (if needed by anyone)
 
 ## Changelog
+
+### 1.1.1 (2018-12-10)
+* (Apollon77) make sure adapter is not communicating too fast at the beginning
 
 ### 1.1.0 (2018-05-06)
 * (bluefox) Error tolerance

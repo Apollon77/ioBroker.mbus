@@ -1,6 +1,8 @@
 /**
  *
- * NUT adapter
+ * ioBroker MBUS adapter
+ * Copyright 2018 apollon77 
+ * MIT LIcense
  *
  * Adapter loading data from an M-Bus devices
  *
@@ -16,6 +18,7 @@ const path       = require('path');
 const utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
 const MbusMaster = require('node-mbus');
 let   serialport;
+let   waitForScan;
 
 try {
     serialport = require('serialport');
@@ -34,6 +37,7 @@ let connected = null;
 let errorDevices = {};
 
 let stateValues = {};
+let factors = {};
 
 function setConnected(isConnected) {
     if (connected !== isConnected) {
@@ -150,6 +154,12 @@ function finishDevice(deviceId, callback) {
 }
 
 function updateDevices() {
+    if (waitForScan) {
+        deviceCommunicationInProgress = false;
+        makeScan(waitForScan);
+        return;
+    }
+
     if (!deviceUpdateQueue.length) {
         deviceCommunicationInProgress = false;
         return;
@@ -207,6 +217,34 @@ function updateDevices() {
         });
     });
 }
+// https://www.m-bus.de/vif.html
+const UNITS2ROLES = {
+    'W': 'value.power',
+    'kWh': 'value.power.consumption',
+    'kW': 'value.power',
+    '°C': 'value.temperature',
+    '°F': 'value.temperature',
+    '°K': 'value.temperature',
+    'm3/h': 'value.flow',
+    'm3/min': 'value.flow',
+    'm3/s': 'value.flow',
+    'm3': 'value.volume',
+    'sec': 'value.duration',
+    'hours': 'value.duration',
+    'minutes': 'value.duration'
+};
+
+const UNITS2UNITS = {
+    'deg C': '°C',
+    'deg K': '°K',
+    'deg F': '°F',
+    'seconds': 'sec',
+    'm m^3/h': 'm3/h',
+    'm m^3/min': 'm3/min',
+    'm m^3/s': 'm3/s',
+    'm^3': 'm3',
+    'm m^3': 'm3'
+};
 
 function initializeDeviceObjects(deviceId, data, callback) {
     let neededStates = [];
@@ -217,18 +255,73 @@ function initializeDeviceObjects(deviceId, data, callback) {
         }
         const state = neededStates.shift();
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
+        // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
+        const m = (state.unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+        let name = state.id;
+        
+        if (m) {
+            state.unit = m[2].trim();
+            name = state.id + ' ' + m[1].trim();
+        } else {
+            name = state.id + (state.unit ? ' ' + state.unit : '');
+            //state.unit = undefined;
+        }
+        
+        name += state.Tariff !== undefined ? (' (Tarif ' + state.Tariff + ')') : '';
+        const m2 = (state.unit || '').match(/^([-\deE]+)/);
+        let factor = 1;
+        if (m2) {
+            factor = parseFloat(m2[1]);
+            state.unit = state.unit.replace(m2[1], '').trim();
+            name = name.replace(m2[1], '').trim();
+        }
+
+
+        state.unit = UNITS2UNITS[state.unit] || state.unit;
+        let role = UNITS2ROLES[state.unit] || 'value';
+        if (state.unit === 'time & date') {
+            state.unit = undefined;
+            role = 'date';
+        } else if (state.unit === 'date') {
+            state.unit = undefined;
+            role = 'date';
+        }
+        if (role === 'value.flow' || role === 'value.volume') {
+            if (state.unit === 'm3/min') {
+                factor = 0.0001;
+            } else if (state.unit === 'm3/s') {
+                factor = 0.000001;
+            } else {
+                factor = 0.001;
+            }
+        }
+
+        factors[deviceNamespace + state.id] = factor;
+        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
+
+        // remove '.data.25-2-' at start
+        name = name.replace(/\.data\.\d+-\d+-?/, '');
+        /// remove '.info.' from start
+        name = name.replace(/\.info\./, '');
+
         // var stateName = state.id.substring(state.id.indexOf('.', 1));
         adapter.setObjectNotExists(deviceNamespace + state.id, {
             type: 'state',
             common: {
-                name: state.id,
-                role: 'value',
+                name,
+                role,
                 type: state.type,
                 read: true,
                 write: false,
                 unit: state.unit
             },
-            native: {id: state.id}
+            native: {
+                id: state.id,
+                StorageNumber: state.StorageNumber,
+                Tariff: state.Tariff,
+                Device: state.Device,
+                factor
+            }
         }, (err, obj) => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
@@ -286,8 +379,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
 
                     currentState = {};
                     currentState.id = '.info.' + id;
-                    currentType = typeof data.SlaveInformation[id];
-                    currentState.type = currentType === 'Number' ? 'number' : 'string';
+                    currentState.type = typeof data.SlaveInformation[id];
                     currentState.unit = '';
                     neededStates.push(currentState);
                 }
@@ -324,10 +416,11 @@ function initializeDeviceObjects(deviceId, data, callback) {
                             currentState.id += '-' + data.DataRecord[i].Function;
                             break;
                     }
-                    currentType = typeof data.DataRecord[i].Value;
-                    if (currentType === 'Number') currentState.type = 'number';
-                        else currentState.type = 'string';
+                    currentState.type = typeof data.DataRecord[i].Value;
                     currentState.unit = data.DataRecord[i].Unit;
+                    currentState.Tariff = data.DataRecord[i].Tariff;
+                    currentState.StorageNumber = data.DataRecord[i].StorageNumber;
+                    currentState.Device = data.DataRecord[i].Device;
                     neededStates.push(currentState);
                 }
                 neededStates.push({
@@ -391,9 +484,16 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
         }
         if (stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
             stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
+
+            let val = data.DataRecord[i].Value;
+            if (factors[deviceNamespace + stateId] && typeof val === 'number') {
+                val *= factors[deviceNamespace + stateId];
+                val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
+            }
+            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factors[deviceNamespace + stateId]);
             adapter.setState(deviceNamespace + stateId, {
                 ack: true,
-                val: data.DataRecord[i].Value,
+                val,
                 ts: new Date(data.DataRecord[i].Timestamp).getTime()
             });
         }
@@ -480,7 +580,7 @@ function main() {
             }
 
             adapter.log.info('Schedule initialization for M-Bus-ID ' + deviceId + ' with update interval ' + mBusDevices[deviceId].updateInterval);
-            scheduleDeviceUpdate(deviceId);
+            setTimeout(() => scheduleDeviceUpdate(deviceId), 500);
         }
     });
 }
@@ -507,21 +607,30 @@ function processMessage(obj) {
 
             case 'scanSecondary':
                 if (mbusMaster) {
-                    deviceCommunicationInProgress = true;
-                    mbusMaster.scanSecondary(function (err, data) {
-                        deviceCommunicationInProgress = false;
-                        if (err) {
-                            adapter.log.error('M-Bus scan err: ' + err);
-                            data = [];
-                        }
-                        adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
-                        adapter.sendTo(obj.from, obj.command, {error: err ? err.toString() : null, result: data}, obj.callback);
-                        updateDevices();
-                    });
+                    if (deviceCommunicationInProgress) {
+                        waitForScan = obj;
+                    } else {
+                        makeScan(obj);
+                    }
                 } else {
                     adapter.sendTo(obj.from, obj.command, {error: 'Master is inactive'}, obj.callback);
                 }
                 break;
         }
     }
+}
+
+function makeScan(msgObj) {
+    waitForScan = null;
+    deviceCommunicationInProgress = true;
+    mbusMaster.scanSecondary((err, data) => {
+        deviceCommunicationInProgress = false;        
+        if (err) {
+            adapter.log.error('M-Bus scan err: ' + err);
+            data = [];
+        }
+        adapter.log.info('M-Bus scan data: ' + JSON.stringify(data, null, 2));
+        adapter.sendTo(msgObj.from, msgObj.command, {error: err ? err.toString() : null, result: data}, msgObj.callback);
+        updateDevices();
+    });
 }
