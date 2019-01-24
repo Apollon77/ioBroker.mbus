@@ -131,6 +131,7 @@
         "defaultUpdateInterval":    3600,
         "serialPort":               "",
         "serialBaudRate":           115200,
+        "alwaysUpdate":             false,
         "devices": [
             {
                 "id": "1",
