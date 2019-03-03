@@ -15,7 +15,7 @@
 'use strict';
 
 const path       = require('path');
-const utils      = require(path.join(__dirname, 'lib', 'utils')); // Get common adapter utils
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const MbusMaster = require('node-mbus');
 let   serialport;
 let   waitForScan;
