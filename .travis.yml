@@ -1,9 +1,9 @@
 os:
   - linux
   - osx
+  - windows
 language: node_js
 node_js:
-  - '4'
   - '6'
   - '8'
   - '10'
@@ -14,12 +14,12 @@ before_script:
   - export NPMVERSION=$(echo "$($(which npm) -v)"|cut -c1)
   - 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm@5; fi'
   - npm -v
-  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export export CXX=g++-4.8; fi'
+  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export export CXX=g++-4.9; fi'
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi'
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install socat; fi'
   - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi'
   - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then chmod +x ./cc-test-reporter; fi'
-  - npm install winston@2.3.1
+  - npm install winston@3.2.1
   - 'npm install https://github.com/ioBroker/ioBroker.js-controller/tarball/master --production'
   - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./cc-test-reporter before-build; fi'
 after_success:
@@ -30,5 +30,5 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
+      - g++-4.9
       - socat
