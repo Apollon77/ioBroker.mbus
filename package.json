@@ -16,7 +16,7 @@
     "url": "https://github.com/Apollon77/ioBroker.mbus"
   },
   "optionalDependencies": {
-    "serialport": "^6.2.0"
+    "serialport": "^7.1.4"
   },
   "dependencies": {
     "node-mbus": "^0.6.1",
