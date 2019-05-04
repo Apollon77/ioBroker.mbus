@@ -10,7 +10,7 @@ platform:
   - x64
 clone_folder: 'c:\projects\%APPVEYOR_PROJECT_NAME%'
 install:
-  - ps: 'Install-Product node $env:nodejs_version $env:platform'
+  #- ps: 'Install-Product node $env:nodejs_version $env:platform'
   # https://www.appveyor.com/docs/lang/nodejs-iojs/#installing-any-version-of-nodejs-or-iojs
   - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version) $env:platform
   - ps: '$NpmVersion = (npm -v).Substring(0,1)'
