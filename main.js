@@ -482,7 +482,7 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
                 stateId += '-' + data.DataRecord[i].Function;
                 break;
         }
-        if (stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
+        if (adapter.config.alwaysUpdate || stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
             stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
 
             let val = data.DataRecord[i].Value;
