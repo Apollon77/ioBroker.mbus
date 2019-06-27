@@ -232,6 +232,8 @@ function adjustUnit(unit, type, forcekWh) {
         case "External temperature":
         case "Temperature Difference": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( deg (C|F))$/); break;
         case "Pressure":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( bar)$/); break;
+        case "Voltage":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( V)$/); break;
+        case "Current":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( A)$/); break;
         case "Time Point": return {factor: undefined, unit: undefined};
     }
     //special case to adjust unit for durations
@@ -266,6 +268,10 @@ function adjustUnit(unit, type, forcekWh) {
     switch (unit) {
         case "deg C": unit = "°C"; break;
         case "deg F": unit = "°F"; break;
+        case "m^3": unit = "m³"; break;
+        case "m^3/h": unit = "m³/h"; break;
+        case "m^3/min": unit = "m³/min"; break;
+        case "m^3/s": unit = "m³/s"; break;
     }
     switch (type) {
         case "Temperature Difference": if (unit == "°C") { unit = "K"; } break;
@@ -299,6 +305,8 @@ function getRole(unit, type) {
         case 'Return temperature':
         case 'Temperature Difference':
         case 'External temperature': return 'value.temperature';
+        case 'Current': return 'value.current';
+        case 'Voltage': return 'value.voltage';
     }
 
     switch (unit) {
@@ -307,6 +315,7 @@ function getRole(unit, type) {
         case 'hours':
         case 'days': return 'value.duration';
     }
+
     return 'value';
 }
 
@@ -321,13 +330,21 @@ function initializeDeviceObjects(deviceId, data, callback) {
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
         let name = state.id;
 
-        let m = (state.unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+        let unit = state.unit || '';
+        if (unit.endsWith(' V')) {
+            unit = 'Voltage (' + unit + ')';
+        }
+        if (unit.endsWith(' A')) {
+            unit = 'Current (' + unit + ')';
+        }
+
+        let m = unit.match(/^([^(]+)\s?\(([^)]+)\)$/);
         // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
         let role = 'value';
 
         if (m) {
             let type = m[1].trim();
-            let unit = m[2].trim();
+            unit = m[2].trim();
             role = getRole(unit, type);
             let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
             state.unit = tmp.unit;
@@ -426,10 +443,10 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     id: '.info.address',
                     type: 'string',
                 });
-
+                let padlen = data.DataRecord.length.toString().length;
                 for (let i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
-                    currentState.id = '.data.' + data.DataRecord[i].id;
+                    currentState.id = '.data.' + data.DataRecord[i].id.toString().padStart(padlen, '0');
                     if (data.DataRecord[i].StorageNumber !== undefined) {
                         currentState.id += '-' + data.DataRecord[i].StorageNumber;
                     }
@@ -494,8 +511,9 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             });
         }
 
+    let padlen = data.DataRecord.length.toString().length;
     for (let i = 0; i < data.DataRecord.length; i++) {
-        let stateId = '.data.' + data.DataRecord[i].id;
+        let stateId = '.data.' + data.DataRecord[i].id.toString().padStart(padlen, '0');
         if (data.DataRecord[i].StorageNumber !== undefined) {
             stateId += '-' + data.DataRecord[i].StorageNumber;
         }
@@ -523,14 +541,20 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
 
             let val = data.DataRecord[i].Value;
-            let m = (data.DataRecord[i].Unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+            let unit = data.DataRecord[i].Unit || '';
+            if (unit.endsWith(' V')) {
+                unit = 'Voltage (' + unit + ')';
+            }
+            if (unit.endsWith(' A')) {
+                unit = 'Current (' + unit + ')';
+            }
+            let m = unit.match(/^([^(]+)\s?\(([^)]+)\)$/);
             // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
             let factor = 0;
             if (m) {
                 let type = m[1].trim();
-                let unit = m[2].trim();
-                let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
-                factor = tmp.factor || 0;
+                unit = m[2].trim();
+                factor = adjustUnit(unit, type, adapter.config.forcekWh).factor || 0;
             }
 
             adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factor);
