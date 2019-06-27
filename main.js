@@ -33,7 +33,7 @@ let mBusDevices = {};
 let deviceCommunicationInProgress = false;
 let mbusMaster;
 
-let connected = null;
+let connected = false;
 let errorDevices = {};
 
 let stateValues = {};
