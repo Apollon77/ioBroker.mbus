@@ -37,7 +37,6 @@ let connected = null;
 let errorDevices = {};
 
 let stateValues = {};
-let factors = {};
 
 function setConnected(isConnected) {
     if (connected !== isConnected) {
@@ -217,34 +216,99 @@ function updateDevices() {
         });
     });
 }
-// https://www.m-bus.de/vif.html
-const UNITS2ROLES = {
-    'W': 'value.power',
-    'kWh': 'value.power.consumption',
-    'kW': 'value.power',
-    '°C': 'value.temperature',
-    '°F': 'value.temperature',
-    '°K': 'value.temperature',
-    'm3/h': 'value.flow',
-    'm3/min': 'value.flow',
-    'm3/s': 'value.flow',
-    'm3': 'value.volume',
-    'sec': 'value.duration',
-    'hours': 'value.duration',
-    'minutes': 'value.duration'
-};
 
-const UNITS2UNITS = {
-    'deg C': '°C',
-    'deg K': '°K',
-    'deg F': '°F',
-    'seconds': 'sec',
-    'm m^3/h': 'm3/h',
-    'm m^3/min': 'm3/min',
-    'm m^3/s': 'm3/s',
-    'm^3': 'm3',
-    'm m^3': 'm3'
-};
+function adjustUnit(unit, type, forcekWh) {
+    let m;
+    // regex depending on type as to account for different units and keep it somewhat readable
+    switch (type) {
+        case "Energy": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(Wh|J)$/); break;
+        case "Mass": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(kg)$/); break;
+        case "Power": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(W|J\/h)$/); break;
+        case "Volume": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( m\^3)$/); break;
+        case "Volume flow": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( m\^3\/(h|min|s))$/); break;
+        case "Mass flow": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( kg\/h)$/); break;
+        case "Flow temperature":
+        case "Return temperature": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(deg (C|F))$/); break;
+        case "External temperature":
+        case "Temperature Difference": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( deg (C|F))$/); break;
+        case "Pressure":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( bar)$/); break;
+        case "Time Point": return {factor: undefined, unit: undefined};
+    }
+    //special case to adjust unit for durations
+    switch (unit) {
+        case "seconds": return {factor: 1, unit: "s"};
+        case "minutes": return {factor: 1, unit: "min"};
+        case "hours": return {factor: 1, unit: "h"};
+        case "days": return {factor: 1, unit: "d"};
+    }
+
+    // nothing worked
+    if (!m) {
+        return {factor: undefined, unit: undefined};
+    }
+
+    // adjust factor depending on metric prefix
+    let factor = parseFloat(m[1]) || 1;
+    unit = m[3].trim();
+    if (m[2]) {
+        switch (m[2]) {
+            case "m": factor *= 1e-3; break;
+            case "my": factor *= 1e-6; break;
+            case "k": factor *= 1e3; break;
+            case "M": factor *= 1e6; break;
+            case "G": factor *= 1e9; break;
+            case "T": factor *= 1e9; break; //this is an error in libmbus...
+            default: unit = m[2] + unit;
+        }
+    }
+
+    // make some units nicer looking
+    switch (unit) {
+        case "deg C": unit = "°C"; break;
+        case "deg F": unit = "°F"; break;
+    }
+    switch (type) {
+        case "Temperature Difference": if (unit == "°C") { unit = "K"; } break;
+    }
+    
+    // force specific SI prefix or unit
+    if (forcekWh) {
+        if (unit == "Wh") {
+            unit = "kWh";
+            factor = factor / 1000;
+        } else if (unit == "J") {
+            unit = "kWh";
+            factor = factor / 3600000;
+        }            
+    }
+
+    return {factor: factor, unit: unit};
+}
+
+function getRole(unit, type) {
+    switch (type) {
+        case 'Energy': return 'value.power.consumption';
+        case 'Power': return 'value.power';
+        case 'Mass': return 'value.mass'
+        case 'Volume': return 'value.volume';
+        case 'Volume flow': return 'value.flow';
+        case 'Mass flow': return 'value.flow';
+        case 'Time Point': return 'date';
+        case 'Pressure': return 'value.pressure';
+        case 'Flow temperature':
+        case 'Return temperature':
+        case 'Temperature Difference':
+        case 'External temperature': return 'value.temperature';
+    }
+
+    switch (unit) {
+        case 'seconds':
+        case 'minutes':
+        case 'hours':
+        case 'days': return 'value.duration';
+    }
+    return 'value';
+}
 
 function initializeDeviceObjects(deviceId, data, callback) {
     let neededStates = [];
@@ -255,53 +319,29 @@ function initializeDeviceObjects(deviceId, data, callback) {
         }
         const state = neededStates.shift();
         adapter.log.debug('Create State ' + deviceNamespace + state.id);
-        // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
-        const m = (state.unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
         let name = state.id;
-        
+
+        let m = (state.unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+        // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
+        let role = 'value';
+
         if (m) {
-            state.unit = m[2].trim();
-            name = state.id + ' ' + m[1].trim();
+            let type = m[1].trim();
+            let unit = m[2].trim();
+            let role = getRole(unit, type);
+            let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
+            state.unit = tmp.unit;
+            name = state.id + ' ' + type;
         } else {
             name = state.id + (state.unit ? ' ' + state.unit : '');
-            //state.unit = undefined;
         }
-        
-        name += state.Tariff !== undefined ? (' (Tarif ' + state.Tariff + ')') : '';
-        const m2 = (state.unit || '').match(/^([-\deE]+)/);
-        let factor = 1;
-        if (m2) {
-            factor = parseFloat(m2[1]);
-            state.unit = state.unit.replace(m2[1], '').trim();
-            name = name.replace(m2[1], '').trim();
-        }
+        name += state.Tariff !== undefined ? (' (Tariff ' + state.Tariff + ')') : '';
 
-
-        state.unit = UNITS2UNITS[state.unit] || state.unit;
-        let role = UNITS2ROLES[state.unit] || 'value';
-        if (state.unit === 'time & date') {
-            state.unit = undefined;
-            role = 'date';
-        } else if (state.unit === 'date') {
-            state.unit = undefined;
-            role = 'date';
-        }
-        if (role === 'value.flow' || role === 'value.volume') {
-            if (state.unit === 'm3/min') {
-                factor = 0.0001;
-            } else if (state.unit === 'm3/s') {
-                factor = 0.000001;
-            } else {
-                factor = 0.001;
-            }
-        }
-
-        factors[deviceNamespace + state.id] = factor;
-        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factors[deviceNamespace + state.id]);
+        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factor);
 
         // remove '.data.25-2-' at start
         name = name.replace(/\.data\.\d+-\d+-?/, '');
-        /// remove '.info.' from start
+        // remove '.info.' from start
         name = name.replace(/\.info\./, '');
 
         // var stateName = state.id.substring(state.id.indexOf('.', 1));
@@ -319,8 +359,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 id: state.id,
                 StorageNumber: state.StorageNumber,
                 Tariff: state.Tariff,
-                Device: state.Device,
-                factor
+                Device: state.Device
             }
         }, (err, obj) => {
             if (err) {
@@ -486,11 +525,23 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
 
             let val = data.DataRecord[i].Value;
-            if (factors[deviceNamespace + stateId] && typeof val === 'number') {
-                val *= factors[deviceNamespace + stateId];
+            let m = (data.DataRecord[i].unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+            // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
+            let factor = 0;
+            if (m) {
+                let type = m[1].trim();
+                let unit = m[2].trim();
+                let role = getRole(unit, type);
+                let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
+                adapter.log.debug(JSON.stringify(tmp));
+                factor = tmp.factor || 0;
+            }
+
+            if (factor && typeof val === 'number') {
+                val *= factor;
                 val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
             }
-            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factors[deviceNamespace + stateId]);
+            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factor);
             adapter.setState(deviceNamespace + stateId, {
                 ack: true,
                 val,
@@ -529,7 +580,7 @@ function main() {
     } else {
         adapter.config.defaultUpdateInterval = 0;
     }
-
+    
     adapter.log.info('Default Update Interval: ' + adapter.config.defaultUpdateInterval);
 
     if (adapter.config.type === 'tcp' && adapter.config.host && adapter.config.port) {

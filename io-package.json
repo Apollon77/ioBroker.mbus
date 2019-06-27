@@ -132,6 +132,7 @@
         "serialPort":               "",
         "serialBaudRate":           115200,
         "alwaysUpdate":             false,
+        "forcekWh":                 false,
         "devices": [
             {
                 "id": "1",
