@@ -328,7 +328,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         if (m) {
             let type = m[1].trim();
             let unit = m[2].trim();
-            let role = getRole(unit, type);
+            role = getRole(unit, type);
             let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
             state.unit = tmp.unit;
             name = state.id + ' ' + type;
@@ -336,8 +336,6 @@ function initializeDeviceObjects(deviceId, data, callback) {
             name = state.id + (state.unit ? ' ' + state.unit : '');
         }
         name += state.Tariff !== undefined ? (' (Tariff ' + state.Tariff + ')') : '';
-
-        adapter.log.debug('Factor for ' + deviceNamespace + state.id + ': ' + factor);
 
         // remove '.data.25-2-' at start
         name = name.replace(/\.data\.\d+-\d+-?/, '');
@@ -525,23 +523,21 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
 
             let val = data.DataRecord[i].Value;
-            let m = (data.DataRecord[i].unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
+            let m = (data.DataRecord[i].Unit || '').match(/^([^(]+)\s?\(([^)]+)\)$/);
             // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
             let factor = 0;
             if (m) {
                 let type = m[1].trim();
                 let unit = m[2].trim();
-                let role = getRole(unit, type);
                 let tmp = adjustUnit(unit, type, adapter.config.forcekWh);
-                adapter.log.debug(JSON.stringify(tmp));
                 factor = tmp.factor || 0;
             }
 
+            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factor);
             if (factor && typeof val === 'number') {
                 val *= factor;
                 val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
             }
-            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factor);
             adapter.setState(deviceNamespace + stateId, {
                 ack: true,
                 val,
