@@ -444,7 +444,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     id: '.info.address',
                     type: 'string',
                 });
-                let padlen = data.DataRecord.length.toString().length;
+
                 for (let i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
                     currentState.id = '.data.' + data.DataRecord[i].id;
