@@ -447,7 +447,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 let padlen = data.DataRecord.length.toString().length;
                 for (let i = 0; i < data.DataRecord.length; i++) {
                     currentState = {};
-                    currentState.id = '.data.' + data.DataRecord[i].id.toString().padStart(padlen, '0');
+                    currentState.id = '.data.' + data.DataRecord[i].id;
                     if (data.DataRecord[i].StorageNumber !== undefined) {
                         currentState.id += '-' + data.DataRecord[i].StorageNumber;
                     }
@@ -512,9 +512,8 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             });
         }
 
-    let padlen = data.DataRecord.length.toString().length;
     for (let i = 0; i < data.DataRecord.length; i++) {
-        let stateId = '.data.' + data.DataRecord[i].id.toString().padStart(padlen, '0');
+        let stateId = '.data.' + data.DataRecord[i].id;
         if (data.DataRecord[i].StorageNumber !== undefined) {
             stateId += '-' + data.DataRecord[i].StorageNumber;
         }
@@ -558,7 +557,7 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
                 factor = adjustUnit(unit, type, adapter.config.forcekWh).factor || 0;
             }
 
-            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' with factor ' + factor);
+            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' (unit: ' + unit + ') with factor ' + factor);
             if (factor && typeof val === 'number') {
                 val *= factor;
                 val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
