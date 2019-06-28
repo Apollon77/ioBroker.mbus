@@ -218,6 +218,14 @@ function updateDevices() {
 }
 
 function adjustUnit(unit, type, forcekWh) {
+    //special case to adjust unit for durations
+    switch (unit) {
+        case "seconds": return {factor: 1, unit: "s"};
+        case "minutes": return {factor: 1, unit: "min"};
+        case "hours": return {factor: 1, unit: "h"};
+        case "days": return {factor: 1, unit: "d"};
+    }
+
     let m;
     // regex depending on type as to account for different units and keep it somewhat readable
     switch (type) {
@@ -235,13 +243,6 @@ function adjustUnit(unit, type, forcekWh) {
         case "Voltage":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( V)$/); break;
         case "Current":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( A)$/); break;
         case "Time Point": return {factor: undefined, unit: undefined};
-    }
-    //special case to adjust unit for durations
-    switch (unit) {
-        case "seconds": return {factor: 1, unit: "s"};
-        case "minutes": return {factor: 1, unit: "min"};
-        case "hours": return {factor: 1, unit: "h"};
-        case "days": return {factor: 1, unit: "d"};
     }
 
     // nothing worked
@@ -273,10 +274,10 @@ function adjustUnit(unit, type, forcekWh) {
         case "m^3/min": unit = "m³/min"; break;
         case "m^3/s": unit = "m³/s"; break;
     }
-    switch (type) {
-        case "Temperature Difference": if (unit == "°C") { unit = "K"; } break;
+    if ((type == "Temperature Difference") && (unit == "°C")) {
+        unit = "K";
     }
-    
+
     // force specific SI prefix or unit
     if (forcekWh) {
         if (unit == "Wh") {
