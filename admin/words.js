@@ -197,6 +197,18 @@ systemDictionary = {
         "it": "Impostazioni dell'adattatore M-Bus",
         "es": "Configuración del adaptador M-Bus",
         "pl": "Ustawienia adaptera M-Bus"
+    },
+    "Force energy unit to kWh": {
+        "en": "Force energy unit to kWh",
+        "de": "Energieeinheit auf kWh setzen",
+        "ru": "Измерять энергию в кВтч",
+        "pt": "Força a unidade de energia para kWh",
+        "nl": "Forceer energie-eenheid naar kWh",
+        "fr": "Force énergie en kWh",
+        "it": "Forza unità di energia a kWh",
+        "es": "Unidad de energía de fuerza a kWh.",
+        "pl": "Wymuś jednostkę energii na kWh",
+        "zh-cn": "强制能量单位为千瓦时"
     }
 
 };

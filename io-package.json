@@ -1,8 +1,20 @@
 {
     "common": {
-        "name":                     "mbus",
-        "version":                  "2.0.0",
+        "name": "mbus",
+        "version": "2.0.0",
 		"news": {
+            "2.0.0": {
+                "en": "**BREAKING CHANGE** better handling for values with changing scaling based on the value - maybe incompatible with old values! add setting to force kWh values for energy",
+                "de": "** BREAKING CHANGE ** Besseres Handling für Werte mit sich ändernder Skalierung basierend auf dem Wert - möglicherweise nicht kompatibel mit alten Werten! Einstellung hinzufügen, um kWh-Werte für Energie zu erzwingen",
+                "ru": "** BREAKING CHANGE ** улучшенная обработка значений с изменением масштабирования в зависимости от значения - возможно, несовместимо со старыми значениями! добавить настройку для принудительного значения кВтч для энергии",
+                "pt": "** ALTERAÇÃO DE QUEBRA ** manipulação melhor para valores com mudança de escala com base no valor - talvez incompatível com valores antigos! adicione configuração para forçar os valores de kWh de energia",
+                "nl": "** BREAKING CHANGE ** betere afhandeling van waarden met veranderende schaling op basis van de waarde - misschien niet compatibel met oude waarden! instelling toevoegen om kWh-waarden voor energie te forceren",
+                "fr": "** BREAKING CHANGE ** meilleure gestion des valeurs avec une mise à l'échelle variable en fonction de la valeur - peut-être incompatible avec les anciennes valeurs! ajout du réglage pour forcer les valeurs de kWh d'énergie",
+                "it": "** BREAKING CHANGE ** migliore gestione dei valori con modifica del ridimensionamento in base al valore - forse incompatibile con i vecchi valori! aggiungere l'impostazione per forzare i valori di kWh per l'energia",
+                "es": "** BREAKING CHANGE ** mejor manejo de valores con cambio de escala basado en el valor - ¡tal vez incompatible con valores antiguos! agregar configuración para forzar valores de kWh para energía",
+                "pl": "** ZMIANA ZŁAMANIA ** lepsza obsługa wartości ze zmianą skalowania na podstawie wartości - być może niezgodna ze starymi wartościami! dodaj ustawienie, aby wymusić wartości kWh energii",
+                "zh-cn": "** BREAKING CHANGE **通过基于值更改缩放比例可以更好地处理值-可能与旧值不兼容！添加设置以强制设置电能的kWh值"
+            },
             "1.1.1": {
                 "en": "Error tolerance",
                 "de": "Fehlertoleranz",
