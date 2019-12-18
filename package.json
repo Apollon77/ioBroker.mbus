@@ -21,8 +21,8 @@
   "dependencies": {
     "node-mbus": "^1.0.1",
     "@iobroker/adapter-core": "^1.0.3",
-    "@sentry/node": "^5.10.1",
-    "@sentry/integrations": "^5.10.1"
+    "@sentry/node": "^5.10.2",
+    "@sentry/integrations": "^5.10.2"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
