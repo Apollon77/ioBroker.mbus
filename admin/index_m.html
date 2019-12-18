@@ -137,27 +137,30 @@
         });
     }
 
+    function setValue(key, value, onChange) {
+        var $key = $('#' + key + '.value');
+        if ($key.attr('type') === 'checkbox') {
+            $key.prop('checked', value).on('change', function() {
+                onChange();
+            });
+        } else {
+            $key.val(value).on('change', function() {
+                if ($(this).attr('id') === 'type') {
+                    showHideSettings();
+                }
+                onChange();
+            }).on('keyup', function() {
+                onChange();
+            });
+        }
+    }
+
     function load(settings, onChange) {
         $('.progress-bar').hide();
         if (!settings.type) settings.type = 'tcp';
 
         $('.value').each(function () {
-            var key = $(this).attr('id');
-            var $key = $('#' + key + '.value');
-            if ($key.attr('type') === 'checkbox') {
-                $key.prop('checked', settings[key]).on('change', function() {
-                    onChange();
-                });
-            } else {
-                $key.val(settings[key]).on('change', function() {
-                    if ($(this).attr('id') === 'type') {
-                        showHideSettings();
-                    }
-                    onChange();
-                }).on('keyup', function() {
-                    onChange();
-                });
-            }
+            setValue($(this).attr('id'), settings[$(this).attr('id')], onChange);
         });
 
         $('.table-button-scan').addClass('disabled');

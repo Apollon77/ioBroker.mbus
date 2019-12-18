@@ -717,6 +717,8 @@ function main() {
 function processMessage(obj) {
     if (!obj) return;
 
+    adapter.log.debug('Message received = ' + JSON.stringify(obj));
+
     if (obj) {
         switch (obj.command) {
             case 'listUart':

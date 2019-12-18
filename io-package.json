@@ -3,6 +3,18 @@
         "name": "mbus",
         "version": "2.1.0",
 		"news": {
+            "2.1.0": {
+                "en": "compact mode added, more flexible serial configuration using /dev/serial/by-id paths on linux, Sentry added for error reporting",
+                "de": "Kompaktmodus hinzugefügt, flexiblere serielle Konfiguration mit / dev / serial / by-id-Pfaden unter Linux, Sentry für die Fehlerberichterstattung hinzugefügt",
+                "ru": "добавлен компактный режим, более гибкая последовательная конфигурация с использованием путей / dev / serial / by-id в linux, добавлен Sentry для отчетов об ошибках",
+                "pt": "modo compacto adicionado, configuração serial mais flexível usando caminhos / dev / serial / by-id no linux, Sentry adicionado para relatório de erros",
+                "nl": "compacte modus toegevoegd, meer flexibele seriële configuratie met behulp van / dev / serial / by-id paden op linux, Sentry toegevoegd voor foutrapportage",
+                "fr": "mode compact ajouté, configuration série plus flexible en utilisant les chemins / dev / serial / by-id sur linux, Sentry ajouté pour le rapport d'erreurs",
+                "it": "aggiunta modalità compatta, configurazione seriale più flessibile usando / dev / serial / by-id percorsi su linux, Sentry aggiunto per la segnalazione degli errori",
+                "es": "modo compacto agregado, configuración en serie más flexible usando rutas / dev / serial / by-id en Linux, Sentry agregado para informes de errores",
+                "pl": "dodano tryb kompaktowy, bardziej elastyczną konfigurację szeregową z wykorzystaniem ścieżek / dev / serial / by-id w systemie Linux, dodano Sentry do raportowania błędów",
+                "zh-cn": "添加了紧凑模式，在Linux上使用/ dev / serial / by-id路径更灵活的串行配置，添加了Sentry来进行错误报告"
+            },
             "2.0.0": {
                 "en": "**BREAKING CHANGE** better handling for values with changing scaling based on the value - maybe incompatible with old values! add setting to force kWh values for energy",
                 "de": "** BREAKING CHANGE ** Besseres Handling für Werte mit sich ändernder Skalierung basierend auf dem Wert - möglicherweise nicht kompatibel mit alten Werten! Einstellung hinzufügen, um kWh-Werte für Energie zu erzwingen",
@@ -133,7 +145,8 @@
         "type":                     "energy",
         "keywords":                 ["iobroker", "mbus", "measure"],
         "loglevel":                 "info",
-        "enabled":                  true
+        "enabled":                  true,
+        "compact":                  true
     },
     "native": {
         "type":                     "tcp",
