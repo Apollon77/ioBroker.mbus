@@ -14,7 +14,11 @@
 
 'use strict';
 
-const path       = require('path');
+const Sentry = require('@sentry/node');
+const SentryIntegrations = require('@sentry/integrations');
+const packageJson = require('./package.json');
+
+const fs = require('fs');
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const MbusMaster = require('node-mbus');
 let   serialport;
@@ -26,7 +30,7 @@ try {
     console.warn('Cannot load serialport module');
 }
 
-const adapter = new utils.Adapter('mbus');
+let adapter;
 
 let deviceUpdateQueue = [];
 let mBusDevices = {};
@@ -41,32 +45,13 @@ let stateValues = {};
 function setConnected(isConnected) {
     if (connected !== isConnected) {
         connected = isConnected;
-        adapter.setState('info.connection', connected, true, err => {
+        adapter && adapter.setState('info.connection', connected, true, (err) => {
             // analyse if the state could be set (because of permissions)
-            if (err) adapter.log.error('Can not update connected state: ' + err);
-              else adapter.log.debug('connected set to ' + connected);
+            if (err && adapter && adapter.log) adapter.log.error('Can not update connected state: ' + err);
+            else if (adapter && adapter.log) adapter.log.debug('connected set to ' + connected);
         });
     }
 }
-
-adapter.on('ready', main);
-
-adapter.on('message', processMessage);
-
-adapter.on('stateChange', (id, state) => {
-    adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
-    if (!state || state.ack || !state.val) return;
-    const idSplit = id.split('.');
-    if (idSplit[idSplit.length - 1] !== 'updateNow') return;
-    const deviceNamespace = idSplit[idSplit.length - 2];
-
-    for (let deviceId in mBusDevices) {
-        if (mBusDevices.hasOwnProperty(deviceId) && mBusDevices[deviceId].deviceNamespace === deviceNamespace) {
-            scheduleDeviceUpdate(deviceId);
-            break;
-        }
-    }
-});
 
 function onClose(callback) {
     try {
@@ -95,9 +80,82 @@ function onClose(callback) {
     }
 }
 
-adapter.on('unload', callback => {
-    onClose(callback);
-});
+function startAdapter(options) {
+    options = options || {};
+    Object.assign(options, {
+        name: 'mbus'
+    });
+    adapter = new utils.Adapter(options);
+
+    adapter.on('ready', () => {
+        setConnected(false);
+        try {
+            serialport = require('serialport');
+        } catch (err) {
+            adapter.log.warn('Cannot load serialport module. Please use "npm rebuild". Stop adapter.');
+            serialport = null;
+        }
+
+        Sentry.init({
+            release: packageJson.name + '@' + packageJson.version,
+            dsn: 'https://95e3df48a91a40ce9330e5bdba962c5d@sentry.io/1843726',
+            integrations: [
+                new SentryIntegrations.Dedupe()
+            ]
+        });
+        Sentry.configureScope(scope => {
+            scope.setTag('version', adapter.common.installedVersion || adapter.common.version);
+            if (adapter.common.installedFrom) {
+                scope.setTag('installedFrom', adapter.common.installedFrom);
+            }
+            else {
+                scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
+            }
+        });
+
+        adapter.getForeignObject('system.config', (err, obj) => {
+            if (obj && obj.common && obj.common.diag) {
+                adapter.getForeignObject('system.meta.uuid', (err, obj) => {
+                    // create uuid
+                    if (!err  && obj) {
+                        Sentry.configureScope(scope => {
+                            scope.setUser({
+                                id: obj.native.uuid
+                            });
+                        });
+                    }
+                    main();
+                });
+            }
+            else {
+                main();
+            }
+        });
+    });
+
+    adapter.on('message', processMessage);
+
+    adapter.on('stateChange', (id, state) => {
+        adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+        if (!state || state.ack || !state.val) return;
+        const idSplit = id.split('.');
+        if (idSplit[idSplit.length - 1] !== 'updateNow') return;
+        const deviceNamespace = idSplit[idSplit.length - 2];
+
+        for (let deviceId in mBusDevices) {
+            if (mBusDevices.hasOwnProperty(deviceId) && mBusDevices[deviceId].deviceNamespace === deviceNamespace) {
+                scheduleDeviceUpdate(deviceId);
+                break;
+            }
+        }
+    });
+
+    adapter.on('unload', callback => {
+        onClose(callback);
+    });
+
+    return adapter;
+}
 
 process.on('SIGINT', () => {
     onClose();
@@ -665,13 +723,32 @@ function processMessage(obj) {
                 if (obj.callback) {
                     if (serialport) {
                         // read all found serial ports
-                        serialport.list(function (err, ports) {
+                        serialport.list().then(ports => {
                             adapter.log.info('List of port: ' + JSON.stringify(ports));
+                            if (process.platform !== 'win32') {
+                                ports.forEach(port => {
+                                    if (port.pnpId) {
+                                        try {
+                                            const pathById = '/dev/serial/by-id/' + port.pnpId;
+                                            if (fs.existsSync(pathById)) {
+                                                port.realPath = port.path;
+                                                port.path = pathById;
+                                            }
+                                        } catch (err) {
+                                            adapter.log.debug('pnpId ' + port.pnpId + ' not existing: ' + err);
+                                        }
+                                        return port;
+                                    }
+                                });
+                            }
                             adapter.sendTo(obj.from, obj.command, ports, obj.callback);
+                        }).catch(err => {
+                            adapter.log.warn('Can not get Serial port list: ' + err);
+                            adapter.sendTo(obj.from, obj.command, [{path: 'Not available'}], obj.callback);
                         });
                     } else {
                         adapter.log.warn('Module serialport is not available');
-                        adapter.sendTo(obj.from, obj.command, [{comName: 'Not available'}], obj.callback);
+                        adapter.sendTo(obj.from, obj.command, [{path: 'Not available'}], obj.callback);
                     }
                 }
                 break;
@@ -704,4 +781,12 @@ function makeScan(msgObj) {
         adapter.sendTo(msgObj.from, msgObj.command, {error: err ? err.toString() : null, result: data}, msgObj.callback);
         updateDevices();
     });
+}
+
+// If started as allInOne/compact mode => return function to create instance
+if (module && module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }

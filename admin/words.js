@@ -176,17 +176,6 @@ systemDictionary = {
         "es": "Seleccionar puerto",
         "pl": "Wybierz port"
     },
-    "Not available": {
-        "en": "Not available",
-        "de": "Nicht verfügbar",
-        "ru": "Недоступен",
-        "pt": "Não disponível",
-        "nl": "Niet beschikbaar",
-        "fr": "Indisponible",
-        "it": "Non disponibile",
-        "es": "No disponible",
-        "pl": "Niedostępne"
-    },
     "M-Bus adapter settings": {
         "en": "M-Bus adapter settings",
         "de": "M-Bus-Adaptereinstellungen",
@@ -209,6 +198,53 @@ systemDictionary = {
         "es": "Unidad de energía de fuerza a kWh.",
         "pl": "Wymuś jednostkę energii na kWh",
         "zh-cn": "强制能量单位为千瓦时"
+    },
+    "Not available": {
+        "en": "Port list not available",
+        "de": "Portliste nicht verfügbar",
+        "ru": "Список портов недоступен",
+        "pt": "Lista de portas não disponível",
+        "nl": "Poortlijst niet beschikbaar",
+        "fr": "Liste de ports non disponible",
+        "it": "Elenco delle porte non disponibile",
+        "es": "Lista de puertos no disponible",
+        "pl": "Lista portów niedostępna",
+        "zh-cn": "端口列表不可用"
+    },
+    "Use custom Serial port path": {
+        "en": "Set a custom serial port name",
+        "de": "Lege einen benutzerdefinierten Namen für die serielle Schnittstelle fest",
+        "ru": "Установите пользовательское имя последовательного порта",
+        "pt": "Defina um nome de porta serial personalizado",
+        "nl": "Stel een aangepaste seriële poortnaam in",
+        "fr": "Définir un nom de port série personnalisé",
+        "it": "Imposta un nome di porta seriale personalizzato",
+        "es": "Establecer un nombre de puerto serie personalizado",
+        "pl": "Ustaw niestandardową nazwę portu szeregowego",
+        "zh-cn": "设置自定义串口名称"
+    },
+    "customSerialPort": {
+        "en": "Custom serial Port path",
+        "de": "Benutzerdefinierter Pfad der seriellen Schnittstelle",
+        "ru": "Пользовательский последовательный порт",
+        "pt": "Caminho da porta serial personalizado",
+        "nl": "Aangepast serieel poortpad",
+        "fr": "Chemin du port série personnalisé",
+        "it": "Percorso della porta seriale personalizzata",
+        "es": "Ruta de puerto serie personalizada",
+        "pl": "Niestandardowa ścieżka portu szeregowego",
+        "zh-cn": "自定义串行端口路径"
+    },
+    "Please wait till port list is loaded ...": {
+        "en": "Please wait till port list is loaded ...",
+        "de": "Bitte warten bis die Portliste geladen ist ...",
+        "ru": "Пожалуйста, дождитесь загрузки списка портов ...",
+        "pt": "Aguarde até a lista de portas ser carregada ...",
+        "nl": "Even geduld tot de poortlijst is geladen ...",
+        "fr": "Veuillez patienter jusqu'à ce que la liste de ports soit chargée ...",
+        "it": "Attendere il caricamento dell'elenco delle porte ...",
+        "es": "Espere hasta que se cargue la lista de puertos ...",
+        "pl": "Poczekaj, aż lista portów zostanie załadowana ...",
+        "zh-cn": "请等待端口列表加载完毕..."
     }
-
 };

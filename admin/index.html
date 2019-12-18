@@ -58,15 +58,27 @@
     var timeout;
     var counter  = 0;
 
-    function getComPorts(actualValue) {
+    function getComPorts(actualValue, onChange) {
         counter++;
-        if (counter > 20) return;
+        if (counter > 20) {
+            var $port = $('#serialPort');
+            var text = '<option value="-" ' + (actualValue ? 'selected' : '') + '>' + _('Use custom Serial port path') + '</option>';
+            text += '<option value="" ' + (!actualValue ? 'selected' : '') + '>' + _('Not available') + '</option>';
+            $port.html(text);
+            if (actualValue) {
+                setValue('customSerialPort', actualValue, onChange);
+                setValue('serialPort', '-', onChange);
+                $('.CustomSerialPort').show();
+            }
+            return;
+        };
 
         timeout = setTimeout(function () {
             getComPorts(actualValue);
         }, 2000);
 
         sendTo(null, 'listUart', null, function (list) {
+            console.log('Received Port list: ' + JSON.stringify(list));
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = null;
@@ -79,18 +91,40 @@
             }
             var $port = $('#serialPort');
             var text = '<option value="">' + _('Select port') + '</option>';
+            var selectedMinimalOnce = false;
             for (var j = 0; j < list.length; j++) {
-                if (list[j].comName === 'Not available') {
+                if (list[j].path === 'Not available') {
                     text += '<option value="" selected>' + _('Not available') + '</option>';
-                    $port.prop('disabled', true);
                     break;
                 } else {
-                    text += '<option value="' + list[j].comName + '" ' + ((actualValue === list[j].comName) ? 'selected' : '') + '>' + list[j].comName + '</option>';
+                    var pathDisplayName = '';
+                    var isSelected = false;
+                    if (list[j].realPath) {
+                        pathDisplayName = list[j].path + ' (' + list[j].realPath + ')';
+                        isSelected = (actualValue === list[j].realPath || actualValue === list[j].path);
+                    }
+                    else {
+                        pathDisplayName = list[j].path;
+                        isSelected = (actualValue === list[j].path);
+                    }
+                    selectedMinimalOnce = selectedMinimalOnce || isSelected;
+                    text += '<option value="' + list[j].path + '" ' + (isSelected ? 'selected' : '') + '>' + pathDisplayName + '</option>';
                 }
+            }
+            if (!selectedMinimalOnce && actualValue) {
+                text += '<option value="-" selected>' + _('Use custom Serial port path') + '</option>';
+                setValue('customSerialPort', actualValue, onChange);
+                setValue('serialPort', '-', onChange);
+                $('.CustomSerialPort').show();
+            }
+            else {
+                text += '<option value="-">' + _('Use custom Serial port path') + '</option>';
+                $('.CustomSerialPort').hide();
             }
             $port.html(text);
         });
     }
+
     function load(settings, onChange) {
         $('.progress-bar').hide();
         $('.value').each(function () {
@@ -117,15 +151,33 @@
         }).button('disable');
 
         getIsAdapterAlive(function (isAlive) {
+            var actualValue = settings.serialPort;
             if (isAlive || common.enabled) {
                 $('.table-button-scan').button('enable').on('click', function () {
                     readDevices(onChange);
                 });
-                getComPorts(settings.serialPort);
+                getComPorts(actualValue);
             } else {
-                $('#serialPort').replaceWith($('<input type="text" id="serialPort" value="' + settings.serialPort + '"/>'));
+                var text = '<option value="-" ' + (actualValue ? 'selected' : '') + '>' + _('Use custom Serial port path') + '</option>';
+                text += '<option value="" ' + (!actualValue ? 'selected' : '') + '>' + _('Not available') + '</option>';
+                $('#serialPort').html(text);
+                if (actualValue) {
+                    setValue('customSerialPort', actualValue, onChange);
+                    setValue('serialPort', '-', onChange);
+                    $('.CustomSerialPort').show();
+                }
             }
         });
+
+        $('#serialPort').change(function() {
+            if ($(this).val() === '-') {
+                $('.CustomSerialPort').show();
+            }
+            else {
+                $('.CustomSerialPort').hide();
+            }
+        }).trigger('change');
+
         $('#tabs').tabs().show();
         showHideSettings();
         onChange(false);
@@ -139,7 +191,12 @@
             if ($this.attr('type') === 'checkbox') {
                 obj[$this.attr('id')] = $this.prop('checked');
             } else {
-                obj[$this.attr('id')] = $this.val();
+                if ($this.attr('id') === 'serialPort' && $this.val() === '-') {
+                    obj[$this.attr('id')] = $('#customSerialPort').val();
+                }
+                else if (id !== 'customSerialPort') {
+                    obj[$this.attr('id')] = $this.val();
+                }
             }
         });
         obj.devices = table2values('devices');
@@ -187,7 +244,11 @@
                 </tr>
                 <tr class="serial">
                     <td><label for="serialPort" class="translate">serialPort</label></td>
-                    <td><select class="value" id="serialPort"></select></td><td></td>
+                    <td><select class="value" id="serialPort"><option value="" class="translate">Please wait till port list is loaded ...</option></select></td><td></td>
+                </tr>
+                <tr class="serial CustomSerialPort">
+                    <td><label for="customSerialPort" class="translate">customSerialPort</label></td>
+                    <td><input class="value" id="customSerialPort" size="32" type="text"/></td>
                 </tr>
                 <tr class="serial">
                     <td><label for="serialBaudRate" class="translate">serialBaudRate</label></td>
