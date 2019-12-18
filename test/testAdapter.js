@@ -125,17 +125,17 @@ function setupTcpServer(callback) {
                     counterFD++;
                 }
             }
-            else if (hexData.substring(0,6) === '105b01') {
+            else if (hexData.substring(0,6) === '105b01' || hexData.substring(0,6) === '107b01') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 1');
                 sendBuf = Buffer.from('683C3C680808727803491177040E16290000000C7878034911041331D40000426C0000441300000000046D1D0D98110227000009FD0E0209FD0F060F00008F13E816', 'hex');
                 sendMessage(socket, sendBuf);
             }
-            else if (hexData.substring(0,6) === '105b02') {
+            else if (hexData.substring(0,6) === '105b02' || hexData.substring(0,6) === '107b02') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 2');
                 sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
                 sendMessage(socket, sendBuf);
             }
-            else if (hexData.substring(0,6) === '105b03') {
+            else if (hexData.substring(0,6) === '105b03' || hexData.substring(0,6) === '107b03') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 3');
                 sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
                 sendMessage(socket, sendBuf);
@@ -145,7 +145,7 @@ function setupTcpServer(callback) {
                 sendBuf = Buffer.from('E5', 'hex');
                 sendMessage(socket, sendBuf);
             }
-            else if (hexData.substring(0, 6) === '105bfd') {
+            else if (hexData.substring(0, 6) === '105bfd' || hexData.substring(0, 6) === '107bfd') {
                 console.log(new Date().toString() + ':     mbus-Serial-Device: Request for Class 2 Data ID FD');
                 sendBuf = Buffer.from('6815156808017220438317b40901072b0000000c13180000009f16', 'hex');
                 sendMessage(socket, sendBuf);
