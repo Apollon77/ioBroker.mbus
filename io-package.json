@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.1.0",
+        "version": "2.1.1",
 		"news": {
+            "2.1.1": {
+                "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
+                "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
+                "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
+                "pt": "correções e otimizações. Mudou para a instância Sentry do iobroker para relatar falhas",
+                "nl": "fixes en optimalisaties. Overgeschakeld naar iobroker eigen Sentry-instantie voor het melden van crashes",
+                "fr": "corrections et optimisations. Passé à l'instance Sentry d'iobroker pour le signalement des plantages",
+                "it": "correzioni e ottimizzazioni. Passato alla propria istanza Sentry di iobroker per la segnalazione di arresti anomali",
+                "es": "correcciones y optimizaciones. Se cambió a la instancia de Sentry propia de iobroker para informar sobre bloqueos",
+                "pl": "poprawki i optymalizacje. Przełączono na własną instancję Sentry iobroker w celu zgłaszania awarii",
+                "zh-cn": "修复和优化。切换到iobroker自己的Sentry实例以报告崩溃"
+            },
             "2.1.0": {
                 "en": "compact mode added, more flexible serial configuration using /dev/serial/by-id paths on linux, Sentry added for error reporting",
                 "de": "Kompaktmodus hinzugefügt, flexiblere serielle Konfiguration mit / dev / serial / by-id-Pfaden unter Linux, Sentry für die Fehlerberichterstattung hinzugefügt",
@@ -146,8 +158,14 @@
         "keywords":                 ["iobroker", "mbus", "measure"],
         "loglevel":                 "info",
         "enabled":                  true,
-        "compact":                  true
-    },
+        "compact":                  true,
+        "plugins": {
+            "sentry": {
+                "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",
+                "pathWhitelist": ["@apollon", "node-mbus"],
+                "errorBlacklist": ["SyntaxError"]
+            }
+        }    },
     "native": {
         "type":                     "tcp",
         "host":                     "127.0.0.1",
