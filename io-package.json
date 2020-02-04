@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.1.1",
+        "version": "2.1.2",
 		"news": {
-            "2.1.1": {
+            "2.1.2": {
                 "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
                 "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
                 "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
