@@ -291,6 +291,10 @@ function updateDevices() {
     deviceCommunicationInProgress = true;
     const deviceId = deviceUpdateQueue.shift();
 
+    if (!mBusDevices[deviceId]) {
+        return;
+    }
+
     adapter.log.debug('Process: ' + deviceId);
 
     if (mBusDevices[deviceId].updateTimeout) {
