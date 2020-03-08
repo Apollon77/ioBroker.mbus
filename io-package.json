@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.1.4",
+        "version": "2.1.5",
 		"news": {
+            "2.1.5": {
+                "en": "fixes and optimizations",
+                "de": "Korrekturen und Optimierungen",
+                "ru": "исправления и оптимизации",
+                "pt": "correções e otimizações",
+                "nl": "fixes en optimalisaties",
+                "fr": "corrections et optimisations",
+                "it": "correzioni e ottimizzazioni",
+                "es": "correcciones y optimizaciones",
+                "pl": "poprawki i optymalizacje",
+                "zh-cn": "修复和优化"
+            },
             "2.1.4": {
                 "en": "fixes and optimizations",
                 "de": "Korrekturen und Optimierungen",
