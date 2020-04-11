@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.1.5",
-		"news": {
+        "version": "2.1.6",
+        "news": {
+            "2.1.6": {
+                "en": "fixes and optimizations",
+                "de": "Korrekturen und Optimierungen",
+                "ru": "исправления и оптимизации",
+                "pt": "correções e otimizações",
+                "nl": "fixes en optimalisaties",
+                "fr": "corrections et optimisations",
+                "it": "correzioni e ottimizzazioni",
+                "es": "correcciones y optimizaciones",
+                "pl": "poprawki i optymalizacje",
+                "zh-cn": "修复和优化"
+            },
             "2.1.5": {
                 "en": "fixes and optimizations",
                 "de": "Korrekturen und Optimierungen",
@@ -155,8 +167,8 @@
         "authors": [
             "Apollon77 <ingo@fischer-ka.de>"
         ],
-        "title":                    "M-Bus",
-        "desc":                     {
+        "title": "M-Bus",
+        "desc": {
             "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
             "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
             "ru": "Чтение данных с устройств Meter-Bus (M-Bus), таких как счетчики газа или электроэнергии",
@@ -167,39 +179,46 @@
             "es": "Leer datos de dispositivos Meter-Bus (M-Bus) como medidores de gas o electricidad",
             "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu"
         },
-        "platform":                 "Javascript/Node.js",
-        "mode":                     "daemon",
-        "messagebox":               true,
-        "subscribe":                "messagebox",
-        "materialize":              true,
-        "stopBeforeUpdate":         true,
-        "icon":                     "mbus.png",
-        "extIcon":                  "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
-        "readme":                   "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
-        "license":                  "MIT",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "messagebox": true,
+        "subscribe": "messagebox",
+        "materialize": true,
+        "stopBeforeUpdate": true,
+        "icon": "mbus.png",
+        "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
+        "readme": "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
+        "license": "MIT",
         "npmLibs": [],
-        "type":                     "energy",
-        "keywords":                 ["iobroker", "mbus", "measure"],
-        "loglevel":                 "info",
-        "enabled":                  true,
-        "compact":                  true,
+        "type": "energy",
+        "keywords": [
+            "iobroker",
+            "mbus",
+            "measure"
+        ],
+        "loglevel": "info",
+        "enabled": true,
+        "compact": true,
         "plugins": {
             "sentry": {
                 "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",
-                "pathWhitelist": ["@apollon", "node-mbus"],
-                "errorBlacklist": ["SyntaxError"]
+                "pathWhitelist": [
+                    "@apollon",
+                    "node-mbus"
+                ]
             }
-        }    },
+        }
+    },
     "native": {
-        "type":                     "tcp",
-        "host":                     "127.0.0.1",
-        "tcpTimeout":               0,
-        "port":                     3493,
-        "defaultUpdateInterval":    3600,
-        "serialPort":               "",
-        "serialBaudRate":           115200,
-        "alwaysUpdate":             false,
-        "forcekWh":                 false,
+        "type": "tcp",
+        "host": "127.0.0.1",
+        "tcpTimeout": 0,
+        "port": 3493,
+        "defaultUpdateInterval": 3600,
+        "serialPort": "",
+        "serialBaudRate": 115200,
+        "alwaysUpdate": false,
+        "forcekWh": false,
         "devices": [
             {
                 "id": "1",
@@ -210,7 +229,7 @@
     "objects": [],
     "instanceObjects": [
         {
-            "_id":  "info",
+            "_id": "info",
             "type": "channel",
             "common": {
                 "name": "Information"
@@ -218,15 +237,15 @@
             "native": {}
         },
         {
-            "_id":  "info.connection",
+            "_id": "info.connection",
             "type": "state",
             "common": {
-                "role":  "indicator.connected",
-                "name":  "If connected to M-Bus",
-                "type":  "boolean",
-                "read":  true,
+                "role": "indicator.connected",
+                "name": "If connected to M-Bus",
+                "type": "boolean",
+                "read": true,
                 "write": false,
-                "def":   false
+                "def": false
             },
             "native": {}
         }

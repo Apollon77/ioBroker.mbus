@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mbus",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "MBus Adapter",
   "author": "Ingo Fischer <ingo@fischer-ka.de>",
   "contributors": [],
@@ -21,15 +21,15 @@
   "dependencies": {
     "node-mbus": "^1.0.1",
     "@iobroker/adapter-core": "^2.2.1",
-    "@sentry/node": "^5.13.2",
-    "@sentry/integrations": "^5.13.2",
+    "@sentry/node": "^5.15.4",
+    "@sentry/integrations": "^5.15.4",
     "source-map-support": "^0.5.16"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
-    "mocha": "^7.1.0",
+    "mocha": "^7.1.1",
     "chai": "^4.2.0",
-    "nyc": "^15.0.0"
+    "nyc": "^15.0.1"
   },
   "bugs": {
     "url": "https://github.com/Apollon77/ioBroker.mbus/issues"
