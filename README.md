@@ -49,6 +49,9 @@ When the adapter crashes or an other Code error happens, this error message that
 
 ## Changelog
 
+### 2.2.0 (2020-04-13)
+* (Apollon77) make compatible with nodejs 13+
+
 ### 2.1.6 (2020-04-12)
 * (Apollon77) update dependencies
 

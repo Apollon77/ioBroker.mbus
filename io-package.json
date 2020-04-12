@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.1.6",
+        "version": "2.2.0",
         "news": {
+            "2.2.0": {
+                "en": "make compatible with nodejs 13+",
+                "de": "Kompatibel machen mit NodeJS 13+",
+                "ru": "сделать совместимым с nodejs 13+",
+                "pt": "tornar compatível com nodejs 13+",
+                "nl": "compatibel maken met nodejs 13+",
+                "fr": "rendre compatible avec nodejs 13+",
+                "it": "rendere compatibile con nodejs 13+",
+                "es": "hacer compatible con nodejs 13+",
+                "pl": "uczynić kompatybilnym z nodejs 13+",
+                "zh-cn": "与nodejs兼容13+"
+            },
             "2.1.6": {
                 "en": "fixes and optimizations",
                 "de": "Korrekturen und Optimierungen",
