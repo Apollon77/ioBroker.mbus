@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.2.0",
+        "version": "2.2.1",
         "news": {
+            "2.2.1": {
+                "en": "prevent crash (Sentry IOBROKER-MBUS-7)",
+                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-7)",
+                "ru": "предотвратить сбой (Sentry IOBROKER-MBUS-7)",
+                "pt": "evitar falhas (Sentry IOBROKER-MBUS-7)",
+                "nl": "crash voorkomen (Sentry IOBROKER-MBUS-7)",
+                "fr": "empêcher l'accident (Sentry IOBROKER-MBUS-7)",
+                "it": "prevenire crash (Sentry IOBROKER-MBUS-7)",
+                "es": "prevenir bloqueo (Sentry IOBROKER-MBUS-7)",
+                "pl": "zapobiec awarii (Sentry IOBROKER-MBUS-7)",
+                "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-7）"
+            },
             "2.2.0": {
                 "en": "make compatible with nodejs 13+",
                 "de": "Kompatibel machen mit NodeJS 13+",

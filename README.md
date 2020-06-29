@@ -44,7 +44,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 2.2.1 (2020-06-30)
 * (Apollon77) prevent crash (Sentry IOBROKER-MBUS-7)
 
 ### 2.2.0 (2020-04-13)
