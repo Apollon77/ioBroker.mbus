@@ -213,6 +213,9 @@
         "compact": true,
         "connectionType": "local",
         "dataSource": "poll",
+        "dependencies": {
+            "js-controller": ">=2.0.0"
+        },
         "plugins": {
             "sentry": {
                 "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",

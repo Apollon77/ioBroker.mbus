@@ -5,8 +5,6 @@ node_modules
 .gitignore
 .git
 .DS_Store
-test/lib
-test/testAdapter.js
 .travis.yml
 appveyor.yml
 .codeclimate.yml
@@ -17,3 +15,4 @@ admin/i18n
 iob_npm.done
 package-lock.json
 .github
+test

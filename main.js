@@ -86,7 +86,7 @@ function initSentry(callback) {
         else {
             scope.setTag('installedFrom', adapter.common.installedVersion || adapter.common.version);
         }
-        scope.addEventProcessor(function(event, hint) {
+        scope.addEventProcessor(function(event, _hint) {
             // Try to filter out some events
             if (event.exception && event.exception.values && event.exception.values[0]) {
                 const eventData = event.exception.values[0];
@@ -277,8 +277,8 @@ function finishDevice(deviceId, callback) {
             }
             callback && callback(err);
         });
-    } catch (e) {
-        adapter.log.error('Error by closing: ' + e);
+    } catch (err) {
+        adapter.log.error('Error by closing: ' + err);
         callback && callback(err);
     }
 }
@@ -370,19 +370,19 @@ function adjustUnit(unit, type, forcekWh) {
     let m;
     // regex depending on type as to account for different units and keep it somewhat readable
     switch (type) {
-        case "Energy": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(Wh|J)$/); break;
-        case "Mass": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(kg)$/); break;
-        case "Power": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(W|J\/h)$/); break;
-        case "Volume": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( m\^3)$/); break;
-        case "Volume flow": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( m\^3\/(h|min|s))$/); break;
-        case "Mass flow": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( kg\/h)$/); break;
+        case "Energy": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?(Wh|J)$/); break;
+        case "Mass": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?(kg)$/); break;
+        case "Power": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?(W|J\/h)$/); break;
+        case "Volume": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( m\^3)$/); break;
+        case "Volume flow": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( m\^3\/(h|min|s))$/); break;
+        case "Mass flow": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( kg\/h)$/); break;
         case "Flow temperature":
-        case "Return temperature": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?(deg (C|F))$/); break;
+        case "Return temperature": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?(deg (C|F))$/); break;
         case "External temperature":
-        case "Temperature Difference": m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( deg (C|F))$/); break;
-        case "Pressure":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( bar)$/); break;
-        case "Voltage":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( V)$/); break;
-        case "Current":  m = unit.match(/^([0-9e\+\-]+)?\s?([A-Za-z]+)?( A)$/); break;
+        case "Temperature Difference": m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( deg (C|F))$/); break;
+        case "Pressure":  m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( bar)$/); break;
+        case "Voltage":  m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( V)$/); break;
+        case "Current":  m = unit.match(/^([0-9e+\-]+)?\s?([A-Za-z]+)?( A)$/); break;
         case "Time Point": return {factor: undefined, unit: undefined};
     }
 
@@ -415,16 +415,16 @@ function adjustUnit(unit, type, forcekWh) {
         case "m^3/min": unit = "m³/min"; break;
         case "m^3/s": unit = "m³/s"; break;
     }
-    if ((type == "Temperature Difference") && (unit == "°C")) {
+    if ((type === "Temperature Difference") && (unit === "°C")) {
         unit = "K";
     }
 
     // force specific SI prefix or unit
     if (forcekWh) {
-        if (unit == "Wh") {
+        if (unit === "Wh") {
             unit = "kWh";
             factor = factor / 1000;
-        } else if (unit == "J") {
+        } else if (unit === "J") {
             unit = "kWh";
             factor = factor / 3600000;
         }            
@@ -435,27 +435,39 @@ function adjustUnit(unit, type, forcekWh) {
 
 function getRole(unit, type) {
     switch (type) {
-        case 'Energy': return 'value.power.consumption';
-        case 'Power': return 'value.power';
-        case 'Mass': return 'value.mass'
-        case 'Volume': return 'value.volume';
-        case 'Volume flow': return 'value.flow';
-        case 'Mass flow': return 'value.flow';
-        case 'Time Point': return 'date';
-        case 'Pressure': return 'value.pressure';
+        case 'Energy':
+            return 'value.power.consumption';
+        case 'Power':
+            return 'value.power';
+        case 'Mass':
+            return 'value.mass';
+        case 'Volume':
+            return 'value.volume';
+        case 'Volume flow':
+            return 'value.flow';
+        case 'Mass flow':
+            return 'value.flow';
+        case 'Time Point':
+            return 'date';
+        case 'Pressure':
+            return 'value.pressure';
         case 'Flow temperature':
         case 'Return temperature':
         case 'Temperature Difference':
-        case 'External temperature': return 'value.temperature';
-        case 'Current': return 'value.current';
-        case 'Voltage': return 'value.voltage';
+        case 'External temperature':
+            return 'value.temperature';
+        case 'Current':
+            return 'value.current';
+        case 'Voltage':
+            return 'value.voltage';
     }
 
     switch (unit) {
         case 'seconds':
         case 'minutes':
         case 'hours':
-        case 'days': return 'value.duration';
+        case 'days':
+            return 'value.duration';
     }
 
     return 'value';
@@ -518,7 +530,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
                 Tariff: state.Tariff,
                 Device: state.Device
             }
-        }, (err, obj) => {
+        }, err => {
             if (err) {
                 adapter.log.error('Error creating State: ' + err);
             }
@@ -538,7 +550,7 @@ function initializeDeviceObjects(deviceId, data, callback) {
         type: 'channel',
         common: {name: deviceNamespace},
         native: {}
-    }, (err, obj) => {
+    }, err => {
         if (err) {
             adapter.log.error('Error creating State: ' + err);
         }
@@ -569,7 +581,6 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     adapter.log.error('Error creating State: ' + err);
                 }
                 let currentState;
-                let currentType;
                 for (let id in data.SlaveInformation) {
                     if (!data.SlaveInformation.hasOwnProperty(id)) continue;
 
