@@ -597,38 +597,40 @@ function initializeDeviceObjects(deviceId, data, callback) {
                     type: 'string',
                 });
 
-                for (let i = 0; i < data.DataRecord.length; i++) {
-                    currentState = {};
-                    currentState.id = '.data.' + data.DataRecord[i].id;
-                    if (data.DataRecord[i].StorageNumber !== undefined) {
-                        currentState.id += '-' + data.DataRecord[i].StorageNumber;
+                if (data.DataRecord && Array.isArray(data.DataRecord)) {
+                    for (let i = 0; i < data.DataRecord.length; i++) {
+                        currentState = {};
+                        currentState.id = '.data.' + data.DataRecord[i].id;
+                        if (data.DataRecord[i].StorageNumber !== undefined) {
+                            currentState.id += '-' + data.DataRecord[i].StorageNumber;
+                        }
+                        switch (data.DataRecord[i].Function) {
+                            case 'Instantaneous value':
+                                currentState.id += '-Current';
+                                break;
+                            case 'Maximum value':
+                                currentState.id += '-Max';
+                                break;
+                            case 'Minimum value':
+                                currentState.id += '-Min';
+                                break;
+                            case 'Value during error state':
+                                currentState.id += '-Error';
+                                break;
+                            case 'Manufacturer specific':
+                                currentState.id += '';
+                                break;
+                            default:
+                                currentState.id += '-' + data.DataRecord[i].Function;
+                                break;
+                        }
+                        currentState.type = typeof data.DataRecord[i].Value;
+                        currentState.unit = data.DataRecord[i].Unit;
+                        currentState.Tariff = data.DataRecord[i].Tariff;
+                        currentState.StorageNumber = data.DataRecord[i].StorageNumber;
+                        currentState.Device = data.DataRecord[i].Device;
+                        neededStates.push(currentState);
                     }
-                    switch (data.DataRecord[i].Function) {
-                        case 'Instantaneous value':
-                            currentState.id += '-Current';
-                            break;
-                        case 'Maximum value':
-                            currentState.id += '-Max';
-                            break;
-                        case 'Minimum value':
-                            currentState.id += '-Min';
-                            break;
-                        case 'Value during error state':
-                            currentState.id += '-Error';
-                            break;
-                        case 'Manufacturer specific':
-                            currentState.id += '';
-                            break;
-                        default:
-                            currentState.id += '-' + data.DataRecord[i].Function;
-                            break;
-                    }
-                    currentState.type = typeof data.DataRecord[i].Value;
-                    currentState.unit = data.DataRecord[i].Unit;
-                    currentState.Tariff = data.DataRecord[i].Tariff;
-                    currentState.StorageNumber = data.DataRecord[i].StorageNumber;
-                    currentState.Device = data.DataRecord[i].Device;
-                    neededStates.push(currentState);
                 }
                 neededStates.push({
                     id: '.data.lastStatus',
