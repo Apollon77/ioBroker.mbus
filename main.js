@@ -341,8 +341,17 @@ function updateDevices() {
             adapter.log.debug('M-Bus ID ' + deviceId + ' data: ' + JSON.stringify(data, null, 2));
 
             initializeDeviceObjects(deviceId, data, () => {
+                if (!mBusDevices[deviceId]) {
+                    return;
+                }
                 updateDeviceStates(mBusDevices[deviceId].deviceNamespace, deviceId, data, () => {
+                    if (!mBusDevices[deviceId]) {
+                        return;
+                    }
                     finishDevice(deviceId, err => {
+                        if (!mBusDevices[deviceId]) {
+                            return;
+                        }
                         if (err) {
                             adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
                             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
