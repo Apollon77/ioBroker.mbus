@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.2.2",
+        "version": "2.2.3",
         "news": {
+            "2.2.3": {
+                "en": "crash prevented (Sentry IOBROKER-MBUS-C)",
+                "de": "Absturz verhindert (Sentry IOBROKER-MBUS-C)",
+                "ru": "предотвращено падение (Sentry IOBROKER-MBUS-C)",
+                "pt": "falha impedida (Sentry IOBROKER-MBUS-C)",
+                "nl": "crash voorkomen (Sentry IOBROKER-MBUS-C)",
+                "fr": "crash évité (Sentry IOBROKER-MBUS-C)",
+                "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-C)",
+                "es": "accidente evitado (Sentry IOBROKER-MBUS-C)",
+                "pl": "zapobiega awariom (Sentry IOBROKER-MBUS-C)",
+                "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-C）"
+            },
             "2.2.2": {
                 "en": "crash prevented (Sentry IOBROKER-MBUS-B)",
                 "de": "Absturz verhindert (Sentry IOBROKER-MBUS-B)",
