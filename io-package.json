@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.2.3",
+        "version": "2.3.0",
         "news": {
+            "2.3.0": {
+                "en": "mbus library updated",
+                "de": "mbus Bibliothek aktualisiert",
+                "ru": "Обновлена библиотека mbus",
+                "pt": "biblioteca mbus atualizada",
+                "nl": "mbus-bibliotheek bijgewerkt",
+                "fr": "bibliothèque mbus mise à jour",
+                "it": "libreria mbus aggiornata",
+                "es": "biblioteca mbus actualizada",
+                "pl": "Zaktualizowano bibliotekę MBUS",
+                "zh-cn": "mbus库已更新"
+            },
             "2.2.3": {
                 "en": "crash prevented (Sentry IOBROKER-MBUS-C)",
                 "de": "Absturz verhindert (Sentry IOBROKER-MBUS-C)",

@@ -44,7 +44,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 2.3.0 (2020-08-02)
 * (Apollon77) mbus library updated
 
 ### 2.2.3 (2020-07-26)
