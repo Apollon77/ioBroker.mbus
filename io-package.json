@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.3.0",
+        "version": "2.3.1",
         "news": {
+            "2.3.1": {
+                "en": "Prevent crash case (Sentry IOBROKER-MBUS-F)",
+                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-F)",
+                "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-F)",
+                "pt": "Prevenir caso de travamento (Sentry IOBROKER-MBUS-F)",
+                "nl": "Voorkom een crash case (Sentry IOBROKER-MBUS-F)",
+                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-F)",
+                "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-F)",
+                "es": "Prevenir caso de accidente (Sentry IOBROKER-MBUS-F)",
+                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-F)",
+                "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MBUS-F）"
+            },
             "2.3.0": {
                 "en": "mbus library updated",
                 "de": "mbus Bibliothek aktualisiert",
