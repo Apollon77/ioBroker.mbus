@@ -654,14 +654,16 @@ function initializeDeviceObjects(deviceId, data, callback) {
 }
 
 function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
-    for (let id in data.SlaveInformation) {
-        if (data.SlaveInformation.hasOwnProperty(id)) {
-            if (stateValues[deviceNamespace + '.info.' + id] === undefined || stateValues[deviceNamespace + '.info.' + id] !== data.SlaveInformation[id]) {
-                stateValues[deviceNamespace + '.info.' + id] = data.SlaveInformation[id];
-                adapter.setState(deviceNamespace + '.info.' + id, {
-                    ack: true,
-                    val: data.SlaveInformation[id]
-                });
+    if (data && data.SlaveInformation) {
+        for (let id in data.SlaveInformation) {
+            if (data.SlaveInformation.hasOwnProperty(id)) {
+                if (stateValues[deviceNamespace + '.info.' + id] === undefined || stateValues[deviceNamespace + '.info.' + id] !== data.SlaveInformation[id]) {
+                    stateValues[deviceNamespace + '.info.' + id] = data.SlaveInformation[id];
+                    adapter.setState(deviceNamespace + '.info.' + id, {
+                        ack: true,
+                        val: data.SlaveInformation[id]
+                    });
+                }
             }
         }
     }
@@ -675,61 +677,63 @@ function updateDeviceStates(deviceNamespace, deviceId, data, callback) {
             });
         }
 
-    for (let i = 0; i < data.DataRecord.length; i++) {
-        let stateId = '.data.' + data.DataRecord[i].id;
-        if (data.DataRecord[i].StorageNumber !== undefined) {
-            stateId += '-' + data.DataRecord[i].StorageNumber;
-        }
-        switch (data.DataRecord[i].Function) {
-            case 'Instantaneous value':
-                stateId += '-Current';
-                break;
-            case 'Maximum value':
-                stateId += '-Max';
-                break;
-            case 'Minimum value':
-                stateId += '-Min';
-                break;
-            case 'Value during error state':
-                stateId += '-Error';
-                break;
-            case 'Manufacturer specific':
-                stateId += '';
-                break;
-            default:
-                stateId += '-' + data.DataRecord[i].Function;
-                break;
-        }
-        if (adapter.config.alwaysUpdate || stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
-            stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
+    if (data && data.DataRecord) {
+        for (let i = 0; i < data.DataRecord.length; i++) {
+            let stateId = '.data.' + data.DataRecord[i].id;
+            if (data.DataRecord[i].StorageNumber !== undefined) {
+                stateId += '-' + data.DataRecord[i].StorageNumber;
+            }
+            switch (data.DataRecord[i].Function) {
+                case 'Instantaneous value':
+                    stateId += '-Current';
+                    break;
+                case 'Maximum value':
+                    stateId += '-Max';
+                    break;
+                case 'Minimum value':
+                    stateId += '-Min';
+                    break;
+                case 'Value during error state':
+                    stateId += '-Error';
+                    break;
+                case 'Manufacturer specific':
+                    stateId += '';
+                    break;
+                default:
+                    stateId += '-' + data.DataRecord[i].Function;
+                    break;
+            }
+            if (adapter.config.alwaysUpdate || stateValues[deviceNamespace + stateId] === undefined || stateValues[deviceNamespace + stateId] !== data.DataRecord[i].Value) {
+                stateValues[deviceNamespace + stateId] = data.DataRecord[i].Value;
 
-            let val = data.DataRecord[i].Value;
-            let unit = data.DataRecord[i].Unit || '';
-            if (unit.endsWith(' V')) {
-                unit = 'Voltage (' + unit + ')';
-            }
-            if (unit.endsWith(' A')) {
-                unit = 'Current (' + unit + ')';
-            }
-            let m = unit.match(/^([^(]+)\s?\(([^)]+)\)$/);
-            // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
-            let factor = 0;
-            if (m) {
-                let type = m[1].trim();
-                unit = m[2].trim();
-                factor = adjustUnit(unit, type, adapter.config.forcekWh).factor || 0;
-            }
+                let val = data.DataRecord[i].Value;
+                let unit = data.DataRecord[i].Unit || '';
+                if (unit.endsWith(' V')) {
+                    unit = 'Voltage (' + unit + ')';
+                }
+                if (unit.endsWith(' A')) {
+                    unit = 'Current (' + unit + ')';
+                }
+                let m = unit.match(/^([^(]+)\s?\(([^)]+)\)$/);
+                // parse unit "Volume (100 m^3)" => Volume is name, 100 is factor, m3 is unit)
+                let factor = 0;
+                if (m) {
+                    let type = m[1].trim();
+                    unit = m[2].trim();
+                    factor = adjustUnit(unit, type, adapter.config.forcekWh).factor || 0;
+                }
 
-            adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' (unit: ' + unit + ') with factor ' + factor);
-            if (factor && typeof val === 'number') {
-                val *= factor;
-                val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
+                adapter.log.debug('Value ' + deviceNamespace + stateId + ': ' + val + ' (unit: ' + unit + ') with factor ' + factor);
+                if (factor && typeof val === 'number') {
+                    val *= factor;
+                    val = Math.round(val * 1000000000) / 1000000000; // remove 1.250000000000000001
+                }
+                adapter.setState(deviceNamespace + stateId, {
+                    ack: true,
+                    val,
+                    ts: new Date(data.DataRecord[i].Timestamp).getTime()
+                });
             }
-            adapter.setState(deviceNamespace + stateId, {
-                ack: true,
-                val,
-                ts: new Date(data.DataRecord[i].Timestamp).getTime()
-            });
         }
     }
     callback();
