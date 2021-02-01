@@ -19,7 +19,7 @@
     "node": ">=8.0.0"
   },
   "optionalDependencies": {
-    "serialport": "^9.0.2"
+    "serialport": "^9.0.6"
   },
   "dependencies": {
     "node-mbus": "^1.2.1",
