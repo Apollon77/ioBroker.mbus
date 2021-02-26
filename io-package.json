@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.3.1",
+        "version": "2.3.2",
         "news": {
+            "2.3.2": {
+                "en": "Prevent crash case(Sentry IOBROKER-MBUS-H)",
+                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-H)",
+                "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-H)",
+                "pt": "Evitar caso de travamento (Sentry IOBROKER-MBUS-H)",
+                "nl": "Voorkom een crashgeval (Sentry IOBROKER-MBUS-H)",
+                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-H)",
+                "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-H)",
+                "es": "Caso de prevención de accidentes (Sentry IOBROKER-MBUS-H)",
+                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-H)",
+                "zh-cn": "防止撞车事故（哨兵IOBROKER-MBUS-H）"
+            },
             "2.3.1": {
                 "en": "Prevent crash case (Sentry IOBROKER-MBUS-F)",
                 "de": "Absturz verhindern (Sentry IOBROKER-MBUS-F)",
@@ -223,17 +235,6 @@
                 "it": "Beta",
                 "es": "Beta",
                 "pl": "Beta"
-            },
-            "0.0.2": {
-                "en": "initial version",
-                "de": "erste Version",
-                "ru": "Первоначальная версия",
-                "pt": "versão inicial",
-                "nl": "eerste versie",
-                "fr": "version initiale",
-                "it": "versione iniziale",
-                "es": "versión inicial",
-                "pl": "początkowa wersja"
             }
         },
         "authors": [
