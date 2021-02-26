@@ -19,20 +19,20 @@
     "node": ">=8.0.0"
   },
   "optionalDependencies": {
-    "serialport": "^9.0.2"
+    "serialport": "^9.0.7"
   },
   "dependencies": {
     "node-mbus": "^1.2.1",
     "@iobroker/adapter-core": "^2.4.0",
-    "@sentry/node": "^5.27.2",
-    "@sentry/integrations": "^5.27.2",
+    "@sentry/node": "^6.2.0",
+    "@sentry/integrations": "^6.2.0",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^1.8.1",
+    "@alcalzone/release-script": "^1.8.3",
     "gulp": "^4.0.2",
-    "mocha": "^8.2.0",
-    "chai": "^4.2.0",
+    "mocha": "^8.3.0",
+    "chai": "^4.3.0",
     "nyc": "^15.1.0"
   },
   "bugs": {

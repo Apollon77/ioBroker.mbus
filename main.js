@@ -1,7 +1,7 @@
 /**
  *
  * ioBroker MBUS adapter
- * Copyright 2018 apollon77 
+ * Copyright 2018 apollon77
  * MIT LIcense
  *
  * Adapter loading data from an M-Bus devices
@@ -271,6 +271,7 @@ function finishDevice(deviceId, callback) {
         mbusMaster.close(err => {
             if (mBusDevices[deviceId].updateInterval > 0) {
                 mBusDevices[deviceId].updateTimeout = setTimeout(() => {
+                    if (!mBusDevices[deviceId]) return;
                     mBusDevices[deviceId].updateTimeout = null;
                     scheduleDeviceUpdate(deviceId);
                 }, mBusDevices[deviceId].updateInterval * 1000);
@@ -436,7 +437,7 @@ function adjustUnit(unit, type, forcekWh) {
         } else if (unit === "J") {
             unit = "kWh";
             factor = factor / 3600000;
-        }            
+        }
     }
 
     return {factor: factor, unit: unit};
@@ -767,7 +768,7 @@ function main() {
     } else {
         adapter.config.defaultUpdateInterval = 0;
     }
-    
+
     adapter.log.info('Default Update Interval: ' + adapter.config.defaultUpdateInterval);
 
     if (adapter.config.type === 'tcp' && adapter.config.host && adapter.config.port) {
@@ -883,7 +884,7 @@ function makeScan(msgObj) {
     waitForScan = null;
     deviceCommunicationInProgress = true;
     mbusMaster.scanSecondary((err, data) => {
-        deviceCommunicationInProgress = false;        
+        deviceCommunicationInProgress = false;
         if (err) {
             adapter.log.error('M-Bus scan err: ' + err);
             data = [];
