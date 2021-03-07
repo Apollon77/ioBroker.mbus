@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mbus",
-        "version": "2.3.2",
+        "version": "2.3.3",
         "news": {
+            "2.3.3": {
+                "en": "Send a reset to the device before reading data",
+                "de": "Senden Sie einen Reset an das Gerät, bevor Sie Daten lesen",
+                "ru": "Перед чтением данных отправьте на устройство сброс",
+                "pt": "Envie uma redefinição para o dispositivo antes de ler os dados",
+                "nl": "Stuur een reset naar het apparaat voordat u gegevens leest",
+                "fr": "Envoyer une réinitialisation à l'appareil avant de lire les données",
+                "it": "Inviare un ripristino al dispositivo prima di leggere i dati",
+                "es": "Envía un reinicio al dispositivo antes de leer los datos",
+                "pl": "Wyślij reset do urządzenia przed odczytaniem danych",
+                "zh-cn": "在读取数据之前将复位发送到设备"
+            },
             "2.3.2": {
                 "en": "Prevent crash case(Sentry IOBROKER-MBUS-H)",
                 "de": "Absturz verhindern (Sentry IOBROKER-MBUS-H)",
@@ -224,17 +236,6 @@
                 "it": "Aggiorna la libreria mbus e aggiungi la funzione updateNow a tutti i dispositivi",
                 "es": "Actualice la biblioteca mbus y agregue la función updateNow a todos los dispositivos",
                 "pl": "Zaktualizuj bibliotekę mbus i dodaj funkcję updateNow do wszystkich urządzeń"
-            },
-            "0.1.2": {
-                "en": "Beta",
-                "de": "Beta",
-                "ru": "Beta",
-                "pt": "Beta",
-                "nl": "Beta",
-                "fr": "Beta",
-                "it": "Beta",
-                "es": "Beta",
-                "pl": "Beta"
             }
         },
         "authors": [
