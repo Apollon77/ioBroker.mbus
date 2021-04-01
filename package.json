@@ -32,7 +32,7 @@
     "@alcalzone/release-script": "^1.8.3",
     "gulp": "^4.0.2",
     "mocha": "^8.3.1",
-    "chai": "^4.3.3",
+    "chai": "^4.3.4",
     "nyc": "^15.1.0"
   },
   "bugs": {
