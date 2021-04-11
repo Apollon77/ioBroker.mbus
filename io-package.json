@@ -251,7 +251,8 @@
             "fr": "Lire les données des appareils Meter-Bus (M-Bus) comme les compteurs de gaz ou d'électricité",
             "it": "Leggi i dati dai dispositivi Meter-Bus (M-Bus) come contatori di gas o elettricità",
             "es": "Leer datos de dispositivos Meter-Bus (M-Bus) como medidores de gas o electricidad",
-            "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu"
+            "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu",
+            "zh-cn": "从煤气表或电表之类的仪表总线（M-Bus）设备读取数据"
         },
         "platform": "Javascript/Node.js",
         "mode": "daemon",

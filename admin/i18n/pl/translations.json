@@ -3,7 +3,7 @@
     "Force energy unit to kWh": "Wymuś jednostkę energii na kWh",
     "Found %s devices. Added %s new devices.": "Znaleziono urządzenia %s. Dodano %s nowych urządzeń.",
     "Found %s devices. Nothing new.": "Znaleziono urządzenia %s. Nic nowego.",
-    "ID": "",
+    "ID": "ID",
     "M-Bus adapter settings": "Ustawienia adaptera M-Bus",
     "Master is inactive": "Mistrz jest nieaktywny",
     "No devices found": "Nie znaleziono urządzeń",
