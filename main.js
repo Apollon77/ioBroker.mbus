@@ -17,11 +17,11 @@
 const fs = require('fs');
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const MbusMaster = require('node-mbus');
-let   serialport;
+let   SerialPort;
 let   waitForScan;
 
 try {
-    serialport = require('serialport');
+    SerialPort = require('serialport').SerialPort;
 } catch (err) {
     console.warn('Cannot load serialport module');
 }
@@ -192,10 +192,10 @@ function startAdapter(options) {
     adapter.on('ready', () => {
         setConnected(false);
         try {
-            serialport = require('serialport');
+            SerialPort = require('serialport').SerialPort;
         } catch (err) {
             adapter.log.warn('Cannot load serialport module. Please use "npm rebuild". Stop adapter.');
-            serialport = null;
+            SerialPort = null;
         }
 
         if (adapter.supportsFeature && adapter.supportsFeature('PLUGINS')) {
@@ -315,7 +315,9 @@ function updateDevices() {
             return;
         }
         if (err) {
-            adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
+            if (mBusDevices[deviceId].deviceNamespace) {
+                adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
+            }
             adapter.log.error('M-Bus ID ' + deviceId + ' connect err: ' + err);
             handleDeviceError(deviceId, updateDevices);
             return;
@@ -326,7 +328,9 @@ function updateDevices() {
             }
             if (err) {
                 adapter.log.warn('M-Bus ID ' + deviceId + ' err: ' + err);
-                adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
+                if (mBusDevices[deviceId].deviceNamespace) {
+                    adapter.setState(mBusDevices[deviceId].deviceNamespace + '.data.lastStatus', err, true);
+                }
                 return handleDeviceError(deviceId, () =>
                     finishDevice(deviceId, err => {
                         if (err) {
@@ -833,9 +837,9 @@ function processMessage(obj) {
         switch (obj.command) {
             case 'listUart':
                 if (obj.callback) {
-                    if (serialport) {
+                    if (SerialPort) {
                         // read all found serial ports
-                        serialport.list().then(ports => {
+                        SerialPort.list().then(ports => {
                             adapter.log.info('List of port: ' + JSON.stringify(ports));
                             if (process.platform !== 'win32') {
                                 ports.forEach(port => {

@@ -1,19 +1,18 @@
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
 /*jshint expr: true*/
-var expect = require('chai').expect;
-var setup  = require(__dirname + '/lib/setup');
-var net = require('net');
+const expect = require('chai').expect;
+const setup = require(__dirname + '/lib/setup');
+const net = require('net');
 
-var objects = null;
-var states  = null;
-var onStateChanged = null;
-var onObjectChanged = null;
-var sendToID = 1;
+let objects = null;
+let states = null;
+let onStateChanged = null;
+let sendToID = 1;
 
-var adapterShortName = setup.adapterName.substring(setup.adapterName.indexOf('.')+1);
+const adapterShortName = setup.adapterName.substring(setup.adapterName.indexOf('.') + 1);
 
-var lastMessage;
+let lastMessage;
 
 function checkConnectionOfAdapter(cb, counter) {
     counter = counter || 0;
@@ -23,12 +22,12 @@ function checkConnectionOfAdapter(cb, counter) {
         return;
     }
 
-    states.getState('system.adapter.' + adapterShortName + '.0.alive', function (err, state) {
+    states.getState('system.adapter.' + adapterShortName + '.0.alive', (err, state) => {
         if (err) console.error(err);
         if (state && state.val) {
             if (cb) cb();
         } else {
-            setTimeout(function () {
+            setTimeout(() => {
                 checkConnectionOfAdapter(cb, counter + 1);
             }, 1000);
         }
@@ -42,7 +41,7 @@ function checkValueOfState(id, value, cb, counter) {
         return;
     }
 
-    states.getState(id, function (err, state) {
+    states.getState(id, (err, state) =>{
         if (err) console.error(err);
         if (value === null && !state) {
             if (cb) cb();
@@ -50,7 +49,7 @@ function checkValueOfState(id, value, cb, counter) {
         if (state && (value === undefined || state.val === value)) {
             if (cb) cb();
         } else {
-            setTimeout(function () {
+            setTimeout(() => {
                 checkValueOfState(id, value, cb, counter + 1);
             }, 500);
         }
@@ -58,7 +57,7 @@ function checkValueOfState(id, value, cb, counter) {
 }
 
 function sendTo(target, command, message, callback) {
-    onStateChanged = function (id, state) {
+    onStateChanged = (id, state) => {
         if (id === 'messagebox.system.adapter.test.0') {
             callback(state.message);
         }
@@ -78,26 +77,26 @@ function sendTo(target, command, message, callback) {
 }
 
 function setupTcpServer(callback) {
-    var port = 15000;
+    const port = 15000;
 
     function sendMessage(socket, message, callback) {
         console.log(new Date().toString() + ':     mbus-TCP-Device: Send to Master: ' + message.toString('hex'));
-        socket.write(message, function(err) {
+        socket.write(message, (err) => {
             console.log(new Date().toString() + ':         mbus-TCP-Device: Send done');
             callback && callback(err);
         });
     }
 
-    var testSocket;
-    var server = net.createServer(function(socket) {
+    let testSocket;
+    const server = net.createServer( (socket) => {
         console.log(new Date().toString() + ': mbus-TCP-Device: Connected ' + port + '!');
 
         testSocket = socket;
         socket.setNoDelay();
 
-        socket.on('data', function (data) {
-            var sendBuf;
-            var counterFD;
+        socket.on('data',  (data) => {
+            let sendBuf;
+            let counterFD;
 
             if (!testSocket) {
                 console.log(new Date().toString() + ': mbus-TCP-Device: Connection was already closed');
@@ -107,62 +106,56 @@ function setupTcpServer(callback) {
                 console.log(new Date().toString() + ': mbus-TCP-Device: Received empty string!');
                 return;
             }
-            var hexData = data.toString('hex');
+            const hexData = data.toString('hex');
             console.log(new Date().toString() + ': mbus-TCP-Device: Received from Master: ' + hexData);
 
-            if (hexData.substring(0,4) === '1040') {
-                var device = hexData.substring(4,6);
+            if (hexData.substring(0, 4) === '1040') {
+                const device = hexData.substring(4, 6);
                 console.log(new Date().toString() + ':     mbus-Serial-Device: Initialization Request ' + device);
                 if (device === "fe" || device === "01" || device === "05") {
                     sendBuf = Buffer.from('E5', 'hex');
                     sendMessage(socket, sendBuf);
-                }
-                else if (device === "fd") {
-                    if (counterFD%2 === 0) {
+                } else if (device === "fd") {
+                    if (counterFD % 2 === 0) {
                         sendBuf = Buffer.from('E5', 'hex');
                         sendMessage(socket, sendBuf);
                     }
                     counterFD++;
                 }
-            }
-            else if (hexData.substring(0,6) === '105b01' || hexData.substring(0,6) === '107b01') {
+            } else if (hexData.substring(0, 6) === '105b01' || hexData.substring(0, 6) === '107b01') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 1');
                 sendBuf = Buffer.from('683C3C680808727803491177040E16290000000C7878034911041331D40000426C0000441300000000046D1D0D98110227000009FD0E0209FD0F060F00008F13E816', 'hex');
                 sendMessage(socket, sendBuf);
-            }
-            else if (hexData.substring(0,6) === '105b02' || hexData.substring(0,6) === '107b02') {
+            } else if (hexData.substring(0, 6) === '105b02' || hexData.substring(0, 6) === '107b02') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 2');
                 sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
                 sendMessage(socket, sendBuf);
-            }
-            else if (hexData.substring(0,6) === '105b03' || hexData.substring(0,6) === '107b03') {
+            } else if (hexData.substring(0, 6) === '105b03' || hexData.substring(0, 6) === '107b03') {
                 console.log(new Date().toString() + ':     mbus-TCP-Device: Request for Class 2 Data ID 3');
                 sendBuf = Buffer.from('689292680801723E020005434C1202130000008C1004521200008C1104521200008C2004334477018C21043344770102FDC9FF01ED0002FDDBFF01200002ACFF014F008240ACFF01EEFF02FDC9FF02E70002FDDBFF02230002ACFF0251008240ACFF02F1FF02FDC9FF03E40002FDDBFF03450002ACFF03A0008240ACFF03E0FF02FF68000002ACFF0040018240ACFF00BFFF01FF1304D916', 'hex');
                 sendMessage(socket, sendBuf);
-            }
-            else if (hexData.substring(0, 23) === '680b0b6873fd52ffffff1ff') {
+            } else if (hexData.substring(0, 23) === '680b0b6873fd52ffffff1ff') {
                 console.log(new Date().toString() + ':     mbus-Serial-Device: Secondary Scan found');
                 sendBuf = Buffer.from('E5', 'hex');
                 sendMessage(socket, sendBuf);
-            }
-            else if (hexData.substring(0, 6) === '105bfd' || hexData.substring(0, 6) === '107bfd') {
+            } else if (hexData.substring(0, 6) === '105bfd' || hexData.substring(0, 6) === '107bfd') {
                 console.log(new Date().toString() + ':     mbus-Serial-Device: Request for Class 2 Data ID FD');
                 sendBuf = Buffer.from('6815156808017220438317b40901072b0000000c13180000009f16', 'hex');
                 sendMessage(socket, sendBuf);
             }
             lastMessage = hexData;
         });
-        socket.on('error', function (err) {
+        socket.on('error', (err) => {
             console.error(new Date().toString() + ': mbus-TCP-Device: Error: ' + err);
         });
-        socket.on('close', function () {
+        socket.on('close', () => {
             console.error(new Date().toString() + ': mbus-TCP-Device: Close');
         });
-        socket.on('end', function () {
+        socket.on('end',  () => {
             console.error(new Date().toString() + ': mbus-TCP-Device: End');
         });
 
-        setTimeout(function() {
+        setTimeout( () => {
             server.close();
             if (testSocket) testSocket.end();
             testSocket = null;
@@ -170,7 +163,7 @@ function setupTcpServer(callback) {
         }, 60000);
     });
 
-    server.on('listening', function() {
+    server.on('listening', () => {
         console.log('mbus-TCP-Device: Listening');
         callback();
     });
@@ -182,8 +175,8 @@ describe('Test ' + adapterShortName + ' adapter', function() {
     before('Test ' + adapterShortName + ' adapter: Start js-controller', function (_done) {
         this.timeout(45*60*60*1000); // because of first install from npm
 
-        setup.setupController(async function () {
-            var config = await setup.getAdapterConfig();
+        setup.setupController(async () => {
+            const config = await setup.getAdapterConfig();
             // enable adapter
             config.common.enabled  = true;
             config.common.loglevel = 'debug';
@@ -206,11 +199,11 @@ describe('Test ' + adapterShortName + ' adapter', function() {
             ];
             await setup.setAdapterConfig(config.common, config.native);
 
-            setupTcpServer(function() {
-                setup.startController(true, function(id, obj) {}, function (id, state) {
+            setupTcpServer(() => {
+                setup.startController(true, (id, obj) => {},  (id, state) => {
                         if (onStateChanged) onStateChanged(id, state);
                     },
-                    function (_objects, _states) {
+                     (_objects, _states) => {
                         objects = _objects;
                         states  = _states;
                         _done();
@@ -221,7 +214,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
 
     it('Test ' + adapterShortName + ' adapter: Check if adapter started', function (done) {
         this.timeout(60000);
-        checkConnectionOfAdapter(function (res) {
+        checkConnectionOfAdapter( (res) => {
             if (res) console.log(res);
             expect(res).not.to.be.equal('Cannot check connection');
             objects.setObject('system.adapter.test.0', {
@@ -230,7 +223,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
                     },
                     type: 'instance'
                 },
-                function () {
+                () => {
                     states.subscribeMessage('system.adapter.test.0');
                     done();
                 });
@@ -240,7 +233,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
     it('Test ' + adapterShortName + ' adapter: delay', function (done) {
         this.timeout(120000);
 
-        setTimeout(function() {
+        setTimeout(() => {
             done();
         }, 110000);
     });
@@ -316,7 +309,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
     after('Test ' + adapterShortName + ' adapter: Stop js-controller', function (done) {
         this.timeout(10000);
 
-        setup.stopController(function (normalTerminated) {
+        setup.stopController( (normalTerminated) => {
             console.log('Adapter normal terminated: ' + normalTerminated);
             done();
         });
