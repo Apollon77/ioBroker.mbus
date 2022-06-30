@@ -242,6 +242,18 @@
             "Apollon77 <ingo@fischer-ka.de>"
         ],
         "title": "M-Bus",
+        "titleLang": {
+            "en": "M-Bus",
+            "de": "M-Bus",
+            "ru": "М-автобус",
+            "pt": "M-Bus",
+            "nl": "M-Bus",
+            "fr": "M-Bus",
+            "it": "M-Bus",
+            "es": "M-Bus",
+            "pl": "M-Bus",
+            "zh-cn": "M-Bus"
+        },
         "desc": {
             "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
             "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
@@ -264,7 +276,6 @@
         "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
         "readme": "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
         "license": "MIT",
-        "npmLibs": [],
         "type": "energy",
         "keywords": [
             "iobroker",
@@ -276,9 +287,11 @@
         "compact": true,
         "connectionType": "local",
         "dataSource": "poll",
-        "dependencies": {
+        "dependencies": [
+            {
             "js-controller": ">=2.0.0"
-        },
+            }
+        ],
         "plugins": {
             "sentry": {
                 "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",
