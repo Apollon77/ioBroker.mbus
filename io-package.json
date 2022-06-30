@@ -1,346 +1,196 @@
 {
-    "common": {
-        "name": "mbus",
-        "version": "2.3.4",
-        "news": {
-            "2.3.4": {
-                "en": "Send a reset to the device before reading data",
-                "de": "Senden Sie einen Reset an das Gerät, bevor Sie Daten lesen",
-                "ru": "Перед чтением данных отправьте на устройство сброс",
-                "pt": "Envie uma redefinição para o dispositivo antes de ler os dados",
-                "nl": "Stuur een reset naar het apparaat voordat u gegevens leest",
-                "fr": "Envoyer une réinitialisation à l'appareil avant de lire les données",
-                "it": "Inviare un ripristino al dispositivo prima di leggere i dati",
-                "es": "Envía un reinicio al dispositivo antes de leer los datos",
-                "pl": "Wyślij reset do urządzenia przed odczytaniem danych",
-                "zh-cn": "在读取数据之前将复位发送到设备"
-            },
-            "2.3.2": {
-                "en": "Prevent crash case(Sentry IOBROKER-MBUS-H)",
-                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-H)",
-                "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-H)",
-                "pt": "Evitar caso de travamento (Sentry IOBROKER-MBUS-H)",
-                "nl": "Voorkom een crashgeval (Sentry IOBROKER-MBUS-H)",
-                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-H)",
-                "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-H)",
-                "es": "Caso de prevención de accidentes (Sentry IOBROKER-MBUS-H)",
-                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-H)",
-                "zh-cn": "防止撞车事故（哨兵IOBROKER-MBUS-H）"
-            },
-            "2.3.1": {
-                "en": "Prevent crash case (Sentry IOBROKER-MBUS-F)",
-                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-F)",
-                "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-F)",
-                "pt": "Prevenir caso de travamento (Sentry IOBROKER-MBUS-F)",
-                "nl": "Voorkom een crash case (Sentry IOBROKER-MBUS-F)",
-                "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-F)",
-                "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-F)",
-                "es": "Prevenir caso de accidente (Sentry IOBROKER-MBUS-F)",
-                "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-F)",
-                "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MBUS-F）"
-            },
-            "2.3.0": {
-                "en": "mbus library updated",
-                "de": "mbus Bibliothek aktualisiert",
-                "ru": "Обновлена библиотека mbus",
-                "pt": "biblioteca mbus atualizada",
-                "nl": "mbus-bibliotheek bijgewerkt",
-                "fr": "bibliothèque mbus mise à jour",
-                "it": "libreria mbus aggiornata",
-                "es": "biblioteca mbus actualizada",
-                "pl": "Zaktualizowano bibliotekę MBUS",
-                "zh-cn": "mbus库已更新"
-            },
-            "2.2.3": {
-                "en": "crash prevented (Sentry IOBROKER-MBUS-C)",
-                "de": "Absturz verhindert (Sentry IOBROKER-MBUS-C)",
-                "ru": "предотвращено падение (Sentry IOBROKER-MBUS-C)",
-                "pt": "falha impedida (Sentry IOBROKER-MBUS-C)",
-                "nl": "crash voorkomen (Sentry IOBROKER-MBUS-C)",
-                "fr": "crash évité (Sentry IOBROKER-MBUS-C)",
-                "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-C)",
-                "es": "accidente evitado (Sentry IOBROKER-MBUS-C)",
-                "pl": "zapobiega awariom (Sentry IOBROKER-MBUS-C)",
-                "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-C）"
-            },
-            "2.2.2": {
-                "en": "crash prevented (Sentry IOBROKER-MBUS-B)",
-                "de": "Absturz verhindert (Sentry IOBROKER-MBUS-B)",
-                "ru": "предотвращено падение (Sentry IOBROKER-MBUS-B)",
-                "pt": "falha impedida (Sentry IOBROKER-MBUS-B)",
-                "nl": "crash voorkomen (Sentry IOBROKER-MBUS-B)",
-                "fr": "crash évité (Sentry IOBROKER-MBUS-B)",
-                "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-B)",
-                "es": "accidente evitado (Sentry IOBROKER-MBUS-B)",
-                "pl": "zapobieganie awariom (Sentry IOBROKER-MBUS-B)",
-                "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-B）"
-            },
-            "2.2.1": {
-                "en": "prevent crash (Sentry IOBROKER-MBUS-7)",
-                "de": "Absturz verhindern (Sentry IOBROKER-MBUS-7)",
-                "ru": "предотвратить сбой (Sentry IOBROKER-MBUS-7)",
-                "pt": "evitar falhas (Sentry IOBROKER-MBUS-7)",
-                "nl": "crash voorkomen (Sentry IOBROKER-MBUS-7)",
-                "fr": "empêcher l'accident (Sentry IOBROKER-MBUS-7)",
-                "it": "prevenire crash (Sentry IOBROKER-MBUS-7)",
-                "es": "prevenir bloqueo (Sentry IOBROKER-MBUS-7)",
-                "pl": "zapobiec awarii (Sentry IOBROKER-MBUS-7)",
-                "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-7）"
-            },
-            "2.2.0": {
-                "en": "make compatible with nodejs 13+",
-                "de": "Kompatibel machen mit NodeJS 13+",
-                "ru": "сделать совместимым с nodejs 13+",
-                "pt": "tornar compatível com nodejs 13+",
-                "nl": "compatibel maken met nodejs 13+",
-                "fr": "rendre compatible avec nodejs 13+",
-                "it": "rendere compatibile con nodejs 13+",
-                "es": "hacer compatible con nodejs 13+",
-                "pl": "uczynić kompatybilnym z nodejs 13+",
-                "zh-cn": "与nodejs兼容13+"
-            },
-            "2.1.6": {
-                "en": "fixes and optimizations",
-                "de": "Korrekturen und Optimierungen",
-                "ru": "исправления и оптимизации",
-                "pt": "correções e otimizações",
-                "nl": "fixes en optimalisaties",
-                "fr": "corrections et optimisations",
-                "it": "correzioni e ottimizzazioni",
-                "es": "correcciones y optimizaciones",
-                "pl": "poprawki i optymalizacje",
-                "zh-cn": "修复和优化"
-            },
-            "2.1.5": {
-                "en": "fixes and optimizations",
-                "de": "Korrekturen und Optimierungen",
-                "ru": "исправления и оптимизации",
-                "pt": "correções e otimizações",
-                "nl": "fixes en optimalisaties",
-                "fr": "corrections et optimisations",
-                "it": "correzioni e ottimizzazioni",
-                "es": "correcciones y optimizaciones",
-                "pl": "poprawki i optymalizacje",
-                "zh-cn": "修复和优化"
-            },
-            "2.1.4": {
-                "en": "fixes and optimizations",
-                "de": "Korrekturen und Optimierungen",
-                "ru": "исправления и оптимизации",
-                "pt": "correções e otimizações",
-                "nl": "fixes en optimalisaties",
-                "fr": "corrections et optimisations",
-                "it": "correzioni e ottimizzazioni",
-                "es": "correcciones y optimizaciones",
-                "pl": "poprawki i optymalizacje",
-                "zh-cn": "修复和优化"
-            },
-            "2.1.3": {
-                "en": "fixes and optimizations. Switched to iobroker own Sentry instance for reporting of crashes",
-                "de": "Korrekturen und Optimierungen. Zur Meldung von Abstürzen auf die iobroker-eigene Sentry-Instanz umgestellt",
-                "ru": "исправления и оптимизации. Переключен на собственный экземпляр Sentry iobroker для сообщения о сбоях",
-                "pt": "correções e otimizações. Mudou para a instância Sentry do iobroker para relatar falhas",
-                "nl": "fixes en optimalisaties. Overgeschakeld naar iobroker eigen Sentry-instantie voor het melden van crashes",
-                "fr": "corrections et optimisations. Passé à l'instance Sentry d'iobroker pour le signalement des plantages",
-                "it": "correzioni e ottimizzazioni. Passato alla propria istanza Sentry di iobroker per la segnalazione di arresti anomali",
-                "es": "correcciones y optimizaciones. Se cambió a la instancia de Sentry propia de iobroker para informar sobre bloqueos",
-                "pl": "poprawki i optymalizacje. Przełączono na własną instancję Sentry iobroker w celu zgłaszania awarii",
-                "zh-cn": "修复和优化。切换到iobroker自己的Sentry实例以报告崩溃"
-            },
-            "2.1.0": {
-                "en": "compact mode added, more flexible serial configuration using /dev/serial/by-id paths on linux, Sentry added for error reporting",
-                "de": "Kompaktmodus hinzugefügt, flexiblere serielle Konfiguration mit / dev / serial / by-id-Pfaden unter Linux, Sentry für die Fehlerberichterstattung hinzugefügt",
-                "ru": "добавлен компактный режим, более гибкая последовательная конфигурация с использованием путей / dev / serial / by-id в linux, добавлен Sentry для отчетов об ошибках",
-                "pt": "modo compacto adicionado, configuração serial mais flexível usando caminhos / dev / serial / by-id no linux, Sentry adicionado para relatório de erros",
-                "nl": "compacte modus toegevoegd, meer flexibele seriële configuratie met behulp van / dev / serial / by-id paden op linux, Sentry toegevoegd voor foutrapportage",
-                "fr": "mode compact ajouté, configuration série plus flexible en utilisant les chemins / dev / serial / by-id sur linux, Sentry ajouté pour le rapport d'erreurs",
-                "it": "aggiunta modalità compatta, configurazione seriale più flessibile usando / dev / serial / by-id percorsi su linux, Sentry aggiunto per la segnalazione degli errori",
-                "es": "modo compacto agregado, configuración en serie más flexible usando rutas / dev / serial / by-id en Linux, Sentry agregado para informes de errores",
-                "pl": "dodano tryb kompaktowy, bardziej elastyczną konfigurację szeregową z wykorzystaniem ścieżek / dev / serial / by-id w systemie Linux, dodano Sentry do raportowania błędów",
-                "zh-cn": "添加了紧凑模式，在Linux上使用/ dev / serial / by-id路径更灵活的串行配置，添加了Sentry来进行错误报告"
-            },
-            "2.0.0": {
-                "en": "**BREAKING CHANGE** better handling for values with changing scaling based on the value - maybe incompatible with old values! add setting to force kWh values for energy",
-                "de": "** BREAKING CHANGE ** Besseres Handling für Werte mit sich ändernder Skalierung basierend auf dem Wert - möglicherweise nicht kompatibel mit alten Werten! Einstellung hinzufügen, um kWh-Werte für Energie zu erzwingen",
-                "ru": "** BREAKING CHANGE ** улучшенная обработка значений с изменением масштабирования в зависимости от значения - возможно, несовместимо со старыми значениями! добавить настройку для принудительного значения кВтч для энергии",
-                "pt": "** ALTERAÇÃO DE QUEBRA ** manipulação melhor para valores com mudança de escala com base no valor - talvez incompatível com valores antigos! adicione configuração para forçar os valores de kWh de energia",
-                "nl": "** BREAKING CHANGE ** betere afhandeling van waarden met veranderende schaling op basis van de waarde - misschien niet compatibel met oude waarden! instelling toevoegen om kWh-waarden voor energie te forceren",
-                "fr": "** BREAKING CHANGE ** meilleure gestion des valeurs avec une mise à l'échelle variable en fonction de la valeur - peut-être incompatible avec les anciennes valeurs! ajout du réglage pour forcer les valeurs de kWh d'énergie",
-                "it": "** BREAKING CHANGE ** migliore gestione dei valori con modifica del ridimensionamento in base al valore - forse incompatibile con i vecchi valori! aggiungere l'impostazione per forzare i valori di kWh per l'energia",
-                "es": "** BREAKING CHANGE ** mejor manejo de valores con cambio de escala basado en el valor - ¡tal vez incompatible con valores antiguos! agregar configuración para forzar valores de kWh para energía",
-                "pl": "** ZMIANA ZŁAMANIA ** lepsza obsługa wartości ze zmianą skalowania na podstawie wartości - być może niezgodna ze starymi wartościami! dodaj ustawienie, aby wymusić wartości kWh energii",
-                "zh-cn": "** BREAKING CHANGE **通过基于值更改缩放比例可以更好地处理值-可能与旧值不兼容！添加设置以强制设置电能的kWh值"
-            },
-            "1.1.1": {
-                "en": "Error tolerance",
-                "de": "Fehlertoleranz",
-                "ru": "Допуск ошибок",
-                "pt": "Tolerância ao erro",
-                "nl": "Fouttolerantie",
-                "fr": "Tolérance d'erreur",
-                "it": "Tolleranza di errore",
-                "es": "Tolerancia a los errores",
-                "pl": "Tolerancja błędu"
-            },
-            "1.1.0": {
-                "en": "Error tolerance",
-                "de": "Fehlertoleranz",
-                "ru": "Допуск ошибок",
-                "pt": "Tolerância ao erro",
-                "nl": "Fouttolerantie",
-                "fr": "Tolérance d'erreur",
-                "it": "Tolleranza di errore",
-                "es": "Tolerancia a los errores",
-                "pl": "Tolerancja błędu"
-            },
-            "1.0.0": {
-                "en": "Fix Admin",
-                "de": "Fixe Admin",
-                "ru": "Fix Admin",
-                "pt": "Corrigir Admin",
-                "nl": "Admin oplossen",
-                "fr": "Fix Admin",
-                "it": "Correggi Admin",
-                "es": "Fix Admin",
-                "pl": "Napraw administratora"
-            },
-            "0.1.8": {
-                "en": "Updates and optimizations",
-                "de": "Updates und Optimierungen",
-                "ru": "Обновления и оптимизации",
-                "pt": "Atualizações e otimizações",
-                "nl": "Updates en optimalisaties",
-                "fr": "Mises à jour et optimisations",
-                "it": "Aggiornamenti e ottimizzazioni",
-                "es": "Actualizaciones y optimizaciones",
-                "pl": "Aktualizacje i optymalizacje"
-            },
-            "0.1.5": {
-                "en": "Update mbus library",
-                "de": "Aktualisieren Sie die Mbus-Bibliothek",
-                "ru": "Обновить библиотеку mbus",
-                "pt": "Atualizar a biblioteca mbus",
-                "nl": "Update mbus-bibliotheek",
-                "fr": "Mettre à jour la bibliothèque mbus",
-                "it": "Aggiorna la libreria mbus",
-                "es": "Actualizar la biblioteca de mbus",
-                "pl": "Zaktualizuj bibliotekę mbus"
-            },
-            "0.1.4": {
-                "en": "Update mbus library and add updateNow function to all devices",
-                "de": "Aktualisieren Sie die mbus-Bibliothek und fügen Sie allen Geräten die updateNow-Funktion hinzu",
-                "ru": "Обновите библиотеку mbus и добавьте функцию updateNow ко всем устройствам",
-                "pt": "Atualize a biblioteca mbus e adicione a função updateNow a todos os dispositivos",
-                "nl": "Werk de mbus-bibliotheek bij en voeg de updateNow-functie toe aan alle apparaten",
-                "fr": "Mettre à jour la bibliothèque mbus et ajouter la fonction updateNow à tous les appareils",
-                "it": "Aggiorna la libreria mbus e aggiungi la funzione updateNow a tutti i dispositivi",
-                "es": "Actualice la biblioteca mbus y agregue la función updateNow a todos los dispositivos",
-                "pl": "Zaktualizuj bibliotekę mbus i dodaj funkcję updateNow do wszystkich urządzeń"
-            }
-        },
-        "authors": [
-            "Apollon77 <ingo@fischer-ka.de>"
-        ],
-        "title": "M-Bus",
-        "titleLang": {
-            "en": "M-Bus",
-            "de": "M-Bus",
-            "ru": "М-автобус",
-            "pt": "M-Bus",
-            "nl": "M-Bus",
-            "fr": "M-Bus",
-            "it": "M-Bus",
-            "es": "M-Bus",
-            "pl": "M-Bus",
-            "zh-cn": "M-Bus"
-        },
-        "desc": {
-            "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
-            "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
-            "ru": "Чтение данных с устройств Meter-Bus (M-Bus), таких как счетчики газа или электроэнергии",
-            "pt": "Leia os dados dos dispositivos Meter-Bus (M-Bus) como medidores de gás ou eletricidade",
-            "nl": "Lees gegevens van Meter-Bus (M-Bus) apparaten zoals gas- of elektriciteitsmeters",
-            "fr": "Lire les données des appareils Meter-Bus (M-Bus) comme les compteurs de gaz ou d'électricité",
-            "it": "Leggi i dati dai dispositivi Meter-Bus (M-Bus) come contatori di gas o elettricità",
-            "es": "Leer datos de dispositivos Meter-Bus (M-Bus) como medidores de gas o electricidad",
-            "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu",
-            "zh-cn": "从煤气表或电表之类的仪表总线（M-Bus）设备读取数据"
-        },
-        "platform": "Javascript/Node.js",
-        "mode": "daemon",
-        "messagebox": true,
-        "subscribe": "messagebox",
-        "materialize": true,
-        "stopBeforeUpdate": true,
-        "icon": "mbus.png",
-        "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
-        "readme": "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
-        "license": "MIT",
-        "type": "energy",
-        "keywords": [
-            "iobroker",
-            "mbus",
-            "measure"
-        ],
-        "loglevel": "info",
-        "enabled": true,
-        "compact": true,
-        "connectionType": "local",
-        "dataSource": "poll",
-        "dependencies": [
-            {
-            "js-controller": ">=2.0.0"
-            }
-        ],
-        "plugins": {
-            "sentry": {
-                "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",
-                "pathWhitelist": [
-                    "@apollon",
-                    "node-mbus"
-                ]
-            }
-        }
+  "common": {
+    "name": "mbus",
+    "version": "2.4.0",
+    "news": {
+      "2.4.0": {
+        "en": "IMPORTANT: Node.js 12.x is now required at least\nSeveral updates and optimizations",
+        "de": "WICHTIG: Node.js 12.x ist jetzt mindestens erforderlich\nMehrere Updates und Optimierungen",
+        "ru": "ВАЖНО: Node.js 12.x теперь требуется по крайней мере\nНесколько обновлений и оптимизаций",
+        "pt": "IMPORTANTE: Node.js 12.x é agora exigido pelo menos\nVárias atualizações e otimizações",
+        "nl": "Node is 12.X\nVerschillende updates en optimatie",
+        "fr": "IMPORTANT: Node.js 12.x est maintenant nécessaire au moins\nPlusieurs mises à jour et optimisations",
+        "it": "IMPORTANTE: Node.js 12.x è ora richiesto almeno\nDiversi aggiornamenti e ottimizzazioni",
+        "es": "IMPORTANTE: Node.js 12.x se requiere ahora por lo menos\nVarias actualizaciones y optimizaciones",
+        "pl": "IMPORTANT: Nodejs 12 (ang.)\nKilka aktualizacji i optymalizacji",
+        "zh-cn": "IMPORTANT: Nodejs 12x现在至少需要。\n若干更新和优化"
+      },
+      "2.3.4": {
+        "en": "Send a reset to the device before reading data",
+        "de": "Senden Sie einen Reset an das Gerät, bevor Sie Daten lesen",
+        "ru": "Перед чтением данных отправьте на устройство сброс",
+        "pt": "Envie uma redefinição para o dispositivo antes de ler os dados",
+        "nl": "Stuur een reset naar het apparaat voordat u gegevens leest",
+        "fr": "Envoyer une réinitialisation à l'appareil avant de lire les données",
+        "it": "Inviare un ripristino al dispositivo prima di leggere i dati",
+        "es": "Envía un reinicio al dispositivo antes de leer los datos",
+        "pl": "Wyślij reset do urządzenia przed odczytaniem danych",
+        "zh-cn": "在读取数据之前将复位发送到设备"
+      },
+      "2.3.2": {
+        "en": "Prevent crash case(Sentry IOBROKER-MBUS-H)",
+        "de": "Absturz verhindern (Sentry IOBROKER-MBUS-H)",
+        "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-H)",
+        "pt": "Evitar caso de travamento (Sentry IOBROKER-MBUS-H)",
+        "nl": "Voorkom een crashgeval (Sentry IOBROKER-MBUS-H)",
+        "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-H)",
+        "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-H)",
+        "es": "Caso de prevención de accidentes (Sentry IOBROKER-MBUS-H)",
+        "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-H)",
+        "zh-cn": "防止撞车事故（哨兵IOBROKER-MBUS-H）"
+      },
+      "2.3.1": {
+        "en": "Prevent crash case (Sentry IOBROKER-MBUS-F)",
+        "de": "Absturz verhindern (Sentry IOBROKER-MBUS-F)",
+        "ru": "Случай предотвращения сбоя (Sentry IOBROKER-MBUS-F)",
+        "pt": "Prevenir caso de travamento (Sentry IOBROKER-MBUS-F)",
+        "nl": "Voorkom een crash case (Sentry IOBROKER-MBUS-F)",
+        "fr": "Prévenir les cas de crash (Sentry IOBROKER-MBUS-F)",
+        "it": "Prevenire il crash case (Sentry IOBROKER-MBUS-F)",
+        "es": "Prevenir caso de accidente (Sentry IOBROKER-MBUS-F)",
+        "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-F)",
+        "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MBUS-F）"
+      },
+      "2.3.0": {
+        "en": "mbus library updated",
+        "de": "mbus Bibliothek aktualisiert",
+        "ru": "Обновлена библиотека mbus",
+        "pt": "biblioteca mbus atualizada",
+        "nl": "mbus-bibliotheek bijgewerkt",
+        "fr": "bibliothèque mbus mise à jour",
+        "it": "libreria mbus aggiornata",
+        "es": "biblioteca mbus actualizada",
+        "pl": "Zaktualizowano bibliotekę MBUS",
+        "zh-cn": "mbus库已更新"
+      },
+      "2.2.3": {
+        "en": "crash prevented (Sentry IOBROKER-MBUS-C)",
+        "de": "Absturz verhindert (Sentry IOBROKER-MBUS-C)",
+        "ru": "предотвращено падение (Sentry IOBROKER-MBUS-C)",
+        "pt": "falha impedida (Sentry IOBROKER-MBUS-C)",
+        "nl": "crash voorkomen (Sentry IOBROKER-MBUS-C)",
+        "fr": "crash évité (Sentry IOBROKER-MBUS-C)",
+        "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-C)",
+        "es": "accidente evitado (Sentry IOBROKER-MBUS-C)",
+        "pl": "zapobiega awariom (Sentry IOBROKER-MBUS-C)",
+        "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-C）"
+      },
+      "2.2.2": {
+        "en": "crash prevented (Sentry IOBROKER-MBUS-B)",
+        "de": "Absturz verhindert (Sentry IOBROKER-MBUS-B)",
+        "ru": "предотвращено падение (Sentry IOBROKER-MBUS-B)",
+        "pt": "falha impedida (Sentry IOBROKER-MBUS-B)",
+        "nl": "crash voorkomen (Sentry IOBROKER-MBUS-B)",
+        "fr": "crash évité (Sentry IOBROKER-MBUS-B)",
+        "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-B)",
+        "es": "accidente evitado (Sentry IOBROKER-MBUS-B)",
+        "pl": "zapobieganie awariom (Sentry IOBROKER-MBUS-B)",
+        "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-B）"
+      }
     },
-    "native": {
-        "type": "tcp",
-        "host": "127.0.0.1",
-        "tcpTimeout": 0,
-        "port": 3493,
-        "defaultUpdateInterval": 3600,
-        "serialPort": "",
-        "serialBaudRate": 115200,
-        "alwaysUpdate": false,
-        "forcekWh": false,
-        "devices": [
-            {
-                "id": "1",
-                "updateInterval": 3600
-            }
+    "authors": [
+      "Apollon77 <ingo@fischer-ka.de>"
+    ],
+    "title": "M-Bus",
+    "titleLang": {
+      "en": "M-Bus",
+      "de": "M-Bus",
+      "ru": "М-автобус",
+      "pt": "M-Bus",
+      "nl": "M-Bus",
+      "fr": "M-Bus",
+      "it": "M-Bus",
+      "es": "M-Bus",
+      "pl": "M-Bus",
+      "zh-cn": "M-Bus"
+    },
+    "desc": {
+      "en": "Read data from Meter-Bus (M-Bus) devices like gas or electricity meters",
+      "de": "Daten von Zähler-Bus (M-Bus) Geräten, wie Gas- oder Stromzähler, lesen",
+      "ru": "Чтение данных с устройств Meter-Bus (M-Bus), таких как счетчики газа или электроэнергии",
+      "pt": "Leia os dados dos dispositivos Meter-Bus (M-Bus) como medidores de gás ou eletricidade",
+      "nl": "Lees gegevens van Meter-Bus (M-Bus) apparaten zoals gas- of elektriciteitsmeters",
+      "fr": "Lire les données des appareils Meter-Bus (M-Bus) comme les compteurs de gaz ou d'électricité",
+      "it": "Leggi i dati dai dispositivi Meter-Bus (M-Bus) come contatori di gas o elettricità",
+      "es": "Leer datos de dispositivos Meter-Bus (M-Bus) como medidores de gas o electricidad",
+      "pl": "Odczytywanie danych z urządzeń Meter-Bus (M-Bus), takich jak liczniki gazu lub prądu",
+      "zh-cn": "从煤气表或电表之类的仪表总线（M-Bus）设备读取数据"
+    },
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "messagebox": true,
+    "subscribe": "messagebox",
+    "materialize": true,
+    "stopBeforeUpdate": true,
+    "icon": "mbus.png",
+    "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
+    "readme": "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
+    "license": "MIT",
+    "type": "energy",
+    "keywords": [
+      "iobroker",
+      "mbus",
+      "measure"
+    ],
+    "loglevel": "info",
+    "enabled": true,
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "poll",
+    "dependencies": [
+      {
+        "js-controller": ">=2.0.0"
+      }
+    ],
+    "plugins": {
+      "sentry": {
+        "dsn": "https://02db3f5413e640e5bd91657c8a742efa@sentry.iobroker.net/5",
+        "pathWhitelist": [
+          "@apollon",
+          "node-mbus"
         ]
-    },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to M-Bus",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
+      }
+    }
+  },
+  "native": {
+    "type": "tcp",
+    "host": "127.0.0.1",
+    "tcpTimeout": 0,
+    "port": 3493,
+    "defaultUpdateInterval": 3600,
+    "serialPort": "",
+    "serialBaudRate": 115200,
+    "alwaysUpdate": false,
+    "forcekWh": false,
+    "devices": [
+      {
+        "id": "1",
+        "updateInterval": 3600
+      }
     ]
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected to M-Bus",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
