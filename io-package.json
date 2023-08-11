@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mbus",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "news": {
+      "2.5.0": {
+        "en": "IMPORTANT: Node.js 14.x is now required at least\nUpdate dependencies to also support Node.js 20",
+        "de": "WICHTIG: Node.js 14.x ist jetzt mindestens erforderlich\nAktualisieren Sie Abhängigkeiten auch Node.js 20",
+        "ru": "ВАЖНО: Node.js 14.x теперь требуется по крайней мере\nОбновите зависимости, чтобы также поддержать Node.js 20",
+        "pt": "IMPORTANTE: Node.js 14.x é agora exigido pelo menos\nAtualizar dependências para também apoiar Node.js 20",
+        "nl": "Node is nu minstens 14.X\nUpdate afhankelijkheid om Node te ondersteunen",
+        "fr": "IMPORTANT: Node.js 14.x est maintenant requis au moins\nMettre à jour les dépendances pour soutenir Node.js 20",
+        "it": "IMPORTANTE: Node.js 14.x è ora richiesto almeno\nAggiornare le dipendenze per supportare anche Node.js 20",
+        "es": "IMPORTANTE: Node.js 14.x se requiere al menos\nActualizar las dependencias para apoyar también Node.js 20",
+        "pl": "IMPORTANT: Nodejs 14.x jest obecnie wymagany przynajmniej\nW zależności od aktualizacji obsługuje również Node.js 20",
+        "uk": "ВАЖЛИВО: Node.js 14.x тепер потрібно принаймні\nОновити залежності для підтримки Node.js 20",
+        "zh-cn": "IMPORTANT: Nodejs 14x现在至少需要。\nB. 支助第20号新依赖情况"
+      },
       "2.4.0": {
         "en": "IMPORTANT: Node.js 12.x is now required at least\nSeveral updates and optimizations",
         "de": "WICHTIG: Node.js 12.x ist jetzt mindestens erforderlich\nMehrere Updates und Optimierungen",
@@ -74,18 +87,6 @@
         "es": "accidente evitado (Sentry IOBROKER-MBUS-C)",
         "pl": "zapobiega awariom (Sentry IOBROKER-MBUS-C)",
         "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-C）"
-      },
-      "2.2.2": {
-        "en": "crash prevented (Sentry IOBROKER-MBUS-B)",
-        "de": "Absturz verhindert (Sentry IOBROKER-MBUS-B)",
-        "ru": "предотвращено падение (Sentry IOBROKER-MBUS-B)",
-        "pt": "falha impedida (Sentry IOBROKER-MBUS-B)",
-        "nl": "crash voorkomen (Sentry IOBROKER-MBUS-B)",
-        "fr": "crash évité (Sentry IOBROKER-MBUS-B)",
-        "it": "arresto anomalo impedito (Sentry IOBROKER-MBUS-B)",
-        "es": "accidente evitado (Sentry IOBROKER-MBUS-B)",
-        "pl": "zapobieganie awariom (Sentry IOBROKER-MBUS-B)",
-        "zh-cn": "防止崩溃（Sentry IOBROKER-MBUS-B）"
       }
     },
     "authors": [
