@@ -42,6 +42,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ## Changelog
 ### __WORK IN PROGRESS__
 * IMPORTANT: Node.js 16.x is now required at least
+* (Apollon77) Upgrade dependencies
 
 ### 2.5.0 (2023-08-11)
 * IMPORTANT: Node.js 14.x is now required at least
