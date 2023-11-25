@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mbus",
-    "version": "2.6.0",
+    "version": "2.6.1",
     "news": {
+      "2.6.1": {
+        "en": "IMPORTANT: Node.js 16.x is now required at least\nUpgrade dependencies",
+        "de": "WICHTIG: Node.js 16.x ist jetzt mindestens erforderlich\nAbhängige Upgrades",
+        "ru": "ВАЖНО: Node.js 16.x теперь требуется по крайней мере\nУлучшение зависимости",
+        "pt": "IMPORTANTE: Node.js 16.x é agora exigido pelo menos\nDependências de atualização",
+        "nl": "Node is 16.X\nUpgrade afhankelijkheid",
+        "fr": "IMPORTANT: Node.js 16.x est maintenant nécessaire au moins\nAmélioration des dépendances",
+        "it": "IMPORTANTE: Node.js 16.x è ora richiesto almeno\nDipendenze di aggiornamento",
+        "es": "IMPORTANTE: Node.js 16.x es ahora requerido al menos\nMejoramiento de las dependencias",
+        "pl": "IMPORTANT: Nodejs 16.x jest obecnie wymagany przynajmniej\nZależność od uproszczonego",
+        "uk": "ВАЖЛИВО: Node.js 16.x тепер потрібно принаймні\nПідвищення залежності",
+        "zh-cn": "IMPORTANT: Nodejs 16x现在至少需要。\n职等受扶养人"
+      },
       "2.5.0": {
         "en": "IMPORTANT: Node.js 14.x is now required at least\nUpdate dependencies to also support Node.js 20",
         "de": "WICHTIG: Node.js 14.x ist jetzt mindestens erforderlich\nAktualisieren Sie Abhängigkeiten auch Node.js 20",
