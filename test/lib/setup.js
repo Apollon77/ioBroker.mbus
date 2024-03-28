@@ -447,7 +447,7 @@ function installJsController(cb) {
                 if (!fs.existsSync(rootDir + 'tmp/node_modules/' + appName + '.js-controller')) {
                     console.log('installJsController: no js-controller => install dev build from npm');
 
-                    child_process.execSync('npm install ' + appName + '.js-controller@dev --prefix ./ --production', {
+                    child_process.execSync('npm install ' + appName + '.js-controller@dev --prefix ./ --production --ignore-foreground-scripts', {
                         cwd:   rootDir + 'tmp/',
                         stdio: [0, 1, 2]
                     });
