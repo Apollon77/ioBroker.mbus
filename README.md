@@ -43,6 +43,7 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ### __WORK IN PROGRESS__
 * (Apollon77) Add IPv6 support for TCP connections
+* (Apollon77) Fixed baudrate 1200 for Windows (2400 was used before)
 
 ### 2.6.1 (2023-11-25)
 * IMPORTANT: Node.js 16.x is now required at least
