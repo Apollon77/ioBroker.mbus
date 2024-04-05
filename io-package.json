@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mbus",
-    "version": "2.6.1",
+    "version": "2.7.0",
     "news": {
+      "2.7.0": {
+        "en": "Add IPv6 support for TCP connections\nFixed baudrate 1200 for Windows (2400 was used before)",
+        "de": "IPv6-Unterstützung für TCP-Verbindungen hinzufügen\nFixed baudrate 1200 für Windows (2400 wurde zuvor verwendet)",
+        "ru": "Добавить поддержку IPv6 для соединений TCP\nFixed baudrate 1200 для Windows (2400 был использован раньше)",
+        "pt": "Adicionar suporte IPv6 para conexões TCP\nFixo baudrate 1200 para Windows (2400 foi usado antes)",
+        "nl": "IPv6-ondersteuning voor TCP-verbindingen toevoegen\nVaste baudraat 1200 voor Windows (2400 werd eerder gebruikt)",
+        "fr": "Ajout du support IPv6 pour les connexions TCP\nBaudrate fixe 1200 pour Windows (2400 a été utilisé avant)",
+        "it": "Aggiungere il supporto IPv6 per le connessioni TCP\nFisso baudrate 1200 per Windows (2400 è stato utilizzato prima)",
+        "es": "Añadir soporte IPv6 para conexiones TCP\nBaudito fijo 1200 para Windows (2400 se utilizó antes)",
+        "pl": "Dodaj obsługę IPv6 dla połączeń TCP\nNaprawiono baudrate 1200 dla systemu Windows (wcześniej używano 2400)",
+        "uk": "Додайте підтримку IPv6 для підключення TCP\nВиправлено baudrate 1200 для Windows (2400 використовувався раніше)",
+        "zh-cn": "为 TCP 连接添加 IPv6 支持\nWindows 1200 的固定保费(2400 之前使用过)"
+      },
       "2.6.1": {
         "en": "IMPORTANT: Node.js 16.x is now required at least\nUpgrade dependencies",
         "de": "WICHTIG: Node.js 16.x ist jetzt mindestens erforderlich\nAbhängige Upgrades",
@@ -76,18 +89,6 @@
         "es": "Prevenir caso de accidente (Sentry IOBROKER-MBUS-F)",
         "pl": "Zapobiegaj awariom (Sentry IOBROKER-MBUS-F)",
         "zh-cn": "防止发生崩溃情况（Sentry IOBROKER-MBUS-F）"
-      },
-      "2.3.0": {
-        "en": "mbus library updated",
-        "de": "mbus Bibliothek aktualisiert",
-        "ru": "Обновлена библиотека mbus",
-        "pt": "biblioteca mbus atualizada",
-        "nl": "mbus-bibliotheek bijgewerkt",
-        "fr": "bibliothèque mbus mise à jour",
-        "it": "libreria mbus aggiornata",
-        "es": "biblioteca mbus actualizada",
-        "pl": "Zaktualizowano bibliotekę MBUS",
-        "zh-cn": "mbus库已更新"
       }
     },
     "authors": [
