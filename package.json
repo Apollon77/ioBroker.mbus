@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "node-mbus": "^2.2.2",
-    "@iobroker/adapter-core": "^3.0.6",
+    "@iobroker/adapter-core": "^3.1.6",
     "@sentry/node": "^7.109.0",
     "@sentry/integrations": "^7.109.0",
     "source-map-support": "^0.5.21"
