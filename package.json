@@ -22,20 +22,17 @@
     "serialport": "^12.0.0"
   },
   "dependencies": {
-    "node-mbus": "^2.2.2",
-    "@iobroker/adapter-core": "^3.0.6",
-    "@sentry/node": "^7.109.0",
-    "@sentry/integrations": "^7.109.0",
-    "source-map-support": "^0.5.21"
+    "node-mbus": "^2.2.6",
+    "@iobroker/adapter-core": "^3.2.3"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^3.7.0",
-    "@alcalzone/release-script-plugin-iobroker": "^3.7.0",
+    "@alcalzone/release-script": "^3.8.0",
+    "@alcalzone/release-script-plugin-iobroker": "^3.7.2",
     "@alcalzone/release-script-plugin-license": "^3.7.0",
-    "@iobroker/adapter-dev": "^1.3.0",
-    "mocha": "^10.4.0",
-    "chai": "^4.4.1",
-    "nyc": "^15.1.0"
+    "@iobroker/adapter-dev": "^1.4.0",
+    "mocha": "^11.7.1",
+    "chai": "^4.5.0",
+    "nyc": "^17.1.0"
   },
   "bugs": {
     "url": "https://github.com/Apollon77/ioBroker.mbus/issues"
