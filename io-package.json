@@ -128,7 +128,10 @@
     "icon": "mbus.png",
     "extIcon": "https://raw.githubusercontent.com/Apollon77/ioBroker.mbus/master/admin/mbus.png",
     "readme": "https://github.com/Apollon77/ioBroker.mbus/blob/master/README.md",
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "type": "energy",
     "keywords": [
       "iobroker",
