@@ -139,6 +139,7 @@
       "measure"
     ],
     "loglevel": "info",
+    "tier": 2,
     "enabled": true,
     "compact": true,
     "connectionType": "local",
