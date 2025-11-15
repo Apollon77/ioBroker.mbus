@@ -5,3 +5,6 @@ admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 iob_npm.done
 .idea
+
+#ignore .commitinfo created by ioBroker release script
+.commitinfo
