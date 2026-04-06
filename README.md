@@ -41,6 +41,9 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 20 now.
+
 ### __WORK IN PROGRESS__
 * (Apollon77) Makes adapter compatible with Node.js 24
 
