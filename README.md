@@ -135,6 +135,8 @@ Best is to set the adapter to Debug log mode (Instances -> Expert mode -> Column
 ### 0.0.1
 * (apollon77) initial release for testing
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 The MIT License (MIT)
