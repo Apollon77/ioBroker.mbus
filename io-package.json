@@ -146,7 +146,7 @@
     "dataSource": "poll",
     "dependencies": [
       {
-        "js-controller": ">=2.0.0"
+        "js-controller": ">=6.0.11"
       }
     ],
     "plugins": {
